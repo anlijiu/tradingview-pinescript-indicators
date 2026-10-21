@@ -7,7 +7,7 @@ src = volume
 length = input.int(14)
 
 pr = ta.percentrank(src, length)
-plot(pr, title="Built-in", color=color.red)
+plot(pr, title = "Built-in", color = color.red)
 
 _percentrank(src, length) =>
     count = 0
@@ -17,4 +17,4 @@ _percentrank(src, length) =>
 
 pr2 = _percentrank(src, length)
 
-plot(pr2, title="Shim", color=color.green)
+plot(pr2, title = "Shim", color = color.green)

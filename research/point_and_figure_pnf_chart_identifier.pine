@@ -1,7 +1,7 @@
 //@version=6
 // Copyright (c) 2020-present, Alex Orekhov (everget)
 // Point-and-Figure (P&F) Chart Identifier script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Point-and-Figure (P&F) Chart Identifier", overlay=true)
+indicator("Point-and-Figure (P&F) Chart Identifier", overlay = true)
 
 var int ocCount = -1
 ocCount := open[1] == close or close[1] == open ? ocCount + 1 : ocCount
@@ -22,13 +22,13 @@ labelColor = #1e90ff
 whiteColor = color.white
 
 var label pnfLabel = label.new(
-     x=bar_index,
-     y=na,
-     text="",
-     color=labelColor,
-     textcolor=whiteColor,
-     style=label.style_label_down,
-     size=size.normal
+     x = bar_index,
+     y = na,
+     text = "",
+     color = labelColor,
+     textcolor = whiteColor,
+     style = label.style_label_down,
+     size = size.normal
      )
 
 label.set_text(pnfLabel, labelText + stats)

@@ -1,17 +1,17 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Schaff Trend Cycle script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Schaff Trend Cycle", shorttitle="STC")
+indicator("Schaff Trend Cycle", shorttitle = "STC")
 
-fastLength = input.int(23, title="MACD Fast Length")
-slowLength = input.int(50, title="MACD Slow Length")
-cycleLength = input.int(10, title="Cycle Length")
-d1Length = input.int(3, title="1st %D Length")
-d2Length = input.int(3, title="2nd %D Length")
-src = input.source(close, title="Source")
-upper = input.int(75, title="Upper Band")
-lower = input.int(25, title="Lower Band")
-highlightBreakouts = input.bool(true, title="Highlight Breakouts ?")
+fastLength = input.int(23, title = "MACD Fast Length")
+slowLength = input.int(50, title = "MACD Slow Length")
+cycleLength = input.int(10, title = "Cycle Length")
+d1Length = input.int(3, title = "1st %D Length")
+d2Length = input.int(3, title = "2nd %D Length")
+src = input.source(close, title = "Source")
+upper = input.int(75, title = "Upper Band")
+lower = input.int(25, title = "Lower Band")
+highlightBreakouts = input.bool(true, title = "Highlight Breakouts ?")
 
 macd = ta.ema(src, fastLength) - ta.ema(src, slowLength)
 k = nz(fixnan(ta.stoch(macd, macd, macd, cycleLength)))
@@ -24,19 +24,19 @@ stcColor1 = stc > stc[1] ? color.green : color.red
 stcColor2 = stc > upper ? color.green : stc <= lower ? color.red : color.orange
 
 stcColor = highlightBreakouts ? stcColor2 : stcColor1
-stcPlot = plot(stc, title="STC", color=stcColor)
+stcPlot = plot(stc, title = "STC", color = stcColor)
 
-upperLevel = plot(upper, title="Upper", color=color.gray)
-hline(50, title="Middle", linestyle=hline.style_dotted)
-lowerLevel = plot(lower, title="Lower", color=color.gray)
+upperLevel = plot(upper, title = "Upper", color = color.gray)
+hline(50, title = "Middle", linestyle = hline.style_dotted)
+lowerLevel = plot(lower, title = "Lower", color = color.gray)
 
-fill(upperLevel, lowerLevel, title="Middle Zone", color=color.new(#f9cb9c, 90))
+fill(upperLevel, lowerLevel, title = "Middle Zone", color = color.new(#f9cb9c, 90))
 
 upperFillColor = stc > upper and highlightBreakouts ? color.green : na
 lowerFillColor = stc < lower and highlightBreakouts ? color.red : na
 
-fill(upperLevel, stcPlot, color=color.new(upperFillColor, 80))
-fill(lowerLevel, stcPlot, color=color.new(lowerFillColor, 80))
+fill(upperLevel, stcPlot, color = color.new(upperFillColor, 80))
+fill(lowerLevel, stcPlot, color = color.new(lowerFillColor, 80))
 
 buySignal = ta.crossover(stc, lower)
 sellSignal = ta.crossunder(stc, upper)
@@ -45,12 +45,16 @@ upperCrossunder = ta.crossunder(stc, upper)
 lowerCrossover = ta.crossover(stc, lower)
 lowerCrossunder = ta.crossunder(stc, lower)
 
-plotshape(upperCrossunder ? upper : na, title="Sell Signal", location=location.absolute, style=shape.circle, size=size.tiny, color=color.red)
-plotshape(lowerCrossover ? lower : na, title="Buy Signal", location=location.absolute, style=shape.circle, size=size.tiny, color=color.green)
+plotshape(upperCrossunder ? upper : na, title = "Sell Signal", location = location.absolute, style = shape.circle, size = size.tiny, color = color.red)
+plotshape(lowerCrossover ? lower : na, title = "Buy Signal", location = location.absolute, style = shape.circle, size = size.tiny, color = color.green)
 
-alertcondition(buySignal, title="Alert: Buy", message="STC: Buy!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
-alertcondition(sellSignal, title="Alert: Sell", message="STC: Sell!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
-alertcondition(upperCrossover, title="Alert: Upper Band Crossover", message="STC: Upper Band Crossover!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
-alertcondition(upperCrossunder, title="Alert: Upper Band Crossunder", message="STC: Upper Band Crossunder!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
-alertcondition(lowerCrossover, title="Alert: Lower Band Crossover", message="STC: Lower Band Crossover!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
-alertcondition(lowerCrossunder, title="Alert: Lower Band Crossunder", message="STC: Lower Band Crossunder!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(buySignal, title = "Alert: Buy", message = "STC: Buy!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(sellSignal, title = "Alert: Sell", message = "STC: Sell!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(upperCrossover, title = "Alert: Upper Band Crossover", message = "STC: Upper Band Crossover!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(upperCrossunder,
+    title = "Alert: Upper Band Crossunder",
+    message = "STC: Upper Band Crossunder!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(lowerCrossover, title = "Alert: Lower Band Crossover", message = "STC: Lower Band Crossover!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(lowerCrossunder,
+    title = "Alert: Lower Band Crossunder",
+    message = "STC: Lower Band Crossunder!\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")

@@ -1,16 +1,16 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Regression Oscillator script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Regression Oscillator", shorttitle="ROSC")
+indicator("Regression Oscillator", shorttitle = "ROSC")
 
-length = input.int(63, title="Length", minval=1)
-linregOffset = input.int(0, title="Linear Regression Offset")
-src = input.source(close, title="Source")
+length = input.int(63, title = "Length", minval = 1)
+linregOffset = input.int(0, title = "Linear Regression Offset")
+src = input.source(close, title = "Source")
 
 rosc = 100 * (src / ta.linreg(src, length, linregOffset) - 1)
 
 roscColor = rosc >= 0.0 ? #0ebb23 : #ff0000
 
-plot(rosc, title="ROSC", linewidth=2, color=roscColor)
+plot(rosc, title = "ROSC", linewidth = 2, color = roscColor)
 
-hline(0, title="Zero Level", linestyle=hline.style_dotted, color=#989898)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted, color = #989898)

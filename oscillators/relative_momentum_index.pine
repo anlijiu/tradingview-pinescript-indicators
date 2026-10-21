@@ -1,12 +1,12 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Relative Momentum Index script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Relative Momentum Index", shorttitle="RMI")
+indicator("Relative Momentum Index", shorttitle = "RMI")
 
-length = input.int(14, title="Length", minval=1)
-momentumLength = input.int(3, title="Momentum Length", minval=1)
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+momentumLength = input.int(3, title = "Momentum Length", minval = 1)
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
+src = input.source(close, title = "Source")
 
 up = ta.rma(math.max(ta.change(src, momentumLength), 0), length)
 down = ta.rma(-math.min(ta.change(src, momentumLength), 0), length)
@@ -17,20 +17,20 @@ obLevel = 70
 osLevel = 30
 
 rmiColor = rmi > obLevel ? #0ebb23 : rmi < osLevel ? #ff0000 : #f4b77d
-plot(rmi, title="RMI", linewidth=2, color=rmiColor)
+plot(rmi, title = "RMI", linewidth = 2, color = rmiColor)
 
 transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted)
-hline(50, title="Middle Level", linestyle=hline.style_dotted)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
+maxLevelPlot = hline(100, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+obLevelPlot = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted)
+hline(50, title = "Middle Level", linestyle = hline.style_dotted)
+osLevelPlot = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted)
+minLevelPlot = hline(0, title = "Min Level", linestyle = hline.style_dotted, color = transparent)
 
-fill(obLevelPlot, osLevelPlot, color=color.new(color.purple, 95))
+fill(obLevelPlot, osLevelPlot, color = color.new(color.purple, 95))
 
 obFillColor = rmi > obLevel and highlightBreakouts ? color.green : transparent
 osFillColor = rmi < osLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, obLevelPlot, color=color.new(obFillColor, 90))
-fill(minLevelPlot, osLevelPlot, color=color.new(osFillColor, 90))
+fill(maxLevelPlot, obLevelPlot, color = color.new(obFillColor, 90))
+fill(minLevelPlot, osLevelPlot, color = color.new(osFillColor, 90))

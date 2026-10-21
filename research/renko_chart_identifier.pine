@@ -1,7 +1,7 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Renko Chart Identifier script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Renko Chart Identifier", overlay=true)
+indicator("Renko Chart Identifier", overlay = true)
 
 _isRenko() =>
     var int gapsCount = -1
@@ -18,13 +18,13 @@ labelColor = #1e90ff
 whiteColor = color.white
 
 var label l = label.new(
-     x=bar_index,
-     y=na,
-     text="",
-     color=labelColor,
-     textcolor=whiteColor,
-     style=label.style_label_down,
-     size=size.normal
+     x = bar_index,
+     y = na,
+     text = "",
+     color = labelColor,
+     textcolor = whiteColor,
+     style = label.style_label_down,
+     size = size.normal
      )
 
 label.set_text(l, labelText)

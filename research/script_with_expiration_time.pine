@@ -4,4 +4,4 @@ indicator("Script With Expiration Time")
 
 expired = timenow >= timestamp("GMT", 2018, 12, 1, 13, 0) and (barstate.ishistory or barstate.isrealtime)
 
-plot(expired ? na : close, color=color.purple)
+plot(expired ? na : close, color = color.purple)

@@ -1,17 +1,17 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Klinger Volume Oscillator script may be freely distributed under the terms of GPL-3.0 license.
-indicator(title="Klinger Volume Oscillator", shorttitle="KVO", precision=0)
+indicator(title = "Klinger Volume Oscillator", shorttitle = "KVO", precision = 0)
 
-fastLength = input.int(34, title="Fast Length")
-slowLength = input.int(55, title="Slow Length")
-showSignal = input.bool(true, title="Show Signal ?")
-signalType = input.string("EMA", title="Signal Smoothing Type", options=["EMA", "SMA"])
-signalLength = input.int(13, title="Signal Smoothing Length")
-showHistogram = input.bool(false, title="Show Histogram ?")
-highlightCrossovers = input.bool(true, title="Highlight KVO/Signal Crossovers ?")
-highlightZeroCrossovers = input.bool(true, title="Highlight Zero Line Crossovers ?")
-applyFilling = input.bool(false, title="Apply Ribbon Filling ?")
+fastLength = input.int(34, title = "Fast Length")
+slowLength = input.int(55, title = "Slow Length")
+showSignal = input.bool(true, title = "Show Signal ?")
+signalType = input.string("EMA", title = "Signal Smoothing Type", options = ["EMA", "SMA"])
+signalLength = input.int(13, title = "Signal Smoothing Length")
+showHistogram = input.bool(false, title = "Show Histogram ?")
+highlightCrossovers = input.bool(true, title = "Highlight KVO/Signal Crossovers ?")
+highlightZeroCrossovers = input.bool(true, title = "Highlight Zero Line Crossovers ?")
+applyFilling = input.bool(false, title = "Apply Ribbon Filling ?")
 
 mom = ta.change(hlc3)
 
@@ -33,24 +33,34 @@ signal = signalType == "EMA" ? ta.ema(kvo, signalLength) : ta.sma(kvo, signalLen
 
 hist = kvo - signal
 histColor = hist >= 0 ? (hist[1] < hist ? #26A69A : #B2DFDB) : (hist[1] < hist ? #FFCDD2 : #EF5350)
-plot(showHistogram ? hist : na, title="Histogram", style=plot.style_columns, color=histColor)
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
+plot(showHistogram ? hist : na, title = "Histogram", style = plot.style_columns, color = histColor)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)
 
 trendColor = kvo > signal ? #0ebb23 : color.red
 
 kvoColor = applyFilling ? trendColor : (kvo > 0 ? #0ebb23 : color.red)
 signalColor = applyFilling ? trendColor : #512da8
 
-kvoPlot = plot(kvo, title="KVO", linewidth=2, color=kvoColor)
-signalPlot = plot(showSignal ? signal : na, title="Signal", color=signalColor)
+kvoPlot = plot(kvo, title = "KVO", linewidth = 2, color = kvoColor)
+signalPlot = plot(showSignal ? signal : na, title = "Signal", color = signalColor)
 
 transparent = color.new(color.white, 100)
 
 fillColor = applyFilling ? trendColor : transparent
-fill(kvoPlot, signalPlot, title="Ribbon", color=color.new(fillColor, 70))
+fill(kvoPlot, signalPlot, title = "Ribbon", color = color.new(fillColor, 70))
 
 zeroCrossBgColor = highlightZeroCrossovers ? (kvo > 0 ? color.green : color.red) : transparent
-bgcolor(color.new(zeroCrossBgColor, 85), title="Background")
+bgcolor(color.new(zeroCrossBgColor, 85), title = "Background")
 
-plotshape(ta.crossover(kvo, signal) and highlightCrossovers ? signal : na, title="Crossover", location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.green, 20))
-plotshape(ta.crossunder(kvo, signal) and highlightCrossovers ? signal : na, title="Crossunder", location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(color.red, 20))
+plotshape(ta.crossover(kvo, signal) and highlightCrossovers ? signal : na,
+    title = "Crossover",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.new(color.green, 20))
+plotshape(ta.crossunder(kvo, signal) and highlightCrossovers ? signal : na,
+    title = "Crossunder",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.new(color.red, 20))

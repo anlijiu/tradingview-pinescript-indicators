@@ -1,10 +1,10 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Trend Detection Index script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Trend Detection Index", shorttitle="TDI")
+indicator("Trend Detection Index", shorttitle = "TDI")
 
-length = input.int(20, title="Length", minval=1)
-src = input.source(close, title="Source")
+length = input.int(20, title = "Length", minval = 1)
+src = input.source(close, title = "Source")
 
 momentum = ta.change(src, length)
 
@@ -13,7 +13,7 @@ tdi = math.abs(math.sum(momentum, length)) - (math.sum(math.abs(momentum), lengt
 // Direction Indicator
 direction = math.sum(momentum, length)
 
-plot(tdi, title="TDI", color=#ff0000)
-plot(direction, title="Direction", color=#0ebb23)
+plot(tdi, title = "TDI", color = #ff0000)
+plot(direction, title = "Direction", color = #0ebb23)
 
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)

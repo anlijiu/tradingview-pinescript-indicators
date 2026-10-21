@@ -1,6 +1,6 @@
 # Volume —— 成交量类指标（9 个脚本）
 
-本目录收录 **9 个** Pine Script 成交量指标（6 个 `//@version=3`、1 个 `//@version=4`、2 个 `//@version=6`）。
+本目录收录 **9 个** Pine Script 成交量指标（全部 `//@version=6`）。
 
 它们回答的是同一个问题：**成交量这一列数字，怎么和价格组合成一个有方向、可比较、能画成曲线的量？**
 成交量本身是一根 bar 的绝对数量，不可跨品种比较、不可跨时间比较；这 9 个脚本就是 5 类不同的"归一化/结构化"方案：
@@ -13,7 +13,7 @@
 | **周期分段累计** | 按自然周期把量累加，并与上一周期总量比较 | Volume Accumulation |
 | **信号处理** | 把量的"力量"变成振荡器，再做双 EMA 差分 | Klinger Volume Oscillator |
 
-**没有任何一个是 `strategy`**：不能回测、不下单。3 个脚本带 `alertcondition()`（详见 §1.5），其余 6 个只画线/画柱，只有视觉标记。
+**没有任何一个是 `strategy`**：不能回测、不下单。4 个脚本带 `alertcondition()`（A/D Line 4 条、OBV 3 条、PVT 2 条、Volume Accumulation 1 条，详见 §1.5），其余 5 个只画线/画柱，只有视觉标记。
 
 ---
 
@@ -44,7 +44,7 @@
 
 | 文件 | 版本 | 面板 | 输出类型 | `alertcondition` |
 | --- | --- | --- | --- | --- |
-| `accumulation_distribution_line.pine` | 6 | 副图 | 线 + 线 + 填充带 + 交叉点 | 0 |
+| `accumulation_distribution_line.pine` | 6 | 副图 | 线 + 线 + 填充带 + 交叉点 | **4** |
 | `klinger_volume_oscillator.pine` | 6 | 副图 | 线 + 线 + 可选柱 + 零轴背景 + 交叉点 | 0 |
 | `negative_volume_index.pine` | 6 | 副图 | 线 + 线 + 填充带 + 交叉点 | 0 |
 | `net_volume.pine` | 6 | 副图 | 四色柱 | 0 |
@@ -130,7 +130,7 @@ plotshape(crossunder(xxx, signal) and highlightCrossovers ? xxx : na, style=shap
 | `price_volume_trend.pine` | `Alert: Buy`（上穿） / `Alert: Sell`（下穿） | 直接是 `crossover(pvt, signal)` / `crossunder(...)` |
 | `volume_accumulation.pine` | `Higher Accumulation` | `acc > accPrev`，**注意这是逐 bar 判定**，见附录 B-6 |
 
-其余 6 个脚本**没有** `alertcondition()`。它们的 `crossover` / `crossunder` 只喂给了 `plotshape`，画个圆点而已，挂不了告警。想告警就把那一行复制成 `alertcondition(...)`。
+其余 5 个脚本**没有** `alertcondition()`。它们的 `crossover` / `crossunder` 只喂给了 `plotshape`，画个圆点而已，挂不了告警。想告警就把那一行复制成 `alertcondition(...)`。
 
 ---
 
@@ -182,17 +182,17 @@ OBV_t = OBV_{t-1} + volume_t × sign(close_t − close_{t-1})
 
 注意这是**零和记账**：不管当根涨跌幅度有多大，量都按全量记给一方。所以一根 0.01% 的微涨和一根 9% 的大涨对 OBV 的贡献相同 —— 这也是 OBV 最大的局限，A/D 和 PVT 都在试图修正这一点。
 
-**v6 版本特有的地方**（相比本目录其他 v3 脚本）：
+**v6 版本特有的地方**（相比本目录其他脚本）：
 
 - `enum MovingAverageType` + `input.enum(...)`，下拉框是枚举而非字符串；
 - 颜色用 `const color` 常量、`color.new(bullishColor, 85)` 处理透明度（而不是 v3 的 `fill(..., transp=70)`）；
-- 有 3 个 `alertcondition`，是 6 个模板脚本里唯一"变色即告警"的实现。
+- 有 3 条 `alertcondition`（Bullish / Bearish / Any Color Change）；同目录 `accumulation_distribution_line.pine` 是同一模板的另一次实现，告警更多（4 条）。
 
 #### 3.1.2 `accumulation_distribution_line.pine` — Accumulation/Distribution Line
 
 | 项 | 内容 |
 | --- | --- |
-| 版本 / 面板 | `//@version=3`，副图，`precision = 0`（坐标轴取整） |
+| 版本 / 面板 | `//@version=6`，副图，`precision = 0`（坐标轴取整） |
 | 用途 | 用**收盘价在当日区间中的位置**来衡量多空，比 OBV 的"只看收盘涨跌"更细腻 |
 | 默认参数 | 信号线 **SMA 21**（可选 EMA）、`Show Signal = true`、`Highlight Crossovers = false`、色带填充 `true` |
 | 输出 | A/D 主线 + 信号线 + 色带；配色与 OBV 完全一致（绿 `#0ebb23` / 红，非填充时 `#0094ff` 蓝 + `#ff6a00` 橙） |
@@ -220,7 +220,7 @@ A/D_t = A/D_{t-1} + CLV_t × volume_t
 
 | 项 | 内容 |
 | --- | --- |
-| 版本 / 面板 | `//@version=4`，副图，`format = format.volume` |
+| 版本 / 面板 | `//@version=6`，副图，`format = format.volume` |
 | 用途 | 给成交量乘上**涨跌幅百分比**，让"大涨放量"比"微涨放量"贡献更大 |
 | 默认参数 | 信号线 **SMA 21**（可选 EMA）、`Show Signal = true`、`Highlight Crossovers = false`、色带填充 `true`、**`Source = close`（实际未生效，见附录 B-3）** |
 | 输出 | PVT 主线 + 信号线 + 色带（配色同 OBV）；另有两个 `alertcondition`：`Buy`（上穿）、`Sell`（下穿） |
@@ -258,7 +258,7 @@ PVT_t = PVT_{t-1} + volume_t × (close_t − close_{t-1}) / close_{t-1}
 
 | 项 | 内容 |
 | --- | --- |
-| 版本 / 面板 | `//@version=3`，副图，未声明 `precision` / `format`（普通数字轴） |
+| 版本 / 面板 | `//@version=6`，副图，`precision = 0` |
 | 用途 | 跟踪"**放量日**"的价格累积表现，用来代表**散户/公众**的参与结果 |
 | 默认参数 | `Initial Value = 100`、信号线 **EMA 255**（可选 SMA）、`Highlight Crossovers = false`、色带填充 `true` |
 | 输出 | PVI 主线 + EMA255 信号线 + 色带（绿 `#0ebb23` / 红；非填充时 `#0094ff` + `#ff6a00`）；PVI `showSignal` 固定为 true，没有开关 |
@@ -278,7 +278,7 @@ PVI_0 = 100（首根 bar）
 
 | 项 | 内容 |
 | --- | --- |
-| 版本 / 面板 | `//@version=3`，副图 |
+| 版本 / 面板 | `//@version=6`，副图 |
 | 用途 | 跟踪"**缩量日**"的价格累积表现，代表**机构/聪明钱**的行为 |
 | 默认参数 | `Initial Value = 100`、信号线 **EMA 255**、`Highlight Crossovers = false`、色带填充 `true` |
 | 输出 | 与 PVI 完全对称（同色系） |
@@ -306,7 +306,7 @@ NVI_0 = 100
 
 | 项 | 内容 |
 | --- | --- |
-| 版本 / 面板 | `//@version=3`，副图，`precision = 0` |
+| 版本 / 面板 | `//@version=6`，副图，`precision = 0` |
 | 用途 | 把"成交量 × 趋势方向 × 量能强度"合成一个**围绕 0 波动**的振荡器，用双 EMA 差找量能的转向 |
 | 默认参数 | Fast **34**、Slow **55**、信号线 **EMA 13**、`Show Histogram = false`、`Highlight KVO/Signal Crossovers = true`、`Highlight Zero Line Crossovers = true`、色带填充 `false` |
 | 输出 | ① KVO 线（`applyFilling=false` 时按零轴配色：`>0` 绿 / `<0` 红；设为 `true` 时改为按 KVO 与信号线的相对位置）② EMA13 信号线（紫 `#512da8`）③ 可选 histogram 四色柱 ④ **零轴背景色**（KVO>0 浅绿 / <0 浅红，`transp=85`，默认开启）⑤ 交叉圆点（`transp=20`，比别处更实） |
@@ -365,7 +365,7 @@ NVI_0 = 100
 
 | 项 | 内容 |
 | --- | --- |
-| 版本 / 面板 | `//@version=3`，副图，`precision = 0` |
+| 版本 / 面板 | `//@version=6`，副图，`precision = 0` |
 | 用途 | 把成交量**带上正负号**：涨的 bar 量为正、跌的 bar 量为负，一眼看出多空量能对比 |
 | 默认参数 | `Source = close`（可改成 `hl2`、`hlc3`、`open` 等） |
 | 输出 | 单组四色柱：`#26A69A`（正且放大）/ `#B2DFDB`（正但缩小）/ `#FFCDD2`（负但回升）/ `#EF5350`（负且扩大） |
@@ -395,7 +395,7 @@ nvColor = nv >= 0
 
 | 项 | 内容 |
 | --- | --- |
-| 版本 / 面板 | `//@version=3`，副图，`precision = 2` |
+| 版本 / 面板 | `//@version=6`，副图，`precision = 2` |
 | 用途 | **相对量**：当根成交量是近期均量的百分之多少。解决"成交量绝对数不可跨品种/跨时间比较"的问题 |
 | 默认参数 | `SMA Length = 21` |
 | 输出 | 柱状图：阳线（`close > open`）绿 `#92df8bff`，阴线红 `#fe9695ff`；外加 **50/100/150/200/250/300** 六条参考水平（黄色圆点 `#f9ce02` + 紫色虚线 `#674ea7`） |

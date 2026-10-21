@@ -1,17 +1,17 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Dynamic Momentum Index script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Dynamic Momentum Index", shorttitle="DMI")
+indicator("Dynamic Momentum Index", shorttitle = "DMI")
 
-rsiLength = input.int(14, title="Initial RSI Length", minval=1)
-stdevLength = input.int(5, title="Standard Deviation Length", minval=1)
-maLength = input.int(10, title="Smoothing Length", minval=1)
-lower = input.int(5, title="Lower Bound")
-upper = input.int(30, title="Upper Bound")
-obLevel = input.int(70, title="Overbought Level")
-osLevel = input.int(30, title="Oversold Level")
-src = input.source(close, title="Source")
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
+rsiLength = input.int(14, title = "Initial RSI Length", minval = 1)
+stdevLength = input.int(5, title = "Standard Deviation Length", minval = 1)
+maLength = input.int(10, title = "Smoothing Length", minval = 1)
+lower = input.int(5, title = "Lower Bound")
+upper = input.int(30, title = "Upper Bound")
+obLevel = input.int(70, title = "Overbought Level")
+osLevel = input.int(30, title = "Oversold Level")
+src = input.source(close, title = "Source")
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
 
 stdev = ta.stdev(src, stdevLength)
 V = stdev / ta.sma(stdev, maLength)
@@ -37,20 +37,20 @@ _rsi(src, length) =>
 dmi = _rsi(src, T)
 
 dmiColor = dmi > obLevel ? #0ebb23 : dmi < osLevel ? color.red : #f4b77d
-plot(dmi, title="DMI", linewidth=2, color=dmiColor)
+plot(dmi, title = "DMI", linewidth = 2, color = dmiColor)
 
 transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted)
-hline(50, title="Middle Level", linestyle=hline.style_dotted)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
+maxLevelPlot = hline(100, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+obLevelPlot = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted)
+hline(50, title = "Middle Level", linestyle = hline.style_dotted)
+osLevelPlot = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted)
+minLevelPlot = hline(0, title = "Min Level", linestyle = hline.style_dotted, color = transparent)
 
-fill(obLevelPlot, osLevelPlot, color=color.new(color.purple, 95))
+fill(obLevelPlot, osLevelPlot, color = color.new(color.purple, 95))
 
 obFillColor = dmi > obLevel and highlightBreakouts ? color.green : transparent
 osFillColor = dmi < osLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, obLevelPlot, color=color.new(obFillColor, 90))
-fill(minLevelPlot, osLevelPlot, color=color.new(osFillColor, 90))
+fill(maxLevelPlot, obLevelPlot, color = color.new(obFillColor, 90))
+fill(minLevelPlot, osLevelPlot, color = color.new(osFillColor, 90))

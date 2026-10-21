@@ -1,13 +1,13 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Positive Volume Index script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Positive Volume Index", shorttitle="PVI")
+indicator("Positive Volume Index", shorttitle = "PVI")
 
-initial = input.int(100, title="Initial Value")
-signalType = input.string("EMA", title="Signal Smoothing Type", options=["EMA", "SMA"])
-signalLength = input.int(255, title="Signal Length")
-highlightCrossovers = input.bool(false, title="Highlight Crossovers ?")
-applyFilling = input.bool(true, title="Apply Ribbon Filling ?")
+initial = input.int(100, title = "Initial Value")
+signalType = input.string("EMA", title = "Signal Smoothing Type", options = ["EMA", "SMA"])
+signalLength = input.int(255, title = "Signal Length")
+highlightCrossovers = input.bool(false, title = "Highlight Crossovers ?")
+applyFilling = input.bool(true, title = "Apply Ribbon Filling ?")
 
 pvi = 0.0
 pvi := na(pvi[1]) ? initial : (ta.change(volume) > 0 ? pvi[1] * close / close[1] : pvi[1])
@@ -18,13 +18,23 @@ trendColor = pvi > signal ? #0ebb23 : color.red
 pviColor = applyFilling ? trendColor : #0094ff
 signalColor = applyFilling ? trendColor : #ff6a00
 
-pviPlot = plot(pvi, title="PVI", color=pviColor)
-signalPlot = plot(signal, title="Signal", color=signalColor)
+pviPlot = plot(pvi, title = "PVI", color = pviColor)
+signalPlot = plot(signal, title = "Signal", color = signalColor)
 
 transparent = color.new(color.white, 100)
 
 fillColor = applyFilling ? trendColor : transparent
-fill(pviPlot, signalPlot, color=color.new(fillColor, 70))
+fill(pviPlot, signalPlot, color = color.new(fillColor, 70))
 
-plotshape(ta.crossover(pvi, signal) and highlightCrossovers ? pvi : na, title="Crossover", location=location.absolute, style=shape.circle, size=size.tiny, color=color.green)
-plotshape(ta.crossunder(pvi, signal) and highlightCrossovers ? pvi : na, title="Crossunder", location=location.absolute, style=shape.circle, size=size.tiny, color=color.red)
+plotshape(ta.crossover(pvi, signal) and highlightCrossovers ? pvi : na,
+    title = "Crossover",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.green)
+plotshape(ta.crossunder(pvi, signal) and highlightCrossovers ? pvi : na,
+    title = "Crossunder",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.red)

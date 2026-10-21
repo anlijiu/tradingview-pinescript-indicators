@@ -1,6 +1,6 @@
 # volatility —— Pine Script 波动率指标（6 个脚本）
 
-本目录收录 **6 个**用 Pine Script 写的波动率指标（5 个 `//@version=3`、1 个 `//@version=4`）。
+本目录收录 **6 个**用 Pine Script 写的波动率指标（全部 `//@version=6`）。
 
 它们回答的是同一个问题：**「这段时间波动有多大？」** —— 但「波动」不是一个数，必须先做三个选择才能算出一个数：
 
@@ -214,13 +214,14 @@ gapo = log(highest(length) - lowest(length)) / log(length)
 
 **做什么**：**BTC 价格 ÷ BTC 的 200 根 SMA**，衡量比特币价格偏离长期均线的倍数。
 
-**输入**：`SMA Length`（默认 200）、`Threshold`（默认 2.4）。
+**输入**：`SMA Length`（默认 200）、`Threshold`（默认 2.4）、`Symbol`（默认 `BTCUSD`）。
 
 **核心代码**（第 9–11 行）：
 
 ```pine
-price = nz(security("BTCUSD", period, close))
-mm = price / sma(price, smaLength)
+symbol = input.symbol("BTCUSD", title = "Symbol")
+price  = nz(request.security(symbol, timeframe.period, close))
+mm     = price / ta.sma(price, smaLength)
 ```
 
 **原理**：
@@ -238,7 +239,7 @@ mm = price / sma(price, smaLength)
    | ≥ 2.4 | 历史过热区（脚本在此高亮） |
 
    2.4 的来源是 Mayer 自己的回测：**在 MM < 2.4 时定投**长期收益最好。所以 2.4 是「定投区间的上沿」，不是机械的卖出信号。
-5. **为什么要 `security()`**：脚本把标的**写死成 `BTCUSD`**，所以在任何图表（包括 AAPL、EURUSD）上画的都是 BTC 的 MM。`period` 是**当前图表周期**。
+5. **为什么用 `request.security()`**：脚本取的是 `Symbol` 输入项指定的标的（默认 `BTCUSD`），所以在任何图表（包括 AAPL、EURUSD）上画的默认都是 BTC 的 MM；把 `Symbol` 改成当前品种即可得到该品种自己的 MM。第二个参数是**当前图表周期**（`timeframe.period`）。
 
 **运行后得到什么**：
 
@@ -253,7 +254,7 @@ mm = price / sma(price, smaLength)
 
 **坑**：
 
-1. **画的是 BTC，不是当前品种**——这是本目录最容易误解的脚本第一名。在股票图上看到一条 1.2 附近的线，那是比特币相对它自己 200 根均线的倍数。
+1. **默认画的是 BTC，不是当前品种**——这是本目录最容易误解的脚本第一名。在股票图上看到一条 1.2 附近的线，那是比特币相对它自己 200 根均线的倍数。要用当前品种，把 `Symbol` 输入改成 `syminfo.tickerid`（或留空该输入后自行修改默认值）。
 2. **`period` 是当前周期**：在 1 分钟图上算的是「BTC 的 200 根 1 分钟均线」，与「200 日」毫无关系。**Mayer Multiple 只有日线才有意义**。
 3. **`nz()` 会把缺失值变成 0**：图表早期 BTC 无数据时 `price = 0`，SMA 被 0 污染，MM 会出现假的低值/断崖。
 4. **时间轴对齐**：非 24/7 品种（股票、期货）的 bar 序列与 BTC 不同，`security` 对齐后可能出现重复 bar 或空洞。

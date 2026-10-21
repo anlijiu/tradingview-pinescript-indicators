@@ -1,17 +1,17 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Moving Harmonic Mean script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Moving Harmonic Mean", shorttitle="MHM", overlay=true)
+indicator("Moving Harmonic Mean", shorttitle = "MHM", overlay = true)
 
-length = input.int(14, title="Length", minval=1)
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+src = input.source(close, title = "Source")
 
 mhm(src, length) =>
-	sum = 0.0
+    sum = 0.0
 
-	for i = 0 to length - 1
-		sum := sum + 1 / (na(src[i]) ? 1 : src[i])
+    for i = 0 to length - 1
+        sum := sum + 1 / (na(src[i]) ? 1 : src[i])
 
-	length / sum
+    length / sum
 
-plot(mhm(src, length), title="MHM", linewidth=2, color=#6d1e7f)
+plot(mhm(src, length), title = "MHM", linewidth = 2, color = #6d1e7f)

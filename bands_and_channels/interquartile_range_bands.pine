@@ -1,14 +1,14 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Interquartile Range Bands script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Interquartile Range Bands", shorttitle="IQRB", overlay=true)
+indicator("Interquartile Range Bands", shorttitle = "IQRB", overlay = true)
 
-length = input.int(14, title="Length", minval=1)
-mult = input.float(1.5, title="Multiplier", minval=0, step=0.1)
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+mult = input.float(1.5, title = "Multiplier", minval = 0, step = 0.1)
+src = input.source(close, title = "Source")
 
 q1 = ta.percentile_nearest_rank(src, length, 25)
-median= ta.percentile_nearest_rank(src, length, 50)
+median =  ta.percentile_nearest_rank(src, length, 50)
 q3 = ta.percentile_nearest_rank(src, length, 75)
 
 iqr = q3 - q1
@@ -16,7 +16,7 @@ iqr = q3 - q1
 upperBand = q3 + mult * iqr
 lowerBand = q1 - mult * iqr
 
-upperBandPlot = plot(upperBand, title="Upper", color=#138484)
-plot(median, title="Median", color=#741b47)
-lowerBandPlot = plot(lowerBand, title="Lower", color=#138484)
-fill(upperBandPlot, lowerBandPlot, title="Background", color=color.new(#ffd966, 84))
+upperBandPlot = plot(upperBand, title = "Upper", color = #138484)
+plot(median, title = "Median", color = #741b47)
+lowerBandPlot = plot(lowerBand, title = "Lower", color = #138484)
+fill(upperBandPlot, lowerBandPlot, title = "Background", color = color.new(#ffd966, 84))

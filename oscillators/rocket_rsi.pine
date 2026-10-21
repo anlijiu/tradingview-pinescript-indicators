@@ -1,13 +1,13 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Rocket RSI script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Rocket RSI", shorttitle="Rocket RSI")
+indicator("Rocket RSI", shorttitle = "Rocket RSI")
 
-rsiLength = input.int(10, title="RSI Length", minval=1)
-smoothingLength = input.int(8, title="Smoothing Length", minval=1)
-obosLevel = input.float(2.0, title="Overbought / Oversold Level", minval=0.0)
-applyNormalization = input.bool(false, title="Apply Normalization to [-100, 100] values ?")
-src = input.source(close, title="Source")
+rsiLength = input.int(10, title = "RSI Length", minval = 1)
+smoothingLength = input.int(8, title = "Smoothing Length", minval = 1)
+obosLevel = input.float(2.0, title = "Overbought / Oversold Level", minval = 0.0)
+applyNormalization = input.bool(false, title = "Apply Normalization to [-100, 100] values ?")
+src = input.source(close, title = "Source")
 
 PI = 2 * math.asin(1)
 
@@ -40,10 +40,10 @@ tmpRSI := upSum + downSum != 0 ? (upSum - downSum) / (upSum + downSum) : nz(tmpR
 
 // Limit RocketRSI output to +/-3 Standard Deviations
 if tmpRSI > 0.999
-	tmpRSI := 0.999
+    tmpRSI := 0.999
 
 if tmpRSI < -0.999
-	tmpRSI := -0.999
+    tmpRSI := -0.999
 
 // Apply Fisher Transform to establish Gaussian Probability Distribution
 rocketRSI = 0.5 * math.log((1 + tmpRSI) / (1 - tmpRSI))
@@ -54,8 +54,8 @@ oversoldLevel = applyNormalization ? obosLevel * -25 : obosLevel * -1
 
 rocketRSIColor = rocketRSI > overboughtLevel ? color.green : rocketRSI < oversoldLevel ? color.red : #ff9370
 
-plot(rocketRSI, title="RRSI", linewidth=2, color=rocketRSIColor)
+plot(rocketRSI, title = "RRSI", linewidth = 2, color = rocketRSIColor)
 
-plot(overboughtLevel, title="OB Level", style=plot.style_circles, color=#3d85c6)
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
-plot(oversoldLevel, title="OS Level", style=plot.style_circles, color=#3d85c6)
+plot(overboughtLevel, title = "OB Level", style = plot.style_circles, color = #3d85c6)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)
+plot(oversoldLevel, title = "OS Level", style = plot.style_circles, color = #3d85c6)

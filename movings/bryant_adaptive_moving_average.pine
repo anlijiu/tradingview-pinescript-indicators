@@ -2,13 +2,13 @@
 // Copyright (c) 2014-present, Michael R. Bryant
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Bryant Adaptive Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Bryant Adaptive Moving Average", shorttitle="BAMA", overlay=true)
+indicator("Bryant Adaptive Moving Average", shorttitle = "BAMA", overlay = true)
 
-length = input.int(14, title="Length")
-trendParam = input.float(-1, title="Trend Parameter", step=0.1)
-maxLength = input.int(100, title="Max Length")
-highlightMovements = input.bool(false, title="Highlight Movements ?")
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length")
+trendParam = input.float(-1, title = "Trend Parameter", step = 0.1)
+maxLength = input.int(100, title = "Max Length")
+highlightMovements = input.bool(false, title = "Highlight Movements ?")
+src = input.source(close, title = "Source")
 
 mom = math.abs(ta.change(src, length))
 volatility = math.sum(math.abs(ta.change(src)), length)
@@ -28,4 +28,4 @@ bama = src
 bama := valpha * src + (1 - valpha) * nz(bama[1], bama)
 
 bamaColor = highlightMovements ? (bama > bama[1] ? color.green : color.red) : #6d1e7f
-plot(bama, title="BAMA", linewidth=2, color=bamaColor)
+plot(bama, title = "BAMA", linewidth = 2, color = bamaColor)

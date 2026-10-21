@@ -1,19 +1,19 @@
 //@version=6
 // Copyright (c) 2020-present, Alex Orekhov (everget)
 // Range Candles script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Range Candles", overlay=true)
+indicator("Range Candles", overlay = true)
 
-var color bullColor = input.color(#26a69a, title="Bull Color")
-var color bearColor = input.color(#ef5350, title="Bear Color")
+var color bullColor = input.color(#26a69a, title = "Bull Color")
+var color bearColor = input.color(#ef5350, title = "Bear Color")
 candleColor = close >= open ? bullColor : bearColor
 
 plotcandle(
-	 open,
-	 high,
-	 low,
-	 close,
-	 title="",
-	 color=candleColor,
-	 bordercolor=candleColor,
-	 wickcolor=candleColor
-	 )
+     open,
+     high,
+     low,
+     close,
+     title = "",
+     color = candleColor,
+     bordercolor = candleColor,
+     wickcolor = candleColor
+     )

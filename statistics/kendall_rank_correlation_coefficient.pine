@@ -1,12 +1,12 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Kendall Rank Correlation Coefficient script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Kendall Rank Correlation Coefficient", shorttitle="Kendall Correlation")
+indicator("Kendall Rank Correlation Coefficient", shorttitle = "Kendall Correlation")
 
-length = input.int(20, title="Length")
-sym1 = input.symbol("FX:AUDUSD", title="1st Symbol")
-sym2 = input.symbol("FOREXCOM:XAUUSD", title="2nd Symbol")
-src = input.source(close, title="Source")
+length = input.int(20, title = "Length")
+sym1 = input.symbol("FX:AUDUSD", title = "1st Symbol")
+sym2 = input.symbol("FOREXCOM:XAUUSD", title = "2nd Symbol")
+src = input.source(close, title = "Source")
 
 data1 = request.security(sym1, timeframe.period, src)
 data2 = request.security(sym2, timeframe.period, src)
@@ -24,5 +24,5 @@ getKendall(data1, data2, length) =>
 kendallCorr = sym1 == sym2 ? 1 : getKendall(data1, data2, length)
 pearsonCorr = ta.correlation(data1, data2, length)
 
-plot(kendallCorr, title="Kendall", color=color.orange)
-plot(pearsonCorr, title="Pearson", color=color.purple)
+plot(kendallCorr, title = "Kendall", color = color.orange)
+plot(pearsonCorr, title = "Pearson", color = color.purple)

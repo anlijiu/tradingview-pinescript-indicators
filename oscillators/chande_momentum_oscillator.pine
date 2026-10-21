@@ -1,13 +1,13 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Chande Momentum Oscillator script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Chande Momentum Oscillator", shorttitle="CMO")
+indicator("Chande Momentum Oscillator", shorttitle = "CMO")
 
-length = input.int(9, title="Length")
-obLevel = input.int(50, title="Overbought Level")
-osLevel = input.int(-50, title="Oversold Level")
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
-src = input.source(close, title="Source")
+length = input.int(9, title = "Length")
+obLevel = input.int(50, title = "Overbought Level")
+osLevel = input.int(-50, title = "Oversold Level")
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
+src = input.source(close, title = "Source")
 
 mom = ta.change(src)
 
@@ -18,20 +18,20 @@ cmo = 100 * (upSum - downSum) / (upSum + downSum)
 
 cmoColor = cmo > obLevel ? #0ebb23 : cmo < osLevel ? #ff0000 : #f4b77d
 
-plot(cmo, title="CMO", linewidth=2, color=cmoColor)
+plot(cmo, title = "CMO", linewidth = 2, color = cmoColor)
 
 transparent = color.new(color.white, 100)
 
-maxBand = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
-minBand = hline(-100, title="Min Level", linestyle=hline.style_dotted, color=transparent)
+maxBand = hline(100, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)
+minBand = hline(-100, title = "Min Level", linestyle = hline.style_dotted, color = transparent)
 
-obBand = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted)
-osBand = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted)
-fill(obBand, osBand, color=color.new(color.purple, 95))
+obBand = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted)
+osBand = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted)
+fill(obBand, osBand, color = color.new(color.purple, 95))
 
 obFillColor = cmo > obLevel and highlightBreakouts ? color.green : transparent
 osFillColor = cmo < osLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxBand, obBand, color=color.new(obFillColor, 80))
-fill(minBand, osBand, color=color.new(osFillColor, 80))
+fill(maxBand, obBand, color = color.new(obFillColor, 80))
+fill(minBand, osBand, color = color.new(osFillColor, 80))

@@ -2,11 +2,11 @@
 // Copyright (c) 2010-present, Bruno Pio
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Quadruple Exponential Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Quadruple Exponential Moving Average", shorttitle="QEMA", overlay=true)
+indicator("Quadruple Exponential Moving Average", shorttitle = "QEMA", overlay = true)
 
-length = input.int(20, title="Length")
-highlightMovements = input.bool(true, title="Highlight Movements ?")
-src = input.source(close, title="Source")
+length = input.int(20, title = "Length")
+highlightMovements = input.bool(true, title = "Highlight Movements ?")
+src = input.source(close, title = "Source")
 
 ema1 = ta.ema(src, length)
 ema2 = ta.ema(ema1, length)
@@ -17,4 +17,4 @@ ema5 = ta.ema(ema4, length)
 qema = 5 * ema1 - 10 * ema2 + 10 * ema3 - 5 * ema4 + ema5
 
 qemaColor = highlightMovements ? (qema > qema[1] ? color.green : color.red) : #6d1e7f
-plot(qema, title="QEMA", linewidth=2, color=qemaColor)
+plot(qema, title = "QEMA", linewidth = 2, color = qemaColor)

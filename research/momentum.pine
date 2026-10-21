@@ -15,7 +15,7 @@ mom3 = ta.mom(src, length)
 sma = ta.sma(src, length)
 mom4 = (sma - sma[1]) * length
 
-plot(mom, title="Simple", color=color.blue)
-plot(mom2, title="2", color=color.green)
-plot(mom3, title="3", color=color.red)
-plot(mom4, title="4", color=color.purple)
+plot(mom, title = "Simple", color = color.blue)
+plot(mom2, title = "2", color = color.green)
+plot(mom3, title = "3", color = color.red)
+plot(mom4, title = "4", color = color.purple)

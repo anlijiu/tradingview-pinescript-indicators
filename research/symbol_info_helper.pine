@@ -1,7 +1,7 @@
 //@version=6
 // Copyright (c) 2020-present, Alex Orekhov (everget)
 // Symbol Info Helper script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Symbol Info Helper", overlay=true)
+indicator("Symbol Info Helper", overlay = true)
 
 labelText =
      "Symbol Name: " + syminfo.tickerid +
@@ -18,14 +18,14 @@ labelText =
      "\nSession: " + "-"
 
 var label l = label.new(
-     x=bar_index,
-     y=na,
-     text="",
-     textalign=text.align_left,
-     textcolor=color.white,
-     color=color.blue,
-     style=label.style_label_left,
-     size=size.normal
+     x = bar_index,
+     y = na,
+     text = "",
+     textalign = text.align_left,
+     textcolor = color.white,
+     color = color.blue,
+     style = label.style_label_left,
+     size = size.normal
      )
 
 label.set_text(l, labelText)

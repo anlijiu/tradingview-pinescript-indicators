@@ -1,7 +1,7 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Chart Type Identifier script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Chart Type Identifier", overlay=true)
+indicator("Chart Type Identifier", overlay = true)
 
 max = math.max(open, close)
 min = math.min(open, close)
@@ -98,13 +98,13 @@ labelColor = #1e90ff
 whiteColor = color.white
 
 var label l = label.new(
-     x=bar_index,
-     y=na,
-     text="",
-     color=labelColor,
-     textcolor=whiteColor,
-     style=label.style_label_down,
-     size=size.normal
+     x = bar_index,
+     y = na,
+     text = "",
+     color = labelColor,
+     textcolor = whiteColor,
+     style = label.style_label_down,
+     size = size.normal
      )
 
 _highest(length) =>

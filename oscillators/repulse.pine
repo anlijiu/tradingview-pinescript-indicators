@@ -3,7 +3,7 @@
 // Repulse script may be freely distributed under the terms of GPL-3.0 license.
 indicator("Repulse")
 
-length = input.int(5, title="Length", minval=1)
+length = input.int(5, title = "Length", minval = 1)
 
 bullPower = 100 * (3 * close - 2 * ta.lowest(length) - open[length - 1]) / close
 
@@ -12,6 +12,6 @@ bearPower = 100 * (open[length - 1] + 2 * ta.highest(length) - 3 * close) / clos
 repulse = ta.ema(bullPower, 5 * length) - ta.ema(bearPower, 5 * length)
 
 repulseColor = repulse >= repulse[1] ? #0ebb23 : color.red
-plot(repulse, title="Repulse", linewidth=2, color=repulseColor)
+plot(repulse, title = "Repulse", linewidth = 2, color = repulseColor)
 
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)

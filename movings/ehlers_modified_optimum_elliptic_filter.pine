@@ -1,10 +1,10 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Ehlers Modified Optimum Elliptic Filter script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Ehlers Modified Optimum Elliptic Filter", shorttitle="MOEF", overlay=true)
+indicator("Ehlers Modified Optimum Elliptic Filter", shorttitle = "MOEF", overlay = true)
 
-src = input.source(hl2, title="Source")
-highlightMovements = input.bool(false, title="Highlight Movements ?")
+src = input.source(hl2, title = "Source")
+highlightMovements = input.bool(false, title = "Highlight Movements ?")
 
 src1 = nz(src[1], src)
 src2 = nz(src[2], src1)
@@ -18,4 +18,4 @@ moef := 0.13785 * (2 * src - src1) +
          0.4867 * nz(moef[2], moef)
 
 moefColor = highlightMovements ? (moef > moef[1] ? color.green : color.red) : #6d1e7f
-plot(moef, title="MOEF", linewidth=2, color=moefColor)
+plot(moef, title = "MOEF", linewidth = 2, color = moefColor)

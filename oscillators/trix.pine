@@ -3,16 +3,16 @@
 // TRIX script may be freely distributed under the terms of GPL-3.0 license.
 indicator("TRIX")
 
-length = input.int(14, title="Length")
-mult = input.int(1, title="TRIX Value Multiplier")
-signalType = input.string("SMA", title="Signal Smoothing Type", options=["EMA", "SMA"])
-signalLength = input.int(9, title="Signal Smoothing Length")
-src = input.source(close, title="Source")
-showSignal = input.bool(true, title="Show Signal Line ?")
-showHistogram = input.bool(false, title="Show Histogram ?")
-highlightCrossovers = input.bool(true, title="Highlight TRIX/Signal Crossovers ?")
-highlightZeroCrossovers = input.bool(false, title="Highlight Zero Line Crossovers ?")
-applyFilling = input.bool(false, title="Apply Ribbon Filling ?")
+length = input.int(14, title = "Length")
+mult = input.int(1, title = "TRIX Value Multiplier")
+signalType = input.string("SMA", title = "Signal Smoothing Type", options = ["EMA", "SMA"])
+signalLength = input.int(9, title = "Signal Smoothing Length")
+src = input.source(close, title = "Source")
+showSignal = input.bool(true, title = "Show Signal Line ?")
+showHistogram = input.bool(false, title = "Show Histogram ?")
+highlightCrossovers = input.bool(true, title = "Highlight TRIX/Signal Crossovers ?")
+highlightZeroCrossovers = input.bool(false, title = "Highlight Zero Line Crossovers ?")
+applyFilling = input.bool(false, title = "Apply Ribbon Filling ?")
 
 triple = ta.ema(ta.ema(ta.ema(src, length), length), length)
 
@@ -21,21 +21,21 @@ signal = signalType == "SMA" ? ta.sma(trix, signalLength) : ta.ema(trix, signalL
 
 hist = trix - signal
 histColor = hist >= 0 ? (hist[1] < hist ? #26A69A : #B2DFDB) : (hist[1] < hist ? #FFCDD2 : #EF5350)
-plot(showHistogram ? hist : na, title="Histogram", style=plot.style_columns, color=histColor)
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
+plot(showHistogram ? hist : na, title = "Histogram", style = plot.style_columns, color = histColor)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)
 
 trendColor = trix > signal ? #0ebb23 : color.red
 
 trixColor = applyFilling ? trendColor : (trix > 0 ? #0ebb23 : color.red)
 signalColor = applyFilling ? trendColor : #ff9800
 
-trixPlot = plot(trix, title="TRIX", linewidth=2, color=trixColor)
-signalPlot = plot(showSignal ? signal : na, title="Signal", color=signalColor)
+trixPlot = plot(trix, title = "TRIX", linewidth = 2, color = trixColor)
+signalPlot = plot(showSignal ? signal : na, title = "Signal", color = signalColor)
 
 transparent = color.new(color.white, 100)
 
 fillColor = applyFilling ? trendColor : transparent
-fill(trixPlot, signalPlot, color=color.new(fillColor, 70))
+fill(trixPlot, signalPlot, color = color.new(fillColor, 70))
 
 zeroCrossBgColor = highlightZeroCrossovers ? (trix > 0 ? color.green : color.red) : transparent
 bgcolor(color.new(zeroCrossBgColor, 90))
@@ -43,5 +43,15 @@ bgcolor(color.new(zeroCrossBgColor, 90))
 crossoverSignal = ta.crossover(trix, signal)
 crossunderSignal = ta.crossunder(trix, signal)
 
-plotshape(highlightCrossovers and crossoverSignal ? trix : na, title="Crossover", location=location.absolute, style=shape.circle, size=size.tiny, color=color.green)
-plotshape(highlightCrossovers and crossunderSignal ? trix : na, title="Crossunder", location=location.absolute, style=shape.circle, size=size.tiny, color=color.red)
+plotshape(highlightCrossovers and crossoverSignal ? trix : na,
+    title = "Crossover",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.green)
+plotshape(highlightCrossovers and crossunderSignal ? trix : na,
+    title = "Crossunder",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.red)

@@ -2,12 +2,12 @@
 // Copyright (c) 2020-present, Alex Orekhov (everget)
 // Linear Regression (All Data) script may be freely distributed under the terms of the GPL-3.0 license.
 var int MAX_BARS_BACK = 5000
-indicator("Linear Regression (All Data)", overlay=true, max_bars_back=MAX_BARS_BACK)
+indicator("Linear Regression (All Data)", overlay = true, max_bars_back = MAX_BARS_BACK)
 
 n = bar_index + 1
 
 X = n
-Y = input.source(close, title="Source")
+Y = input.source(close, title = "Source")
 
 sumX = ta.cum(X)
 sumY = ta.cum(Y)
@@ -34,7 +34,7 @@ endY = slope * (n - 1) + intercept
 var line regLine = na
 if barstate.islast
     if na(regLine)
-        regLine := line.new(startIndex, startY, bar_index, endY, width=2, extend=extend.none, color=color.orange)
+        regLine := line.new(startIndex, startY, bar_index, endY, width = 2, extend = extend.none, color = color.orange)
     else
         line.set_xy1(regLine, startIndex, startY)
         line.set_xy2(regLine, bar_index, endY)
@@ -71,15 +71,15 @@ summaryText =
      "\n r2: " + _format(r2, 3)
 
 var label summaryLabel = label.new(
-     x=time,
-     y=na,
-     xloc=xloc.bar_time,
-     text="",
-     textalign=text.align_left,
-     textcolor=color.white,
-     color=#1e90ff,
-     style=label.style_label_left,
-     size=size.small
+     x = time,
+     y = na,
+     xloc = xloc.bar_time,
+     text = "",
+     textalign = text.align_left,
+     textcolor = color.white,
+     color = #1e90ff,
+     style = label.style_label_left,
+     size = size.small
      )
 
 label.set_text(summaryLabel, summaryText)

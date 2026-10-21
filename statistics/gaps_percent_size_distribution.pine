@@ -2,16 +2,16 @@
 // Copyright (c) 2021-present, Alex Orekhov (everget)
 // Gaps % Size Distribution script may be freely distributed under the terms of GPL-3.0 license.
 var int MAX_OBJECTS_COUNT = 500
-indicator("Gaps % Size Distribution", max_lines_count=MAX_OBJECTS_COUNT, max_labels_count=MAX_OBJECTS_COUNT)
+indicator("Gaps % Size Distribution", max_lines_count = MAX_OBJECTS_COUNT, max_labels_count = MAX_OBJECTS_COUNT)
 
-var bool reboot = input.bool(false, title="Reboot (Click in case of any error)")
+var bool reboot = input.bool(false, title = "Reboot (Click in case of any error)")
 // var bool useDate = input.bool(false, title="", inline=dateInline)
 // int startDate = input(title="Start Aggregation from", type=input.time, defval=timestamp("01 Jan 2019 00:00"), inline=dateInline)
-var float binningStep = input.float(0.25, title="Binning Step", minval=0.0001, step=0.005)
-var int maxColumns = input.int(300, title="Columns Number (Max: 500)", minval=2, maxval=500)
-var int columnWidth = input.int(12, title="Columns Width")
-var bool showLabels = input.bool(true, title="Show Labels")
-var int nthLabel = input.int(5, title="Show Each Nth Label", minval=1)
+var float binningStep = input.float(0.25, title = "Binning Step", minval = 0.0001, step = 0.005)
+var int maxColumns = input.int(300, title = "Columns Number (Max: 500)", minval = 2, maxval = 500)
+var int columnWidth = input.int(12, title = "Columns Width")
+var bool showLabels = input.bool(true, title = "Show Labels")
+var int nthLabel = input.int(5, title = "Show Each Nth Label", minval = 1)
 
 //------------------------------------------------------------------------------
 
@@ -32,74 +32,74 @@ var label[] negLabels = array.new_label(sizeLimit, na)
 //------------------------------------------------------------------------------
 
 _roc(current, basis) =>
-	out = 100 * (current / basis - 1)
-	out
+    out = 100 * (current / basis - 1)
+    out
 
 _str(value, decimals) =>
-	out = str.tostring(value, "#")
-	out :=
-		 decimals == 1 ? str.tostring(value, "#.#") :
-		 decimals == 2 ? str.tostring(value, "#.##") :
-		 decimals == 3 ? str.tostring(value, "#.###") :
-		 decimals == 4 ? str.tostring(value, "#.####") :
-		 decimals == 5 ? str.tostring(value, "#.#####") :
-		 decimals == 6 ? str.tostring(value, "#.######") :
-		 decimals == 7 ? str.tostring(value, "#.#######") :
-		 decimals == 8 ? str.tostring(value, "#.########") :
-		 decimals == 9 ? str.tostring(value, "#.#########") :
-		 decimals == 10 ? str.tostring(value, "#.##########") :
-		 decimals == 11 ? str.tostring(value, "#.###########") :
-		 decimals == 12 ? str.tostring(value, "#.############") :
-		 decimals == 13 ? str.tostring(value, "#.#############") :
-		 decimals == 14 ? str.tostring(value, "#.##############") :
-		 decimals == 15 ? str.tostring(value, "#.###############") :
-		 decimals == 16 ? str.tostring(value, "#.################") :
-		 out
-	out
+    out = str.tostring(value, "#")
+    out :=
+         decimals == 1 ? str.tostring(value, "#.#") :
+         decimals == 2 ? str.tostring(value, "#.##") :
+         decimals == 3 ? str.tostring(value, "#.###") :
+         decimals == 4 ? str.tostring(value, "#.####") :
+         decimals == 5 ? str.tostring(value, "#.#####") :
+         decimals == 6 ? str.tostring(value, "#.######") :
+         decimals == 7 ? str.tostring(value, "#.#######") :
+         decimals == 8 ? str.tostring(value, "#.########") :
+         decimals == 9 ? str.tostring(value, "#.#########") :
+         decimals == 10 ? str.tostring(value, "#.##########") :
+         decimals == 11 ? str.tostring(value, "#.###########") :
+         decimals == 12 ? str.tostring(value, "#.############") :
+         decimals == 13 ? str.tostring(value, "#.#############") :
+         decimals == 14 ? str.tostring(value, "#.##############") :
+         decimals == 15 ? str.tostring(value, "#.###############") :
+         decimals == 16 ? str.tostring(value, "#.################") :
+         out
+    out
 
 _format(value1, value2, decimals) =>
-	out = _str(value1, decimals) + "%" + "\n-\n" + _str(value2, decimals) + "%"
-	out
+    out = _str(value1, decimals) + "%" + "\n-\n" + _str(value2, decimals) + "%"
+    out
 
 _labelText(value1, value2) =>
-	out =
-		 binningStep < 0.001 ? _format(value1, value2, 4) :
-		 binningStep < 0.01 ? _format(value1, value2, 3) : 
-		 _format(value1, value2, 2)
-	out
+    out =
+         binningStep < 0.001 ? _format(value1, value2, 4) :
+         binningStep < 0.01 ? _format(value1, value2, 3) : 
+         _format(value1, value2, 2)
+    out
 
 _line(x, y) =>
-	barTime = time[x]
-	line l = line.new(
-		 x1=barTime,
-		 y1=0,
-		 x2=barTime,
-		 y2=y,
-		 xloc=xloc.bar_time,
-		 width=columnWidth,
-		 color=columnColor
-		 )
-	line.delete(l[1])
-	out = l
-	out
+    barTime = time[x]
+    line l = line.new(
+         x1 = barTime,
+         y1 = 0,
+         x2 = barTime,
+         y2 = y,
+         xloc = xloc.bar_time,
+         width = columnWidth,
+         color = columnColor
+         )
+    line.delete(l[1])
+    out = l
+    out
 
 _label(x, y, side, labelText, tooltipText) =>
-	barTime = time[x]
-	labelStyle = side == -1 ? label.style_label_up : label.style_label_down
-	label l = label.new(
-		 x=barTime,
-		 y=y,
-		 xloc=xloc.bar_time,
-		 tooltip=tooltipText,
-		 text=labelText,
-		 textcolor=labelTextColor,
-		 color=labelColor,
-		 style=labelStyle,
-		 size=size.small
-		 )
-	label.delete(l[1])
-	out = l
-	out
+    barTime = time[x]
+    labelStyle = side == -1 ? label.style_label_up : label.style_label_down
+    label l = label.new(
+         x = barTime,
+         y = y,
+         xloc = xloc.bar_time,
+         tooltip = tooltipText,
+         text = labelText,
+         textcolor = labelTextColor,
+         color = labelColor,
+         style = labelStyle,
+         size = size.small
+         )
+    label.delete(l[1])
+    out = l
+    out
 
 //------------------------------------------------------------------------------
 
@@ -108,48 +108,48 @@ isGapDown = close[1] > open
 size = _roc(open, close[1])
 
 if isGapUp// and startCondition
-	for i = 0 to sizeLimit - 1
-		if i * binningStep <= size and size < (i + 1) * binningStep
-			array.set(posValues, i, array.get(posValues, i) + 1)
+    for i = 0 to sizeLimit - 1
+        if i * binningStep <= size and size < (i + 1) * binningStep
+            array.set(posValues, i, array.get(posValues, i) + 1)
 
 if isGapDown// and startCondition
-	for i = 0 to sizeLimit - 1
-		if -(i + 1) * binningStep < size and size <= -i * binningStep
-			array.set(negValues, i, array.get(negValues, i) + 1)
+    for i = 0 to sizeLimit - 1
+        if -(i + 1) * binningStep < size and size <= -i * binningStep
+            array.set(negValues, i, array.get(negValues, i) + 1)
 
 if barstate.islast
-	for i = 0 to array.size(posValues) - 1
-		posStart = sizeLimit - i
-		negStart = sizeLimit + 1 + i
-	
-		posValue = array.get(posValues, i)
-		negValue = array.get(negValues, i)
-	
-		_line(posStart, posValue)
-		_line(negStart, negValue)
+    for i = 0 to array.size(posValues) - 1
+        posStart = sizeLimit - i
+        negStart = sizeLimit + 1 + i
+    
+        posValue = array.get(posValues, i)
+        negValue = array.get(negValues, i)
+    
+        _line(posStart, posValue)
+        _line(negStart, negValue)
 
-		if showLabels
-			posLabel = array.get(posLabels, i)
-			posText = _labelText(i * binningStep, (i + 1) * binningStep)
-			posTooltip = str.tostring(posValue, "#")
-		
-			negLabel = array.get(negLabels, i)
-			negText = _labelText(-i * binningStep, -(i + 1) * binningStep)
-			negTooltip = str.tostring(negValue, "#")
+        if showLabels
+            posLabel = array.get(posLabels, i)
+            posText = _labelText(i * binningStep, (i + 1) * binningStep)
+            posTooltip = str.tostring(posValue, "#")
+        
+            negLabel = array.get(negLabels, i)
+            negText = _labelText(-i * binningStep, -(i + 1) * binningStep)
+            negTooltip = str.tostring(negValue, "#")
 
-			if i % nthLabel == 0
-				if na(negLabel)
-					negLabel := _label(negStart, 0, -1, negText, negTooltip)
-					array.set(negLabels, i, negLabel)
-				else
-					label.set_x(negLabel, time[negStart])
-					label.set_text(negLabel, negText)
-					label.set_tooltip(negLabel, negTooltip)
+            if i % nthLabel == 0
+                if na(negLabel)
+                    negLabel := _label(negStart, 0, -1, negText, negTooltip)
+                    array.set(negLabels, i, negLabel)
+                else
+                    label.set_x(negLabel, time[negStart])
+                    label.set_text(negLabel, negText)
+                    label.set_tooltip(negLabel, negTooltip)
 
-				if na(posLabel)
-					posLabel := _label(posStart, 0, -1, posText, posTooltip)
-					array.set(posLabels, i, posLabel)
-				else
-					label.set_x(posLabel, time[posStart])
-					label.set_text(posLabel, posText)
-					label.set_tooltip(posLabel, posTooltip)
+                if na(posLabel)
+                    posLabel := _label(posStart, 0, -1, posText, posTooltip)
+                    array.set(posLabels, i, posLabel)
+                else
+                    label.set_x(posLabel, time[posStart])
+                    label.set_text(posLabel, posText)
+                    label.set_tooltip(posLabel, posTooltip)

@@ -1,13 +1,13 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Asymmetrical RSI script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Asymmetrical RSI", shorttitle="ARSI")
+indicator("Asymmetrical RSI", shorttitle = "ARSI")
 
-length = input.int(14, title="Length")
-obLevel = input.int(70, title="Overbought Level")
-osLevel = input.int(30, title="Oversold Level")
-src = input.source(close, title="Source")
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
+length = input.int(14, title = "Length")
+obLevel = input.int(70, title = "Overbought Level")
+osLevel = input.int(30, title = "Oversold Level")
+src = input.source(close, title = "Source")
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
 
 roc = ta.roc(src, 1)
 
@@ -26,20 +26,20 @@ downSum := downAlpha * (roc >= 0 ? 0 : math.abs(roc)) + (1 - downAlpha) * nz(dow
 arsi = fixnan(100 * upSum / (upSum + downSum))
 
 arsiColor = arsi > obLevel ? #0ebb23 : arsi < osLevel ? #ff0000 : #f4b77d
-plot(arsi, title="ARSI", linewidth=2, color=arsiColor)
+plot(arsi, title = "ARSI", linewidth = 2, color = arsiColor)
 
 transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted)
-hline(50, title="Middle Level", linestyle=hline.style_dotted)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
+maxLevelPlot = hline(100, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+obLevelPlot = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted)
+hline(50, title = "Middle Level", linestyle = hline.style_dotted)
+osLevelPlot = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted)
+minLevelPlot = hline(0, title = "Min Level", linestyle = hline.style_dotted, color = transparent)
 
-fill(obLevelPlot, osLevelPlot, color=color.new(color.purple, 95))
+fill(obLevelPlot, osLevelPlot, color = color.new(color.purple, 95))
 
 obFillColor = arsi > obLevel and highlightBreakouts ? color.green : transparent
 osFillColor = arsi < osLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, obLevelPlot, color=color.new(obFillColor, 90))
-fill(minLevelPlot, osLevelPlot, color=color.new(osFillColor, 90))
+fill(maxLevelPlot, obLevelPlot, color = color.new(obFillColor, 90))
+fill(minLevelPlot, osLevelPlot, color = color.new(osFillColor, 90))

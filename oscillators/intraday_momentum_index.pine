@@ -1,11 +1,11 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Intraday Momentum Index script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Intraday Momentum Index", shorttitle="IMI")
+indicator("Intraday Momentum Index", shorttitle = "IMI")
 
-length = input.int(14, title="Length", minval=1)
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
+src = input.source(close, title = "Source")
 
 gain = close > open ? close - open : 0
 loss = close > open ? 0 : open - close
@@ -19,20 +19,20 @@ obLevel = 70
 osLevel = 30
 
 imiColor = imi > obLevel ? #0ebb23 : imi < osLevel ? #ff0000 : #f4b77d
-plot(imi, title="IMI", linewidth=2, color=imiColor)
+plot(imi, title = "IMI", linewidth = 2, color = imiColor)
 
 transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted)
-hline(50, title="Middle Level", linestyle=hline.style_dotted)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
+maxLevelPlot = hline(100, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+obLevelPlot = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted)
+hline(50, title = "Middle Level", linestyle = hline.style_dotted)
+osLevelPlot = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted)
+minLevelPlot = hline(0, title = "Min Level", linestyle = hline.style_dotted, color = transparent)
 
-fill(obLevelPlot, osLevelPlot, color=color.new(color.purple, 95))
+fill(obLevelPlot, osLevelPlot, color = color.new(color.purple, 95))
 
 obFillColor = imi > obLevel and highlightBreakouts ? color.green : transparent
 osFillColor = imi < osLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, obLevelPlot, color=color.new(obFillColor, 90))
-fill(minLevelPlot, osLevelPlot, color=color.new(osFillColor, 90))
+fill(maxLevelPlot, obLevelPlot, color = color.new(obFillColor, 90))
+fill(minLevelPlot, osLevelPlot, color = color.new(osFillColor, 90))

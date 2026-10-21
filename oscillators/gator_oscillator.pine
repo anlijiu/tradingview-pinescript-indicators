@@ -1,11 +1,11 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Gator Oscillator script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Gator Oscillator", shorttitle="Gator")
+indicator("Gator Oscillator", shorttitle = "Gator")
 
-jawLength = input.int(13, title="Jaw Length")
-teethLength = input.int(8, title="Teeth Length")
-lipsLength = input.int(5, title="Lips Length")
+jawLength = input.int(13, title = "Jaw Length")
+teethLength = input.int(8, title = "Teeth Length")
+lipsLength = input.int(5, title = "Lips Length")
 
 // Shifts a series back by the given number of bars
 _offset(float src, int offset) => src[offset]
@@ -20,5 +20,5 @@ lower = -math.abs(teeth - lips)
 upperColor = (upper[1] < upper ? #26A69A : #EF5350)
 lowerColor = (lower[1] > lower ? #26A69A : #EF5350)
 
-plot(upper, title="Upper", style=plot.style_columns, color=upperColor)
-plot(lower, title="Lower", style=plot.style_columns, color=lowerColor)
+plot(upper, title = "Upper", style = plot.style_columns, color = upperColor)
+plot(lower, title = "Lower", style = plot.style_columns, color = lowerColor)

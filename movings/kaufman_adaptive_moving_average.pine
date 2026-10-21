@@ -1,18 +1,18 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Kaufman Adaptive Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-const string MA_SHORT_TITLE = 'KAMA'
-indicator('Kaufman Adaptive Moving Average', shorttitle = MA_SHORT_TITLE, overlay = true, behind_chart = false)
+const string MA_SHORT_TITLE = "KAMA"
+indicator("Kaufman Adaptive Moving Average", shorttitle = MA_SHORT_TITLE, overlay = true, behind_chart = false)
 
-const string calcGroup = 'Calculation'
-length = input.int(14, minval = 1, title = 'Length', group = calcGroup)
-fastLength = input.int(2, minval = 1, title = 'Fast EMA Length', group = calcGroup)
-slowLength = input.int(30, minval = 1, title = 'Slow EMA Length', group = calcGroup)
-src = input.source(close, title = 'Source', group = calcGroup)
+const string calcGroup = "Calculation"
+length = input.int(14, minval = 1, title = "Length", group = calcGroup)
+fastLength = input.int(2, minval = 1, title = "Fast EMA Length", group = calcGroup)
+slowLength = input.int(30, minval = 1, title = "Slow EMA Length", group = calcGroup)
+src = input.source(close, title = "Source", group = calcGroup)
 
-const string visualGroup = 'Visuals'
-const string highlightTooltip = 'Colors the ' + MA_SHORT_TITLE + ' according to its direction:\n• Green = rising\n• Pink = falling'
-highlight = input.bool(true, title = 'Highlight ?', tooltip = highlightTooltip, group = visualGroup)
+const string visualGroup = "Visuals"
+const string highlightTooltip = "Colors the " + MA_SHORT_TITLE + " according to its direction:\n• Green = rising\n• Pink = falling"
+highlight = input.bool(true, title = "Highlight ?", tooltip = highlightTooltip, group = visualGroup)
 
 //---
 
@@ -46,6 +46,12 @@ plot(ma, title = MA_SHORT_TITLE, linewidth = 2, color = maColor)
 
 //---
 
-alertcondition(maColor[1] != bullishColor and maColor == bullishColor, title = 'Bullish Color Change', message = MA_SHORT_TITLE + ' - Bullish Color Change\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(maColor[1] != bearishColor and maColor == bearishColor, title = 'Bearish Color Change', message = MA_SHORT_TITLE + ' - Bearish Color Change\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(maColor != maColor[1], title = 'Any Color Change', message = MA_SHORT_TITLE + ' - Any Color Change\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(maColor[1] != bullishColor and maColor == bullishColor,
+    title = "Bullish Color Change",
+    message = MA_SHORT_TITLE + " - Bullish Color Change\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(maColor[1] != bearishColor and maColor == bearishColor,
+    title = "Bearish Color Change",
+    message = MA_SHORT_TITLE + " - Bearish Color Change\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(maColor != maColor[1],
+    title = "Any Color Change",
+    message = MA_SHORT_TITLE + " - Any Color Change\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")

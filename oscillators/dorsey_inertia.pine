@@ -1,23 +1,23 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Dorsey Inertia script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Dorsey Inertia", shorttitle="Inertia")
+indicator("Dorsey Inertia", shorttitle = "Inertia")
 
-stdevLength = input.int(21, title="Standard Deviation Length")
-rviSmoothLength = input.int(14, title="RVI Smoothing Length")
-smoothLength = input.int(14, title="Inertia Smoothing Length")
+stdevLength = input.int(21, title = "Standard Deviation Length")
+rviSmoothLength = input.int(14, title = "RVI Smoothing Length")
+smoothLength = input.int(14, title = "Inertia Smoothing Length")
 
 // Relative Volatility Index (1993)
 rviOriginal(src, stdevLength, smoothLength) =>
-	stdev = ta.stdev(src, stdevLength)
-	upSum = ta.ema(ta.change(src) >= 0 ? stdev : 0, smoothLength)
-	downSum = ta.ema(ta.change(src) >= 0 ? 0 : stdev, smoothLength)
-	100 * upSum / (upSum + downSum)
+    stdev = ta.stdev(src, stdevLength)
+    upSum = ta.ema(ta.change(src) >= 0 ? stdev : 0, smoothLength)
+    downSum = ta.ema(ta.change(src) >= 0 ? 0 : stdev, smoothLength)
+    100 * upSum / (upSum + downSum)
 
 rvi = math.avg(rviOriginal(high, stdevLength, rviSmoothLength), rviOriginal(low, stdevLength, rviSmoothLength))
 inertia = ta.linreg(rvi, smoothLength, 0)
 
 inertiaColor = inertia > 50 ? #0ebb23 : color.red
 
-plot(inertia, title="Inertia", linewidth=2, color=inertiaColor)
-hline(50, title="Middle Level", linestyle=hline.style_dotted)
+plot(inertia, title = "Inertia", linewidth = 2, color = inertiaColor)
+hline(50, title = "Middle Level", linestyle = hline.style_dotted)

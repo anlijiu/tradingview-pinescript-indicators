@@ -9,7 +9,7 @@
 - 想知道当前图表是 Heikin-Ashi / Renko / Kagi / P&F / Line Break / Range Bars 中的哪一种 → 看图表类型识别系列；
 - 想查阅 `plotshape` 的形状与尺寸、如何画虚线、如何读取符号信息、如何让脚本到期失效 → 看工具类脚本。
 
-> 全部脚本为 `study(...)`（指标），语言版本为 **Pine Script v3 或 v4**（`//@version=` 已标注）。v4 起 `n` 改名为 `bar_index`，v5 起 `transp=` 由 `color.new()` 取代，迁移时注意这些改名。
+> 全部脚本为 `indicator(...)`（指标），语言版本统一为 **Pine Script v6**（`//@version=6`）。历史迁移中做过这些改名：`study()` → `indicator()`、`n` → `bar_index`、`transp=` → `color.new()`、裸 `sma()`/`abs()` → `ta.sma()`/`math.abs()`。
 > 所有脚本都只「画图 / 打标签」，**不下单、不产生交易信号**。
 
 ---

@@ -1,10 +1,10 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Custom Median vs Built-in Median script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Custom Median vs Built-in Median", shorttitle="CMvsBM")
+indicator("Custom Median vs Built-in Median", shorttitle = "CMvsBM")
 
-length = input.int(14, title="Length", minval=1)
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+src = input.source(close, title = "Source")
 
 // Built-in Median
 median(src, length) =>
@@ -39,4 +39,4 @@ customMedian(src, length) =>
 
 diff = median(src, length) - customMedian(src, length)
 
-plot(diff, title="CMvsBM")
+plot(diff, title = "CMvsBM")

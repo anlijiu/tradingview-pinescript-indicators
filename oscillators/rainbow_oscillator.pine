@@ -1,14 +1,14 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Rainbow Oscillator script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Rainbow Oscillator", shorttitle="ROSC")
+indicator("Rainbow Oscillator", shorttitle = "ROSC")
 
-maLength = input.int(2, title="Moving Average Length", minval=1)
-maInput = input.string("SMA", title="Moving Average Type", options=["EMA", "SMA", "VWMA", "WMA"])
-highestLookback = input.int(10, title="Highest Price Lookback", minval=1)
-lowestLookback = input.int(10, title="Lowest Price Lookback", minval=1)
-drawBg = input.bool(true, title="Draw Backgrounds ?")
-src = input.source(close, title="Source")
+maLength = input.int(2, title = "Moving Average Length", minval = 1)
+maInput = input.string("SMA", title = "Moving Average Type", options = ["EMA", "SMA", "VWMA", "WMA"])
+highestLookback = input.int(10, title = "Highest Price Lookback", minval = 1)
+lowestLookback = input.int(10, title = "Lowest Price Lookback", minval = 1)
+drawBg = input.bool(true, title = "Draw Backgrounds ?")
+src = input.source(close, title = "Source")
 
 getMA(src, maLength) =>
     ma = 0.0
@@ -72,19 +72,19 @@ band = hlDiff != 0
 
 roscColor = rosc > 0 ? color.green : color.red
 
-roscPlot = plot(rosc, title="ROSC", style=plot.style_histogram, linewidth=3, color=roscColor)
+roscPlot = plot(rosc, title = "ROSC", style = plot.style_histogram, linewidth = 3, color = roscColor)
 
 upperBandColor = drawBg ? color.gray : color.green
-upperBandPlot = plot(band, title="Upper", color=upperBandColor)
+upperBandPlot = plot(band, title = "Upper", color = upperBandColor)
 
-middlePlot = plot(0, title="Middle", color=color.gray)
+middlePlot = plot(0, title = "Middle", color = color.gray)
 
 lowerBandColor = drawBg ? color.gray : color.red
-lowerBandPlot = plot(-1 * band, title="Lower", color=lowerBandColor)
+lowerBandPlot = plot(-1 * band, title = "Lower", color = lowerBandColor)
 
 transparentColor = color.new(color.white, 100)
 upperFillColor = drawBg ? color.green : transparentColor
 lowerFillColor = drawBg ? color.red : transparentColor
 
-fill(middlePlot, upperBandPlot, color=upperFillColor)
-fill(middlePlot, lowerBandPlot, color=lowerFillColor)
+fill(middlePlot, upperBandPlot, color = upperFillColor)
+fill(middlePlot, lowerBandPlot, color = lowerFillColor)

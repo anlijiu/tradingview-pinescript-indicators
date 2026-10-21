@@ -1,40 +1,40 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Candles History script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Candles History", shorttitle="CH", precision=1)
+indicator("Candles History", shorttitle = "CH", precision = 1)
 
-copyright = input.string("@everget", title="Author", options=["@everget"])
+copyright = input.string("@everget", title = "Author", options = ["@everget"])
 
 mode = input.string("Starting Year",
-    title="Display Mode",
-    options=["Starting Year",
-				 "Starting Month",
-				 "Starting Day",
-				 "Starting Weekday",
-				 "Starting Hour",
-				 "Starting Minute",
-				 "Highest Volume",
-				 "Lowest Volume",
-				 "Longest Candle Range",
-				 "Longest Candle Range in Pips",
-				 "Average Candle Range",
-				 "Average Candle Range in Pips",
-				 "Longest Candle Body Range",
-				 "Longest Candle Body Range in Pips",
-				 "Average Candle Body Range",
-				 "Average Candle Body Range in Pips",
-				 "All-Time High",
-				 "All-Time Low",
-				 "Available Candles",
-				 "Bullish Candles",
-				 "Bullish Trend Candles",
-				 "Bearish Candles",
-				 "Bearish Trend Candles",
-				 "Doji Candles",
-				 "Bullish Marubozu Candles",
-				 "Bearish Marubozu Candles",
-				 "Longest Bullish Serie",
-				 "Longest Bearish Serie"])
+    title = "Display Mode",
+    options = ["Starting Year",
+                 "Starting Month",
+                 "Starting Day",
+                 "Starting Weekday",
+                 "Starting Hour",
+                 "Starting Minute",
+                 "Highest Volume",
+                 "Lowest Volume",
+                 "Longest Candle Range",
+                 "Longest Candle Range in Pips",
+                 "Average Candle Range",
+                 "Average Candle Range in Pips",
+                 "Longest Candle Body Range",
+                 "Longest Candle Body Range in Pips",
+                 "Average Candle Body Range",
+                 "Average Candle Body Range in Pips",
+                 "All-Time High",
+                 "All-Time Low",
+                 "Available Candles",
+                 "Bullish Candles",
+                 "Bullish Trend Candles",
+                 "Bearish Candles",
+                 "Bearish Trend Candles",
+                 "Doji Candles",
+                 "Bullish Marubozu Candles",
+                 "Bearish Marubozu Candles",
+                 "Longest Bullish Serie",
+                 "Longest Bearish Serie"])
 
 barRange = high - low
 body = math.abs(open - close)
@@ -116,4 +116,4 @@ out := mode == "Starting Weekday" ? ta.valuewhen(bar_index == 0, dayofweek, 0) :
 out := mode == "Starting Hour" ? ta.valuewhen(bar_index == 0, hour, 0) : out
 out := mode == "Starting Minute" ? ta.valuewhen(bar_index == 0, minute, 0) : out
 
-plot(out, title="Metric", color=color.red)
+plot(out, title = "Metric", color = color.red)

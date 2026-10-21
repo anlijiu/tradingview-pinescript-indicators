@@ -1,23 +1,23 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Ulcer Index script may be freely distributed under the terms of GPL-3.0 license.
-const string INDICATOR_SHORT_TITLE = 'Ulcer'
-indicator('Ulcer Index', shorttitle = INDICATOR_SHORT_TITLE)
+const string INDICATOR_SHORT_TITLE = "Ulcer"
+indicator("Ulcer Index", shorttitle = INDICATOR_SHORT_TITLE)
 
-const string calcGroup = 'Calculation'
-length = input.int(14, minval = 1, title = 'Length', group = calcGroup)
-smoothLength = input.int(14, minval = 1, title = 'Smoothing Length', group = calcGroup)
-src = input.source(close, title = 'Source', group = calcGroup)
-signalType = input.string('SMA', title = 'Signal Smoothing Type', options = ['EMA', 'SMA'], group = calcGroup)
-signalLength = input.int(52, minval = 1, title = 'Signal Smoothing Length', group = calcGroup)
-breakout = input.float(1.5, step = 0.1, title = 'Breakout Level', group = calcGroup)
+const string calcGroup = "Calculation"
+length = input.int(14, minval = 1, title = "Length", group = calcGroup)
+smoothLength = input.int(14, minval = 1, title = "Smoothing Length", group = calcGroup)
+src = input.source(close, title = "Source", group = calcGroup)
+signalType = input.string("SMA", title = "Signal Smoothing Type", options = ["EMA", "SMA"], group = calcGroup)
+signalLength = input.int(52, minval = 1, title = "Signal Smoothing Length", group = calcGroup)
+breakout = input.float(1.5, step = 0.1, title = "Breakout Level", group = calcGroup)
 
-const string visualGroup = 'Visuals'
-showSignal = input.bool(true, title = 'Show Signal ?', group = visualGroup)
-const string highlightCrossoversTooltip = 'Plots a mark whenever ' + INDICATOR_SHORT_TITLE + ' crosses its signal line'
-highlightCrossovers = input.bool(true, title = 'Highlight Signal Crossovers ?', tooltip = highlightCrossoversTooltip, group = visualGroup)
-const string applyRibbonFillingTooltip = 'Colors the ribbon between ' + INDICATOR_SHORT_TITLE + ' and its signal line according to their relative position'
-applyRibbonFilling = input.bool(true, title = 'Apply Ribbon Filling ?', tooltip = applyRibbonFillingTooltip, group = visualGroup)
+const string visualGroup = "Visuals"
+showSignal = input.bool(true, title = "Show Signal ?", group = visualGroup)
+const string highlightCrossoversTooltip = "Plots a mark whenever " + INDICATOR_SHORT_TITLE + " crosses its signal line"
+highlightCrossovers = input.bool(true, title = "Highlight Signal Crossovers ?", tooltip = highlightCrossoversTooltip, group = visualGroup)
+const string applyRibbonFillingTooltip = "Colors the ribbon between " + INDICATOR_SHORT_TITLE + " and its signal line according to their relative position"
+applyRibbonFilling = input.bool(true, title = "Apply Ribbon Filling ?", tooltip = applyRibbonFillingTooltip, group = visualGroup)
 
 //---
 
@@ -25,7 +25,7 @@ highestClose = ta.highest(src, length)
 drawdown = 100 * (src - highestClose) / highestClose
 ulcer = math.sqrt(ta.sma(math.pow(drawdown, 2), smoothLength))
 
-signal = signalType == 'SMA' ? ta.sma(ulcer, signalLength) : ta.ema(ulcer, signalLength)
+signal = signalType == "SMA" ? ta.sma(ulcer, signalLength) : ta.ema(ulcer, signalLength)
 
 //---
 
@@ -44,24 +44,30 @@ signalColor = applyRibbonFilling ? trendColor : signalColorConst
 //---
 
 ulcerPlot = plot(ulcer, title = INDICATOR_SHORT_TITLE, linewidth = 2, color = ulcerColor)
-signalPlot = plot(showSignal ? signal : na, title = 'Signal', color = signalColor)
+signalPlot = plot(showSignal ? signal : na, title = "Signal", color = signalColor)
 
 ribbonFillColor = applyRibbonFilling ? trendColor : na
-fill(ulcerPlot, signalPlot, title = 'Ribbon', color = color.new(ribbonFillColor, 70))
+fill(ulcerPlot, signalPlot, title = "Ribbon", color = color.new(ribbonFillColor, 70))
 
 crossoverSignal = ta.crossover(ulcer, signal) and highlightCrossovers
 crossunderSignal = ta.crossunder(ulcer, signal) and highlightCrossovers
 
-plotshape(crossoverSignal ? signal : na, title = 'Crossover', location = location.absolute, style = shape.circle, size = size.tiny, color = color.green)
-plotshape(crossunderSignal ? signal : na, title = 'Crossunder', location = location.absolute, style = shape.circle, size = size.tiny, color = color.red)
+plotshape(crossoverSignal ? signal : na, title = "Crossover", location = location.absolute, style = shape.circle, size = size.tiny, color = color.green)
+plotshape(crossunderSignal ? signal : na, title = "Crossunder", location = location.absolute, style = shape.circle, size = size.tiny, color = color.red)
 
-hline(breakout, title = 'Breakout Level', linestyle = hline.style_dotted, linewidth = 2)
+hline(breakout, title = "Breakout Level", linestyle = hline.style_dotted, linewidth = 2)
 
 breakoutFillColor = ulcer > breakout ? breakoutColor : na
-bgcolor(color.new(breakoutFillColor, 90), title = 'Breakout Highlight')
+bgcolor(color.new(breakoutFillColor, 90), title = "Breakout Highlight")
 
 //---
 
-alertcondition(ta.crossover(ulcer, signal), title = 'Crossover', message = INDICATOR_SHORT_TITLE + ' - Crossed over its signal line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossunder(ulcer, signal), title = 'Crossunder', message = INDICATOR_SHORT_TITLE + ' - Crossed under its signal line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossover(ulcer, breakout), title = 'Breakout', message = INDICATOR_SHORT_TITLE + ' - Broke above the breakout level\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossover(ulcer, signal),
+    title = "Crossover",
+    message = INDICATOR_SHORT_TITLE + " - Crossed over its signal line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossunder(ulcer, signal),
+    title = "Crossunder",
+    message = INDICATOR_SHORT_TITLE + " - Crossed under its signal line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossover(ulcer, breakout),
+    title = "Breakout",
+    message = INDICATOR_SHORT_TITLE + " - Broke above the breakout level\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")

@@ -3,22 +3,22 @@
 // Mass Index script may be freely distributed under the terms of GPL-3.0 license.
 indicator("Mass Index")
 
-smoothLength = input.int(9, title="Smoothing Length")
-sumLength = input.int(25, title="Summation Length")
-breakout = input.int(27, title="Breakout Level")
+smoothLength = input.int(9, title = "Smoothing Length")
+sumLength = input.int(25, title = "Summation Length")
+breakout = input.int(27, title = "Breakout Level")
 
 mi = math.sum(ta.ema(high - low, smoothLength) / ta.ema(ta.ema(high - low, smoothLength), smoothLength), sumLength)
 
 miColor = mi > breakout - 0.5 ? #ff9800 : #3c78d8
 
-plot(mi, title="Mass Index", linewidth=2, color=miColor)
+plot(mi, title = "Mass Index", linewidth = 2, color = miColor)
 
 transparent = color.new(color.white, 100)
 
-maxLevel = hline(29, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-breakoutLevel = hline(breakout, title="Breakout Level", linestyle=hline.style_dotted)
-hline(breakout - 0.5, title="Confirmation Level", linestyle=hline.style_dotted)
+maxLevel = hline(29, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+breakoutLevel = hline(breakout, title = "Breakout Level", linestyle = hline.style_dotted)
+hline(breakout - 0.5, title = "Confirmation Level", linestyle = hline.style_dotted)
 
 breakoutFillColor = mi > breakout ? #e06666 : transparent
 
-fill(maxLevel, breakoutLevel, color=color.new(breakoutFillColor, 80))
+fill(maxLevel, breakoutLevel, color = color.new(breakoutFillColor, 80))

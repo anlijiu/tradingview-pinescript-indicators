@@ -1,13 +1,13 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Stiffness Indicator script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Stiffness Indicator", shorttitle="Stiffness")
+indicator("Stiffness Indicator", shorttitle = "Stiffness")
 
-maLength = input.int(100, title="Moving Average Length", minval=1)
-stiffLength = input.int(60, title="Stiffness Length", minval=1)
-stiffSmooth = input.int(3, title="Stiffness Smoothing Length", minval=1)
-threshold = input.int(90, title="Threshold", minval=1)
-highlightThresholdCrossovers = input.bool(false, title="Highlight Threshold Crossovers ?")
+maLength = input.int(100, title = "Moving Average Length", minval = 1)
+stiffLength = input.int(60, title = "Stiffness Length", minval = 1)
+stiffSmooth = input.int(3, title = "Stiffness Smoothing Length", minval = 1)
+threshold = input.int(90, title = "Threshold", minval = 1)
+highlightThresholdCrossovers = input.bool(false, title = "Highlight Threshold Crossovers ?")
 
 bound = ta.sma(close, maLength) - 0.2 * ta.stdev(close, maLength)
 sumAbove = math.sum(close > bound ? 1 : 0, stiffLength)
@@ -18,5 +18,5 @@ transparent = color.new(color.white, 100)
 bgColor = highlightThresholdCrossovers ? (stiffness > threshold ? #0ebb23 : color.red) : transparent
 bgcolor(color.new(bgColor, 90))
 
-plot(stiffness, title="Stiffness", style=plot.style_histogram, color=#f5c75e)
-plot(threshold, title="Threshold", color=color.red)
+plot(stiffness, title = "Stiffness", style = plot.style_histogram, color = #f5c75e)
+plot(threshold, title = "Threshold", color = color.red)

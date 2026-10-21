@@ -1,10 +1,10 @@
 //@version=6
 // Copyright (c) 2021-present, Alex Orekhov (everget)
 // Session Input Parser script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Session Input Parser", overlay=true)
+indicator("Session Input Parser", overlay = true)
 
-sessionSimple = input.session("0800-1530", title="Simple Session")
-sessionWithWeekdays = input.session("0800-1530:1234567", title="Session With Weekdays")
+sessionSimple = input.session("0800-1530", title = "Simple Session")
+sessionWithWeekdays = input.session("0800-1530:1234567", title = "Session With Weekdays")
 
 _str_includes(str, char) =>
     tmp = str.replace_all(str, char, "")
@@ -66,14 +66,14 @@ labelText =
      + "\nWeekdays: " + str.tostring(weekdays2)
 
 var label l = label.new(
-     x=bar_index,
-     y=na,
-     text="",
-     textalign=text.align_left,
-     textcolor=color.white,
-     color=color.blue,
-     style=label.style_label_left,
-     size=size.normal
+     x = bar_index,
+     y = na,
+     text = "",
+     textalign = text.align_left,
+     textcolor = color.white,
+     color = color.blue,
+     style = label.style_label_left,
+     size = size.normal
      )
 
 label.set_text(l, labelText)

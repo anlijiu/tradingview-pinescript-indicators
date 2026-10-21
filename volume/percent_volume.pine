@@ -1,14 +1,14 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // % Volume script may be freely distributed under the terms of GPL-3.0 license.
-indicator("% Volume", precision=2)
+indicator("% Volume", precision = 2)
 
-length = input.int(21, title="SMA Length")
+length = input.int(21, title = "SMA Length")
 
 pv = 100 * volume / ta.sma(volume, length)
 
 pvColor = close > open ? #92df8bff : #fe9695ff
-plot(pv, title="%V", style=plot.style_columns, linewidth=2, color=pvColor)
+plot(pv, title = "%V", style = plot.style_columns, linewidth = 2, color = pvColor)
 
 // color.purple = #674ea7
 // color.yellow = #f9ce02
@@ -16,23 +16,23 @@ plot(pv, title="%V", style=plot.style_columns, linewidth=2, color=pvColor)
 labelColor = #f9ce02
 levelColor = #674ea7
 
-plot(50, title="", style=plot.style_circles, linewidth=1, color=labelColor)
-hline(50, title="50% Level", linestyle=hline.style_dotted, color=levelColor)
+plot(50, title = "", style = plot.style_circles, linewidth = 1, color = labelColor)
+hline(50, title = "50% Level", linestyle = hline.style_dotted, color = levelColor)
 
-plot(100, title="", style=plot.style_circles, linewidth=1, color=labelColor)
-hline(100, title="100% Level", linestyle=hline.style_dotted, color=levelColor)
+plot(100, title = "", style = plot.style_circles, linewidth = 1, color = labelColor)
+hline(100, title = "100% Level", linestyle = hline.style_dotted, color = levelColor)
 
-plot(150, title="", style=plot.style_circles, linewidth=1, color=labelColor)
-hline(150, title="150% Level", linestyle=hline.style_dotted, color=levelColor)
+plot(150, title = "", style = plot.style_circles, linewidth = 1, color = labelColor)
+hline(150, title = "150% Level", linestyle = hline.style_dotted, color = levelColor)
 
-plot(200, title="", style=plot.style_circles, linewidth=1, color=labelColor)
-hline(200, title="200% Level", linestyle=hline.style_dotted, color=levelColor)
+plot(200, title = "", style = plot.style_circles, linewidth = 1, color = labelColor)
+hline(200, title = "200% Level", linestyle = hline.style_dotted, color = levelColor)
 
-plot(250, title="", style=plot.style_circles, linewidth=1, color=labelColor)
-hline(250, title="250% Level", linestyle=hline.style_dotted, color=levelColor)
+plot(250, title = "", style = plot.style_circles, linewidth = 1, color = labelColor)
+hline(250, title = "250% Level", linestyle = hline.style_dotted, color = levelColor)
 
-plot(300, title="", style=plot.style_circles, linewidth=1, color=labelColor)
-hline(300, title="300% Level", linestyle=hline.style_dotted, color=levelColor)
+plot(300, title = "", style = plot.style_circles, linewidth = 1, color = labelColor)
+hline(300, title = "300% Level", linestyle = hline.style_dotted, color = levelColor)
 
 // show300 = input.bool(false, title="Show 300% Level ?")
 // plot(show300 ? 300 : na, title="", style=plot.style_circles, linewidth=1, color=#F9CE02)

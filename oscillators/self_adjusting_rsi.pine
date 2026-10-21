@@ -1,15 +1,15 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Self-Adjusting RSI script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Self-Adjusting RSI", shorttitle="SARSI")
+indicator("Self-Adjusting RSI", shorttitle = "SARSI")
 
-rsiLength = input.int(14, title="RSI Length", minval=1)
-adjusting = input.string("Standard Deviation", title="Method of Adjusting OB/OS Levels", options=["Standard Deviation", "SMA"])
-mult = input.float(2, title="Adjustment Multiplier", step=0.1)
-smoothingType = input.string("SMA", title="Smoothing Type", options=["EMA", "SMA"])
-smoothingLength = input.int(21, title="Smoothing Length", minval=1)
-highlightMovements = input.bool(false, title="Highlight Smoothing ?")
-src = input.source(close, title="Source")
+rsiLength = input.int(14, title = "RSI Length", minval = 1)
+adjusting = input.string("Standard Deviation", title = "Method of Adjusting OB/OS Levels", options = ["Standard Deviation", "SMA"])
+mult = input.float(2, title = "Adjustment Multiplier", step = 0.1)
+smoothingType = input.string("SMA", title = "Smoothing Type", options = ["EMA", "SMA"])
+smoothingLength = input.int(21, title = "Smoothing Length", minval = 1)
+highlightMovements = input.bool(false, title = "Highlight Smoothing ?")
+src = input.source(close, title = "Source")
 
 rsi = ta.rsi(src, rsiLength)
 
@@ -22,29 +22,29 @@ adjust = _adjusting()
 obLevel = 50 + adjust
 osLevel = 50 - adjust
 
-hline(50, title="Middle Level", linestyle=hline.style_dotted)
+hline(50, title = "Middle Level", linestyle = hline.style_dotted)
 transparent = color.new(color.white, 100)
 
 rsiColor = rsi > obLevel ? #0ebb23 : rsi < osLevel ? color.red : #f4b77d
-rsiPlot = plot(rsi, title="SARSI", linewidth=1, color=rsiColor)
+rsiPlot = plot(rsi, title = "SARSI", linewidth = 1, color = rsiColor)
 
 smooth = smoothingType == "EMA" ? ta.ema(rsi, smoothingLength) : ta.sma(rsi, smoothingLength)
 smoothColor = highlightMovements ? (smooth > smooth[1] ? #0ebb23 : color.red) : #6d1e7f
-plot(smooth, title="Smooth", linewidth=1, color=smoothColor)
+plot(smooth, title = "Smooth", linewidth = 1, color = smoothColor)
 
 obosColor = #f1bc05 //#7b1fa2
-obLevelPlot = plot(obLevel, title="OB", color=color.new(obosColor, 100))
-osLevelPlot = plot(osLevel, title="OS", color=color.new(obosColor, 100))
-fill(obLevelPlot, osLevelPlot, title="OB/OS Filling", color=color.new(#f1bc05, 80))
+obLevelPlot = plot(obLevel, title = "OB", color = color.new(obosColor, 100))
+osLevelPlot = plot(osLevel, title = "OS", color = color.new(obosColor, 100))
+fill(obLevelPlot, osLevelPlot, title = "OB/OS Filling", color = color.new(#f1bc05, 80))
 
 obFillColor = rsi > obLevel ? color.green : transparent
-fill(rsiPlot, obLevelPlot, title="SARSI/OB Filling", color=color.new(obFillColor, 85))
+fill(rsiPlot, obLevelPlot, title = "SARSI/OB Filling", color = color.new(obFillColor, 85))
 
 osFillColor = rsi < osLevel ? color.red : transparent
-fill(rsiPlot, osLevelPlot, title="SARSI/OS Filling", color=color.new(osFillColor, 85))
+fill(rsiPlot, osLevelPlot, title = "SARSI/OS Filling", color = color.new(osFillColor, 85))
 
 co = ta.crossover(rsi, obLevel)
 cu = ta.crossunder(rsi, osLevel)
 
-alertcondition(co, title="Alert on SARSI Overbought", message="SARSI Overbought!")
-alertcondition(cu, title="Alert on SARSI Oversold", message="SARSI Oversold!")
+alertcondition(co, title = "Alert on SARSI Overbought", message = "SARSI Overbought!")
+alertcondition(cu, title = "Alert on SARSI Oversold", message = "SARSI Oversold!")

@@ -1,13 +1,13 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Price Momentum Oscillator script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Price Momentum Oscillator", shorttitle="PMO")
+indicator("Price Momentum Oscillator", shorttitle = "PMO")
 
-firstLength = input.int(35, title="1st Smoothing Length", minval=1)
-secondLength = input.int(20, title="2nd Smoothing Length", minval=1)
-signalLength = input.int(10, title="Signal Length", minval=1)
-applyFilling = input.bool(false, title="Apply Filling ?")
-src = input.source(close, title="Source")
+firstLength = input.int(35, title = "1st Smoothing Length", minval = 1)
+secondLength = input.int(20, title = "2nd Smoothing Length", minval = 1)
+signalLength = input.int(10, title = "Signal Length", minval = 1)
+applyFilling = input.bool(false, title = "Apply Filling ?")
+src = input.source(close, title = "Source")
 
 rocMA = 0.0
 rocMA := (nz(rocMA[1]) + (ta.roc(src, 1) - nz(rocMA[1])) * (2 / firstLength))
@@ -18,10 +18,10 @@ pmo := nz(pmo[1]) + (10 * rocMA - nz(pmo[1])) * (2 / secondLength)
 pmoSignal = 0.0
 pmoSignal := (2 / signalLength) * (pmo - nz(pmoSignal[1])) + nz(pmoSignal[1])
 
-pmoPlot = plot(pmo, title="PMO", color=#1155cc)
-pmoSignalPlot = plot(pmoSignal, title="Signal", color=color.red)
+pmoPlot = plot(pmo, title = "PMO", color = #1155cc)
+pmoSignalPlot = plot(pmoSignal, title = "Signal", color = color.red)
 
 fillColor = applyFilling ? (pmo > pmoSignal ? #0ebb23 : #cc0000) : color.new(color.white, 100)
-fill(pmoPlot, pmoSignalPlot, color=fillColor)
+fill(pmoPlot, pmoSignalPlot, color = fillColor)
 
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)

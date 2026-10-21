@@ -1,11 +1,11 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // BitMEX Withdrawals Cutoff Time script may be freely distributed under the terms of GPL-3.0 license.
-indicator("BitMEX Withdrawals Cutoff Time", overlay=true)
+indicator("BitMEX Withdrawals Cutoff Time", overlay = true)
 
-transparency = input.int(70, title="Transparency", minval=0)
+transparency = input.int(70, title = "Transparency", minval = 0)
 
 cutoff = hour(time) == 13
 transparent = color.new(color.white, 100)
 
-bgcolor(color.new(cutoff ? #f57f17 : transparent, transparency), title="Cutoff Time")
+bgcolor(color.new(cutoff ? #f57f17 : transparent, transparency), title = "Cutoff Time")

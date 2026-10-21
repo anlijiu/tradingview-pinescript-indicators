@@ -1,14 +1,14 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Range Action Verification Index (RAVI) script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Range Action Verification Index (RAVI)", shorttitle="RAVI")
+indicator("Range Action Verification Index (RAVI)", shorttitle = "RAVI")
 
-fastLength = input.int(7, title="Fast MA Length", minval=1)
-fastMAInput = input.string("SMA", title="Fast MA", options=["EMA", "SMA", "VWMA", "WMA"])
-slowLength = input.int(65, title="Slow MA Length", minval=1)
-slowMAInput = input.string("SMA", title="Slow MA", options=["EMA", "SMA", "VWMA", "WMA"])
-comparisonLookback = input.int(1, title="Comparison Lookback", minval=1)
-src = input.source(close, title="Source")
+fastLength = input.int(7, title = "Fast MA Length", minval = 1)
+fastMAInput = input.string("SMA", title = "Fast MA", options = ["EMA", "SMA", "VWMA", "WMA"])
+slowLength = input.int(65, title = "Slow MA Length", minval = 1)
+slowMAInput = input.string("SMA", title = "Slow MA", options = ["EMA", "SMA", "VWMA", "WMA"])
+comparisonLookback = input.int(1, title = "Comparison Lookback", minval = 1)
+src = input.source(close, title = "Source")
 
 fastMA = (fastMAInput == "EMA" ? ta.ema(src, fastLength) : (fastMAInput == "SMA" ? ta.sma(src, fastLength) : (fastMAInput == "VWMA" ? ta.vwma(src, fastLength) : (fastMAInput == "WMA" ? ta.wma(src, fastLength) : na))))
 
@@ -18,4 +18,4 @@ ravi = math.abs(100 * (fastMA - slowMA) / slowMA)
 
 raviColor = ravi > nz(ravi[comparisonLookback]) ? color.green : color.red
 
-plot(ravi, title="RAVI", linewidth=2, color=raviColor)
+plot(ravi, title = "RAVI", linewidth = 2, color = raviColor)

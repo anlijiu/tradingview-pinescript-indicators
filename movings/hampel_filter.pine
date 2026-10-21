@@ -1,14 +1,14 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Hampel Filter script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Hampel Filter", shorttitle="HF", overlay=true)
+indicator("Hampel Filter", shorttitle = "HF", overlay = true)
 
-length = input.int(14, title="Length", minval=1)
-scalingFactor = input.float(3, title="Scaling Factor", step=0.1)
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+scalingFactor = input.float(3, title = "Scaling Factor", step = 0.1)
+src = input.source(close, title = "Source")
 
 _median(src, length) =>
-	ta.percentile_nearest_rank(src, length, 50)
+    ta.percentile_nearest_rank(src, length, 50)
 
 sampleMedian = _median(src, length)
 
@@ -16,8 +16,8 @@ sampleMedian = _median(src, length)
 mad = _median(math.abs(src - sampleMedian), length)
 
 hf = math.abs(src - sampleMedian) <= scalingFactor * mad
-	 ? src
-	 : sampleMedian
+     ? src
+     : sampleMedian
 
 // Plot EMA of the filtered samples
-plot(ta.ema(hf, length), title="HF", linewidth=2, color=#6d1e7f)
+plot(ta.ema(hf, length), title = "HF", linewidth = 2, color = #6d1e7f)

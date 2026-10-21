@@ -1,16 +1,16 @@
 //@version=6
 // Copyright (c) 2021-present, Alex Orekhov (everget)
 // HalfTrend script may be freely distributed under the terms of the GPL-3.0 license.
-indicator('HalfTrend', overlay = true)
+indicator("HalfTrend", overlay = true)
 
-const string calcGroup = 'Calculation'
-amplitude = input.int(2, title = 'Amplitude', group = calcGroup)
-channelDeviation = input.int(2, title = 'Channel Deviation', group = calcGroup)
+const string calcGroup = "Calculation"
+amplitude = input.int(2, title = "Amplitude", group = calcGroup)
+channelDeviation = input.int(2, title = "Channel Deviation", group = calcGroup)
 
-const string visualGroup = 'Visuals'
-showArrows = input.bool(true, title = 'Show Arrows', group = visualGroup)
-showChannels = input.bool(true, title = 'Show Channels', group = visualGroup)
-showLabels = input.bool(true, title = 'Show Buy/Sell Labels', group = visualGroup)
+const string visualGroup = "Visuals"
+showArrows = input.bool(true, title = "Show Arrows", group = visualGroup)
+showChannels = input.bool(true, title = "Show Channels", group = visualGroup)
+showLabels = input.bool(true, title = "Show Buy/Sell Labels", group = visualGroup)
 
 //---
 
@@ -83,22 +83,46 @@ const color buyFillColor = color.new(buyColor, 85)
 const color sellFillColor = color.new(sellColor, 85)
 
 htColor = trend == 0 ? buyColor : sellColor
-htPlot = plot(ht, title = 'HalfTrend', linewidth = 2, color = htColor)
+htPlot = plot(ht, title = "HalfTrend", linewidth = 2, color = htColor)
 
-atrHighPlot = plot(showChannels ? atrHigh : na, title = 'ATR High', style = plot.style_circles, color = sellColor)
-atrLowPlot = plot(showChannels ? atrLow : na, title = 'ATR Low', style = plot.style_circles, color = buyColor)
+atrHighPlot = plot(showChannels ? atrHigh : na, title = "ATR High", style = plot.style_circles, color = sellColor)
+atrLowPlot = plot(showChannels ? atrLow : na, title = "ATR Low", style = plot.style_circles, color = buyColor)
 
-fill(htPlot, atrHighPlot, title = 'ATR High Ribbon', color = sellFillColor)
-fill(htPlot, atrLowPlot, title = 'ATR Low Ribbon', color = buyFillColor)
+fill(htPlot, atrHighPlot, title = "ATR High Ribbon", color = sellFillColor)
+fill(htPlot, atrLowPlot, title = "ATR Low Ribbon", color = buyFillColor)
 
 buySignal = not na(arrowUp) and trend == 0 and trend[1] == 1
 sellSignal = not na(arrowDown) and trend == 1 and trend[1] == 0
 
-plotshape(showArrows and buySignal ? atrLow : na, title = 'Arrow Up', style = shape.triangleup, location = location.absolute, size = size.tiny, color = buyColor)
-plotshape(showArrows and sellSignal ? atrHigh : na, title = 'Arrow Down', style = shape.triangledown, location = location.absolute, size = size.tiny, color = sellColor)
+plotshape(showArrows and buySignal ? atrLow : na,
+    title = "Arrow Up",
+    style = shape.triangleup,
+    location = location.absolute,
+    size = size.tiny,
+    color = buyColor)
+plotshape(showArrows and sellSignal ? atrHigh : na,
+    title = "Arrow Down",
+    style = shape.triangledown,
+    location = location.absolute,
+    size = size.tiny,
+    color = sellColor)
 
-plotshape(showLabels and buySignal ? atrLow : na, title = 'Buy Label', text = 'Buy', location = location.absolute, style = shape.labelup, size = size.tiny, color = buyColor, textcolor = textColor)
-plotshape(showLabels and sellSignal ? atrHigh : na, title = 'Sell Label', text = 'Sell', location = location.absolute, style = shape.labeldown, size = size.tiny, color = sellColor, textcolor = textColor)
+plotshape(showLabels and buySignal ? atrLow : na,
+    title = "Buy Label",
+    text = "Buy",
+    location = location.absolute,
+    style = shape.labelup,
+    size = size.tiny,
+    color = buyColor,
+    textcolor = textColor)
+plotshape(showLabels and sellSignal ? atrHigh : na,
+    title = "Sell Label",
+    text = "Sell",
+    location = location.absolute,
+    style = shape.labeldown,
+    size = size.tiny,
+    color = sellColor,
+    textcolor = textColor)
 
-alertcondition(buySignal, title = 'HalfTrend Buy', message = 'HalfTrend Buy, {{exchange}}:{{ticker}}')
-alertcondition(sellSignal, title = 'HalfTrend Sell', message = 'HalfTrend Sell, {{exchange}}:{{ticker}}')
+alertcondition(buySignal, title = "HalfTrend Buy", message = "HalfTrend Buy, {{exchange}}:{{ticker}}")
+alertcondition(sellSignal, title = "HalfTrend Sell", message = "HalfTrend Sell, {{exchange}}:{{ticker}}")

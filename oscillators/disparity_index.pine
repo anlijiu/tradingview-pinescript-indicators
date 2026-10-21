@@ -1,14 +1,14 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Disparity Index script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Disparity Index", shorttitle="DI")
+indicator("Disparity Index", shorttitle = "DI")
 
-length = input.int(14, title="Length", minval=1)
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+src = input.source(close, title = "Source")
 
 di = 100 * (src - ta.sma(src, length)) / ta.sma(src, length)
 
 diColor = di >= 0.0 ? #0ebb23 : #ff0000
-plot(di, title="Disparity Index", linewidth=2, color=diColor)
+plot(di, title = "Disparity Index", linewidth = 2, color = diColor)
 
-hline(0, title="Zero Level", linestyle=hline.style_dotted, color=#989898)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted, color = #989898)

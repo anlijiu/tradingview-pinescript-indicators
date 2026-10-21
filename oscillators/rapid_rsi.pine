@@ -1,11 +1,11 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Rapid RSI script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Rapid RSI", shorttitle="RRSI")
+indicator("Rapid RSI", shorttitle = "RRSI")
 
-length = input.int(14, title="Length", minval=1)
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
+src = input.source(close, title = "Source")
 
 upSum = math.sum(math.max(ta.change(src), 0), length)
 downSum = math.sum(math.max(-ta.change(src), 0), length)
@@ -16,20 +16,20 @@ obLevel = 70
 osLevel = 30
 
 rrsiColor = rrsi > obLevel ? #0ebb23 : rrsi < osLevel ? #ff0000 : #f4b77d
-plot(rrsi, title="RRSI", linewidth=2, color=rrsiColor)
+plot(rrsi, title = "RRSI", linewidth = 2, color = rrsiColor)
 
 transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted)
-hline(50, title="Middle Level", linestyle=hline.style_dotted)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
+maxLevelPlot = hline(100, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+obLevelPlot = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted)
+hline(50, title = "Middle Level", linestyle = hline.style_dotted)
+osLevelPlot = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted)
+minLevelPlot = hline(0, title = "Min Level", linestyle = hline.style_dotted, color = transparent)
 
-fill(obLevelPlot, osLevelPlot, color=color.new(color.purple, 95))
+fill(obLevelPlot, osLevelPlot, color = color.new(color.purple, 95))
 
 obFillColor = rrsi > obLevel and highlightBreakouts ? color.green : transparent
 osFillColor = rrsi < osLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, obLevelPlot, color=color.new(obFillColor, 90))
-fill(minLevelPlot, osLevelPlot, color=color.new(osFillColor, 90))
+fill(maxLevelPlot, obLevelPlot, color = color.new(obFillColor, 90))
+fill(minLevelPlot, osLevelPlot, color = color.new(osFillColor, 90))

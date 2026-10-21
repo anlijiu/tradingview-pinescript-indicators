@@ -1,9 +1,9 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Pring Special K script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Pring Special K", shorttitle="PSK")
+indicator("Pring Special K", shorttitle = "PSK")
 
-src = input.source(close, title="Source")
+src = input.source(close, title = "Source")
 
 psk = ta.sma(ta.roc(src, 10), 10) +
      ta.sma(ta.roc(src, 10), 15) * 2 +
@@ -20,6 +20,6 @@ psk = ta.sma(ta.roc(src, 10), 10) +
 
 pskColor = psk >= 0.0 ? #0ebb23 : #ff0000
 
-plot(psk, title="PSK", linewidth=2, color=pskColor)
+plot(psk, title = "PSK", linewidth = 2, color = pskColor)
 
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)

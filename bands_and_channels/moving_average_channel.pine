@@ -1,23 +1,23 @@
 //@version=6
 // Copyright (c) 2017-present, Alex Orekhov (everget)
 // Moving Average Channel script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Moving Average Channel", shorttitle="MAC", overlay=true)
+indicator("Moving Average Channel", shorttitle = "MAC", overlay = true)
 
-upperSrc = input.source(high, title="Upper Source")
-upperLength = input.int(20, title="Upper Length")
-upperOffset = input.int(0, title="Upper Offset")
+upperSrc = input.source(high, title = "Upper Source")
+upperLength = input.int(20, title = "Upper Length")
+upperOffset = input.int(0, title = "Upper Offset")
 
 upper = ta.sma(upperSrc, upperLength)
-upperPlot = plot(upper, title="Upper", color=#3c78d8, offset=upperOffset)
+upperPlot = plot(upper, title = "Upper", color = #3c78d8, offset = upperOffset)
 
-lowerSrc = input.source(low, title="Lower Source")
-lowerLength = input.int(20, title="Lower Length")
-lowerOffset = input.int(0, title="Lower Offset")
+lowerSrc = input.source(low, title = "Lower Source")
+lowerLength = input.int(20, title = "Lower Length")
+lowerOffset = input.int(0, title = "Lower Offset")
 
 lower = ta.sma(lowerSrc, lowerLength)
-lowerPlot = plot(lower, title="Lower", color=#f57c00, offset=lowerOffset)
+lowerPlot = plot(lower, title = "Lower", color = #f57c00, offset = lowerOffset)
 
-fill(upperPlot, lowerPlot, title="Background", color=color.new(#ffd966, 90))
+fill(upperPlot, lowerPlot, title = "Background", color = color.new(#ffd966, 90))
 
 barColor = close > upper ? color.lime : close < lower ? color.red : color.gray
-barcolor(barColor, title="Bar Color")
+barcolor(barColor, title = "Bar Color")

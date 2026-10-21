@@ -3,8 +3,8 @@
 // Earnings per Share (EPS, Yearly) script may be freely distributed under the terms of GPL-3.0 license.
 indicator("Earnings per Share (EPS, Yearly)")
 
-width = input.int(12, title="Columns Width")
-space = input.int(8, title="Space Between Columns")
+width = input.int(12, title = "Columns Width")
+space = input.int(8, title = "Space Between Columns")
 
 esdColor = #ffb74d
 estimateColor = color.new(color.blue, 85)
@@ -16,8 +16,8 @@ _id(type) =>
     out
 
 id = _id("EARNINGS")
-estimate = request.security(id, "D", open, barmerge.gaps_on, barmerge.lookahead_on)
-esd = request.security(id, "D", close, barmerge.gaps_on, barmerge.lookahead_on)
+estimate = request.security(id, "D", open, barmerge.gaps_on)
+esd = request.security(id, "D", close, barmerge.gaps_on)
 
 _count(src, yearTarget) =>
     var float counter = na
@@ -121,44 +121,251 @@ _getCounter(mode, yearTarget) =>
 // var shapePos = [0, 3, 5, 10, 15, 20];
 
 // for (var i = 0; i <= end; i++) {
-// 	var title = i == 0 ? 'Current' : `${ i }Y ago`;
-// 	res = res.concat(`plot(_getCounter("esd", year - ${ i }), offset=(-${ i } * space), title="${ title }", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)\n`);
-// 	res = res.concat(`plot(_getCounter("estimate", year - ${ i }), offset=(-${ i } * space), title="", style=plot.style_histogram, linewidth=width, color=estimateColor, show_last=1, editable=false)\n\n`);
+//     var title = i == 0 ? 'Current' : `${ i }Y ago`;
+//     res = res.concat(`plot(_getCounter("esd", year - ${ i }), offset=(-${ i } * space), title="${ title }", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)\n`);
+//     res = res.concat(`plot(_getCounter("estimate", year - ${ i }), offset=(-${ i } * space), title="", style=plot.style_histogram, linewidth=width, color=estimateColor, show_last=1, editable=false)\n\n`);
 
-// 	if (shapePos.includes(i)) {
-// 		res = res.concat(`plotshape(0, offset=(-${ i } * space), title="${ title }", text=" ${ i == 0 ? title : title.slice(0, -4) } ", color=labelColor, textcolor=whiteColor, style=shape.labelup, location=location.absolute, size=size.small, show_last=1, editable=false)\n`)
-// 	}
+//     if (shapePos.includes(i)) {
+//         res = res.concat(`plotshape(0, offset=(-${ i } * space), title="${ title }", text=" ${ i == 0 ? title : title.slice(0, -4) } ", color=labelColor, textcolor=whiteColor, style=shape.labelup, location=location.absolute, size=size.small, show_last=1, editable=false)\n`)
+//     }
 // }
 
-plot(_getCounter("esd", year - 0), offset=(-0 * space), title="Current", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plotshape(0, offset=(-0 * space), title="Current", text=" Current ", color=labelColor, textcolor=whiteColor, style=shape.labelup, location=location.absolute, size=size.small, show_last=1, editable=false)
+plot(_getCounter("esd", year - 0),
+    offset = (-0 * space),
+    title = "Current",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plotshape(0,
+    offset = (-0 * space),
+    title = "Current",
+    text = " Current ",
+    color = labelColor,
+    textcolor = whiteColor,
+    style = shape.labelup,
+    location = location.absolute,
+    size = size.small,
+    show_last = 1,
+    editable = false)
 
-plot(_getCounter("esd", year - 1), offset=(-1 * space), title="1Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 2), offset=(-2 * space), title="2Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 3), offset=(-3 * space), title="3Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plotshape(0, offset=(-3 * space), title="3Y ago", text=" 3Y ", color=labelColor, textcolor=whiteColor, style=shape.labelup, location=location.absolute, size=size.small, show_last=1, editable=false)
+plot(_getCounter("esd", year - 1),
+    offset = (-1 * space),
+    title = "1Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 2),
+    offset = (-2 * space),
+    title = "2Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 3),
+    offset = (-3 * space),
+    title = "3Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plotshape(0,
+    offset = (-3 * space),
+    title = "3Y ago",
+    text = " 3Y ",
+    color = labelColor,
+    textcolor = whiteColor,
+    style = shape.labelup,
+    location = location.absolute,
+    size = size.small,
+    show_last = 1,
+    editable = false)
 
-plot(_getCounter("esd", year - 4), offset=(-4 * space), title="4Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 5), offset=(-5 * space), title="5Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plotshape(0, offset=(-5 * space), title="5Y ago", text=" 5Y ", color=labelColor, textcolor=whiteColor, style=shape.labelup, location=location.absolute, size=size.small, show_last=1, editable=false)
+plot(_getCounter("esd", year - 4),
+    offset = (-4 * space),
+    title = "4Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 5),
+    offset = (-5 * space),
+    title = "5Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plotshape(0,
+    offset = (-5 * space),
+    title = "5Y ago",
+    text = " 5Y ",
+    color = labelColor,
+    textcolor = whiteColor,
+    style = shape.labelup,
+    location = location.absolute,
+    size = size.small,
+    show_last = 1,
+    editable = false)
 
-plot(_getCounter("esd", year - 6), offset=(-6 * space), title="6Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 7), offset=(-7 * space), title="7Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 8), offset=(-8 * space), title="8Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 9), offset=(-9 * space), title="9Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 10), offset=(-10 * space), title="10Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plotshape(0, offset=(-10 * space), title="10Y ago", text=" 10Y ", color=labelColor, textcolor=whiteColor, style=shape.labelup, location=location.absolute, size=size.small, show_last=1, editable=false)
+plot(_getCounter("esd", year - 6),
+    offset = (-6 * space),
+    title = "6Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 7),
+    offset = (-7 * space),
+    title = "7Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 8),
+    offset = (-8 * space),
+    title = "8Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 9),
+    offset = (-9 * space),
+    title = "9Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 10),
+    offset = (-10 * space),
+    title = "10Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plotshape(0,
+    offset = (-10 * space),
+    title = "10Y ago",
+    text = " 10Y ",
+    color = labelColor,
+    textcolor = whiteColor,
+    style = shape.labelup,
+    location = location.absolute,
+    size = size.small,
+    show_last = 1,
+    editable = false)
 
-plot(_getCounter("esd", year - 11), offset=(-11 * space), title="11Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 12), offset=(-12 * space), title="12Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 13), offset=(-13 * space), title="13Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 14), offset=(-14 * space), title="14Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 15), offset=(-15 * space), title="15Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plotshape(0, offset=(-15 * space), title="15Y ago", text=" 15Y ", color=labelColor, textcolor=whiteColor, style=shape.labelup, location=location.absolute, size=size.small, show_last=1, editable=false)
+plot(_getCounter("esd", year - 11),
+    offset = (-11 * space),
+    title = "11Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 12),
+    offset = (-12 * space),
+    title = "12Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 13),
+    offset = (-13 * space),
+    title = "13Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 14),
+    offset = (-14 * space),
+    title = "14Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 15),
+    offset = (-15 * space),
+    title = "15Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plotshape(0,
+    offset = (-15 * space),
+    title = "15Y ago",
+    text = " 15Y ",
+    color = labelColor,
+    textcolor = whiteColor,
+    style = shape.labelup,
+    location = location.absolute,
+    size = size.small,
+    show_last = 1,
+    editable = false)
 
-plot(_getCounter("esd", year - 16), offset=(-16 * space), title="16Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 17), offset=(-17 * space), title="17Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 18), offset=(-18 * space), title="18Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 19), offset=(-19 * space), title="19Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plot(_getCounter("esd", year - 20), offset=(-20 * space), title="20Y ago", style=plot.style_histogram, linewidth=width, color=esdColor, show_last=1, editable=false)
-plotshape(0, offset=(-20 * space), title="20Y ago", text=" 20Y ", color=labelColor, textcolor=whiteColor, style=shape.labelup, location=location.absolute, size=size.small, show_last=1, editable=false)
+plot(_getCounter("esd", year - 16),
+    offset = (-16 * space),
+    title = "16Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 17),
+    offset = (-17 * space),
+    title = "17Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 18),
+    offset = (-18 * space),
+    title = "18Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 19),
+    offset = (-19 * space),
+    title = "19Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plot(_getCounter("esd", year - 20),
+    offset = (-20 * space),
+    title = "20Y ago",
+    style = plot.style_histogram,
+    linewidth = width,
+    color = esdColor,
+    show_last = 1,
+    editable = false)
+plotshape(0,
+    offset = (-20 * space),
+    title = "20Y ago",
+    text = " 20Y ",
+    color = labelColor,
+    textcolor = whiteColor,
+    style = shape.labelup,
+    location = location.absolute,
+    size = size.small,
+    show_last = 1,
+    editable = false)

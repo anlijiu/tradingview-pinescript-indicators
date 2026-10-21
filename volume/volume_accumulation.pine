@@ -1,13 +1,13 @@
 //@version=6
 // Copyright (c) 2020-present, Alex Orekhov (everget)
-indicator('Volume Accumulation', format = format.volume)
+indicator("Volume Accumulation", format = format.volume)
 
-accumulationType = input.string('Daily', title = 'Type', options = ['Minutely', 'Hourly', 'Session', 'Daily', 'Monthly', 'Quarterly', 'Yearly'])
-sessionInput = input.session('0900-1530', title = 'Session (only for \'Session\' type)')
-includeWeekends = input.bool(true, title = 'Include Weekends')
-var session = sessionInput + (includeWeekends ? ':1234567' : '')
+accumulationType = input.string("Daily", title = "Type", options = ["Minutely", "Hourly", "Session", "Daily", "Monthly", "Quarterly", "Yearly"])
+sessionInput = input.session("0900-1530", title = "Session (only for 'Session' type)")
+includeWeekends = input.bool(true, title = "Include Weekends")
+var session = sessionInput + (includeWeekends ? ":1234567" : "")
 
-applyBarColors = input.bool(true, title = 'Apply Bar Colors')
+applyBarColors = input.bool(true, title = "Apply Bar Colors")
 
 //---
 
@@ -22,13 +22,13 @@ q = int(math.ceil(m / 3))
 y = year(time)
 
 int period = switch accumulationType
-    'Minutely' => min
-    'Hourly' => h
-    'Session' => s
-    'Daily' => d
-    'Monthly' => m
-    'Quarterly' => q
-    'Yearly' => y
+    "Minutely" => min
+    "Hourly" => h
+    "Session" => s
+    "Daily" => d
+    "Monthly" => m
+    "Quarterly" => q
+    "Yearly" => y
     => d
 
 var acc = 0.0
@@ -38,13 +38,13 @@ var accPrev = 0.0
 accPrev := period != period[1] ? acc[1] : accPrev
 
 accColor = acc > accPrev ? #92df8bff : #fe9695ff
-plot(acc, title = 'Accumulation', style = plot.style_columns, color = accColor)
-barcolor(applyBarColors ? accColor : na, title = 'Bar Color')
+plot(acc, title = "Accumulation", style = plot.style_columns, color = accColor)
+barcolor(applyBarColors ? accColor : na, title = "Bar Color")
 
 var periodChangeColor = color.new(#ffcc80, 60)
 var noneColor = #ffffff00
 
-bgcolor(period != period[1] ? periodChangeColor : noneColor, title = 'Separator')
+bgcolor(period != period[1] ? periodChangeColor : noneColor, title = "Separator")
 
 higherAlert = acc > accPrev
-alertcondition(higherAlert, title = 'Higher Accumulation', message = 'Higher Accumulation')
+alertcondition(higherAlert, title = "Higher Accumulation", message = "Higher Accumulation")

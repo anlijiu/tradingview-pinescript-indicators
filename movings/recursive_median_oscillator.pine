@@ -1,14 +1,14 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Recursive Median Filter script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Recursive Median Filter", shorttitle="RMF", overlay=true)
+indicator("Recursive Median Filter", shorttitle = "RMF", overlay = true)
 
-medianLength = input.int(5, title="Length", minval=1)
-lowpassLength = input.int(12, title="Lowpass Length", minval=1)
-src = input.source(close, title="Source")
+medianLength = input.int(5, title = "Length", minval = 1)
+lowpassLength = input.int(12, title = "Lowpass Length", minval = 1)
+src = input.source(close, title = "Source")
 
 median(src, length) =>
-	ta.percentile_nearest_rank(src, length, 50)
+    ta.percentile_nearest_rank(src, length, 50)
 
 PI = 2 * math.asin(1)
 
@@ -20,4 +20,4 @@ alpha := math.cos(alphaArg) != 0 ? (math.cos(alphaArg) + math.sin(alphaArg) - 1)
 rmf = 0.0
 rmf := alpha * median(src, medianLength) + (1 - alpha) * nz(rmf[1])
 
-plot(rmf, title="RMF", linewidth=2, color=#6d1e7f)
+plot(rmf, title = "RMF", linewidth = 2, color = #6d1e7f)

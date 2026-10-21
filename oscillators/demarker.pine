@@ -1,14 +1,14 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // DeMarker script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("DeMarker", shorttitle="DeMarker")
+indicator("DeMarker", shorttitle = "DeMarker")
 
-length = input.int(14, title="Length")
-maType = input.string("SMA", title="Smoothing Type", options=["EMA", "SMA", "VWMA", "WMA"])
-obLevel = input.float(0.7, title="Overbought Level", step=0.1)
-osLevel = input.float(0.3, title="Oversold Level", step=0.1)
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length")
+maType = input.string("SMA", title = "Smoothing Type", options = ["EMA", "SMA", "VWMA", "WMA"])
+obLevel = input.float(0.7, title = "Overbought Level", step = 0.1)
+osLevel = input.float(0.3, title = "Oversold Level", step = 0.1)
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
+src = input.source(close, title = "Source")
 
 getMA(type, src, length) =>
     type == "SMA" ? ta.sma(src, length) :
@@ -23,20 +23,20 @@ demin = -math.min(ta.change(low), 0)
 demarker = getMA(maType, demax, length) / (getMA(maType, demax, length) + getMA(maType, demin, length))
 
 demarkerColor = demarker > obLevel ? #0ebb23 : demarker < osLevel ? #ff0000 : #f4b77d
-plot(demarker, title="DeMarker", linewidth=2, color=demarkerColor)
+plot(demarker, title = "DeMarker", linewidth = 2, color = demarkerColor)
 
 transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(1, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted)
-hline(0.5, title="Middle Level", linestyle=hline.style_dotted)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
+maxLevelPlot = hline(1, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+obLevelPlot = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted)
+hline(0.5, title = "Middle Level", linestyle = hline.style_dotted)
+osLevelPlot = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted)
+minLevelPlot = hline(0, title = "Min Level", linestyle = hline.style_dotted, color = transparent)
 
-fill(obLevelPlot, osLevelPlot, color=color.new(color.purple, 95))
+fill(obLevelPlot, osLevelPlot, color = color.new(color.purple, 95))
 
 obFillColor = demarker > obLevel and highlightBreakouts ? color.green : transparent
 osFillColor = demarker < osLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, obLevelPlot, color=color.new(obFillColor, 90))
-fill(minLevelPlot, osLevelPlot, color=color.new(osFillColor, 90))
+fill(maxLevelPlot, obLevelPlot, color = color.new(obFillColor, 90))
+fill(minLevelPlot, osLevelPlot, color = color.new(osFillColor, 90))

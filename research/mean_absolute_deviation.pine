@@ -1,7 +1,7 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Mean Absolute Deviation script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Mean Absolute Deviation", shorttitle="MAD")
+indicator("Mean Absolute Deviation", shorttitle = "MAD")
 
 src = close
 len = 14
@@ -24,10 +24,10 @@ for i = 0 to len - 1
 
 dev6 = sum / len
 
-plot(dev0, title="Built-in", color=color.purple)
-plot(dev1, title="1", color=color.olive)
-plot(dev2, title="2", color=color.teal)
-plot(dev3, title="3", color=color.green)
-plot(dev4, title="4", color=color.red)
-plot(dev5, title="5", color=color.blue)
-plot(dev6, title="6", color=color.orange)
+plot(dev0, title = "Built-in", color = color.purple)
+plot(dev1, title = "1", color = color.olive)
+plot(dev2, title = "2", color = color.teal)
+plot(dev3, title = "3", color = color.green)
+plot(dev4, title = "4", color = color.red)
+plot(dev5, title = "5", color = color.blue)
+plot(dev6, title = "6", color = color.orange)

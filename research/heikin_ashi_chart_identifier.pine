@@ -1,7 +1,7 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Heikin-Ashi Chart Identifier script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Heikin-Ashi Chart Identifier", overlay=true)
+indicator("Heikin-Ashi Chart Identifier", overlay = true)
 
 var int gapsCount = -1
 gapsCount := low[1] > high or high[1] < low ? gapsCount + 1 : gapsCount
@@ -20,13 +20,13 @@ labelColor = #1e90ff
 whiteColor = color.white
 
 var label l = label.new(
-     x=bar_index,
-     y=na,
-     text="",
-     color=labelColor,
-     textcolor=whiteColor,
-     style=label.style_label_down,
-     size=size.normal
+     x = bar_index,
+     y = na,
+     text = "",
+     color = labelColor,
+     textcolor = whiteColor,
+     style = label.style_label_down,
+     size = size.normal
      )
 
 label.set_text(l, labelText + stats)

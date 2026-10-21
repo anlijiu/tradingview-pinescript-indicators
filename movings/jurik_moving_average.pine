@@ -2,13 +2,13 @@
 // Copyright (c) 2007-present Jurik Research and Consulting. All rights reserved.
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Jurik Moving Average script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Jurik Moving Average", shorttitle="JMA", overlay=true)
+indicator("Jurik Moving Average", shorttitle = "JMA", overlay = true)
 
-length = input.int(7, title="Length")
-phase = input.int(50, title="Phase")
-power = input.int(2, title="Power")
-src = input.source(close, title="Source")
-highlightMovements = input.bool(true, title="Highlight Movements ?")
+length = input.int(7, title = "Length")
+phase = input.int(50, title = "Phase")
+power = input.int(2, title = "Power")
+src = input.source(close, title = "Source")
+highlightMovements = input.bool(true, title = "Highlight Movements ?")
 
 phaseRatio = phase < -100 ? 0.5 : phase > 100 ? 2.5 : phase / 100 + 1.5
 
@@ -29,4 +29,4 @@ e2 := (e0 + phaseRatio * e1 - nz(jma[1])) * math.pow(1 - alpha, 2) + math.pow(al
 jma := e2 + nz(jma[1])
 
 jmaColor = highlightMovements ? (jma > jma[1] ? color.green : color.red) : #6d1e7f
-plot(jma, title="JMA", linewidth=2, color=jmaColor)
+plot(jma, title = "JMA", linewidth = 2, color = jmaColor)

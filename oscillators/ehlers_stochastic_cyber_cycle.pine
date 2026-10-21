@@ -1,12 +1,12 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Ehlers Stochastic Cyber Cycle script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Ehlers Stochastic Cyber Cycle", shorttitle="ESCC")
+indicator("Ehlers Stochastic Cyber Cycle", shorttitle = "ESCC")
 
-length = input.int(14, title="Length", minval=1)
-alpha = input.float(0.7, title="Alpha", step=0.1)
-applyFilling = input.bool(false, title="Apply Filling ?")
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+alpha = input.float(0.7, title = "Alpha", step = 0.1)
+applyFilling = input.bool(false, title = "Apply Filling ?")
+src = input.source(close, title = "Source")
 
 smooth = (src + 2 * nz(src[1]) + 2 * nz(src[2]) + nz(src[3])) / 6
 
@@ -21,10 +21,10 @@ stoch = (cycle - minCycle) / (maxCycle - minCycle)
 escc = 2 * ((4 * stoch + 3 * nz(stoch[1]) + 2 * nz(stoch[2]) + nz(stoch[3])) / 10 - 0.5)
 esccPrev = 0.96 * (escc[1] + 0.02)
 
-esccPlot = plot(escc, title="ESCC", color=#3d85c6)
-esccPrevPlot = plot(esccPrev, title="Trigger", color=#ff3e7d)
+esccPlot = plot(escc, title = "ESCC", color = #3d85c6)
+esccPrevPlot = plot(esccPrev, title = "Trigger", color = #ff3e7d)
 
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)
 
 fillColor = applyFilling ? (escc > esccPrev ? #0ebb23 : #cc0000) : color.new(color.white, 100)
-fill(esccPlot, esccPrevPlot, color=fillColor)
+fill(esccPlot, esccPrevPlot, color = fillColor)

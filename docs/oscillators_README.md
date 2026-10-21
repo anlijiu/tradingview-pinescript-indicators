@@ -1,7 +1,7 @@
 # Oscillators（振荡器指标）
 
-本目录收录 73 个 TradingView Pine Script 振荡器类指标（67 个 `//@version=3`、6 个 `//@version=4`），
-全部是**副图指标**（`study()`），不含策略下单逻辑。每个脚本都在 TradingView 上渲染成一条或多条
+本目录收录 72 个 TradingView Pine Script 振荡器类指标（全部 `//@version=6`），
+全部是**副图指标**（`indicator()`），不含策略下单逻辑。每个脚本都在 TradingView 上渲染成一条或多条
 振荡曲线 + 参考线 + 着色/标记，用来判断超买超卖、动量强弱、趋势方向或周期循环位置。
 
 下面按指标家族分组，逐个说明：**做什么（用途）→ 怎么算（原理）→ 跑出来得到什么（输出）**。
@@ -79,7 +79,6 @@
 | `repulse.pine` | Repulse | 6 | length=5, EMA 25 | 围绕 0 |
 | `rocket_rsi.pine` | Rocket RSI | 6 | RSI 10, smooth 8, OB/OS=±2 | Fisher 值（±3） |
 | `rsi_relative_strength_index.pine` | Relative Strength Index (RSI) | 6 | length=14, OB/OS=70/30 | 0–100 |
-| `rsx.pine` | Jurik RSX | 6 | length=14, src=hlc3, OB/OS=70/30 | 0–100 |
 | `self_adjusting_rsi.pine` | Self-Adjusting RSI (SARSI) | 6 | RSI 14, mult 2, smooth 21 | 0–100（动态阈值） |
 | `smoothed_rate_of_change.pine` | Smoothed Rate of Change (S-RoC) | 6 | ROC 21, EMA 13 | 围绕 0（%） |
 | `stc_schaff_trend_cycle.pine` | Schaff Trend Cycle (STC) | 6 | MACD 23/50, cycle 10, %D 3/3, 75/25 | 0–100 |
@@ -108,7 +107,7 @@
 ## 通用约定
 
 **运行方式**：把 `.pine` 内容粘到 TradingView 的 Pine Editor，保存后 *Add to chart*。因为都是
-`study()`，会自动落在副图（separate pane），不会覆盖主图价格。
+`indicator()` 且未设 `overlay`，会自动落在副图（separate pane），不会覆盖主图价格。
 
 **“执行完会得到什么”的总答案**：一条随每根 K 线更新的数值序列（画成线或柱）、若干水平参考线、
 可选的区域填充/背景色、可选的事件圆点，以及部分脚本声明的告警条件。**没有**买卖指令、没有回测
@@ -213,7 +212,6 @@
   `ROSC = 100 × (src − average) / hlDiff`；`band = 100 × (maMax − maMin) / hlDiff`。
 - **输出**：ROSC 柱状（正绿负红）+ `+band`/`−band` 两条边界线 + 中间 0 线；可选把带内区域填成
   绿/红（带宽 = 均线发散程度 = 趋势一致性）。
-- **注意**：文件内 `if` 块的缩进混用了制表符与空格，粘进编辑器若报缩进错误，统一成同一种缩进即可。
 
 ### 1.10 `pretty_good_oscillator.pine` — Pretty Good Oscillator (PGO)
 
@@ -281,14 +279,14 @@
   然后用 `T` 作为 RSI 的窗口（脚本内置 Wilder 平滑 `_rma` 的 `_rsi`）。
 - **输出**：DMI 曲线 + 70/50/30 虚线 + 中性区 + 突破区高亮。
 
-### 2.7 `jurik_rsx.pine` / `rsx.pine` — Jurik RSX
+### 2.7 `jurik_rsx.pine` — Jurik RSX
 
 - **用途**：Mark Jurik 的 RSX，用多级低通滤波构造出“几乎无滞后、噪声很低”的 RSI 替代品。
 - **原理**：取 `v8 = 100·src − 100·src[1]`（放大后的 1 期动量），用 `α = 3/(n+2)` 的一阶 EMA 多级级联
   （每级再用 `1.5·f28 − 0.5·f30` 的低通去噪组合），分别对“动量”和“动量的绝对值”反复平滑得到 `v14`
   与 `v20`；`RSX = (v14 / v20 + 1) × 50`，用 `f88/f90` 计数器做预热保护，最后限幅到 0–100。
 - **输出**：RSX 曲线 + 70/50/30 虚线 + 中性区 + 突破区高亮。
-- **注意**：两个文件实现完全一致（都是 `study("Jurik RSX")`），属于重复文件。
+- **注意**：曾有一个与本文件实现完全一致的重复文件 `rsx.pine`，已于 v6 整理时删除。
 
 ### 2.8 `rocket_rsi.pine` — Rocket RSI
 
@@ -745,16 +743,16 @@ John Ehlers 用数字滤波器（高通、低通、带通、Hilbert 变换）把
 
 ## 附录 B：重复实现、瑕疵与注意事项
 
-1. **完全重复**：`jurik_rsx.pine` 与 `rsx.pine` 代码一致（标题都是 `Jurik RSX`）；
-   `disparity_index.pine` 与 `kairi_relative_index.pine` 公式一致（仅配色/线型不同）。
+1. **重复实现**：`disparity_index.pine` 与 `kairi_relative_index.pine` 公式一致（仅配色/线型不同）；
+   `jurik_rsx.pine` 曾与 `rsx.pine` 代码完全一致，重复文件已于 v6 整理时删除。
 2. **直接调用平台内置函数**：`rsi_relative_strength_index.pine`（`rsi()`）、
    `mfi_money_flow_index.pine`（`mfi()`）、`stochastic.pine`（`stoch()`）、
    `v_macd.pine`（`macd()`）。这些脚本的“增值”主要在源选择与可视化。
 3. **`intraday_momentum_index.pine` 的 `src` 输入未被使用**（计算固定用 `close`/`open`）。
 4. **`asymmetrical_rsi.pine`**：`upAlpha = 1/upCount`，若窗口内没有任何上涨 bar（`upCount = 0`）
    会出现除以零，极端单边行情下读数可能异常。
-5. **`rainbow_oscillator.pine`**：`getMA` 内 `if` 块缩进混用制表符和空格，若编辑器报缩进错误，
-   统一缩进即可。
+5. **`rainbow_oscillator.pine`**：`getMA` 内按 `maInput` 分支分别调用 `ta.ema/ta.sma/ta.vwma/ta.wma`。
+   由于条件来自 `input.string`（全数据集恒定），当前不会造成序列断裂，但换成 series 条件就会出问题。
 6. **`trendscore.pine`**：局部变量名用了 `sum`，与内置函数同名（Pine v3 可运行，升版需改名）。
 7. **`cci_commodity_channel_index.pine`** 的 `price volume trend` 源写成 `cum(roc(src,1)*volume)`，
    其中 `src` 是函数内局部变量，与标准 PVT（`cum(change(close)/close[1]*volume)`，见

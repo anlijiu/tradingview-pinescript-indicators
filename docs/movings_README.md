@@ -1,6 +1,6 @@
 # Movings — 移动平均与平滑滤波器
 
-本目录收录 **70 个** Pine Script 脚本，全部 `overlay = true`，直接画在价格图上。
+本目录收录 **69 个** Pine Script 脚本，全部 `overlay = true`，直接画在价格图上。
 
 它们回答的是同一个问题：**把 OHLC 序列变成一条平滑曲线，这条曲线怎么算、滞后多少、在什么行情下该快该慢？**
 换句话说，这里没有振荡器、没有通道、没有形态识别——**每个脚本都只是一条（或几条）价格的低通滤波器**，区别只在"滤波器系数怎么定"。
@@ -15,7 +15,7 @@
 
 ---
 
-## 一、先读这一节：70 个脚本共用的骨架
+## 一、先读这一节：69 个脚本共用的骨架
 
 ### 1.1 代码骨架
 
@@ -46,13 +46,17 @@ plot(xxx, title="XXX", linewidth=2, color=xxxColor, transp=0)
 
 v6 系列的配色是另一套：上行 `#09b71e`（绿）、下行 `#e91e63`（粉），K 线 `color.new(..., 50)`，背景 `color.new(..., 88)`，关闭高亮时线色 `#512da8`。
 
-### 1.3 有 `alertcondition()` 的 8 个脚本
+### 1.3 有 `alertcondition()` 的 12 个脚本
 
-只有这 8 个能在 TradingView 里挂告警（其余脚本纯画线）：
+只有这 12 个能在 TradingView 里挂告警（其余脚本纯画线）：
 
 | 文件 | 告警条件 |
 | --- | --- |
 | `adaptive_laguerre_filter.pine` | 颜色翻转（且等待 K 线确认） |
+| `exponential_moving_average.pine` | `src` 上穿 / 下穿 `ema` |
+| `hull_moving_average.pine` | `src` 上穿 / 下穿 `hma` |
+| `kaufman_adaptive_moving_average.pine` | 变绿 / 变粉 / 任意变色 |
+| `simple_moving_average.pine` | `src` 上穿 / 下穿 `sma` |
 | `corrected_moving_average.pine` | `sma` 上穿 / 下穿 `cma`（Long / Short Signal） |
 | `fibonacci_weighted_moving_average.pine` | 变绿 / 变粉 / 任意变色 |
 | `henderson_weighted_moving_average.pine` | 同上 |
@@ -65,7 +69,7 @@ v6 系列的配色是另一套：上行 `#09b71e`（绿）、下行 `#e91e63`（
 
 | 版本 | 数量 | 特征 |
 | --- | --- | --- |
-| v6 | 70 | 全部脚本已迁移到 v6：`indicator()`；`ta.*` / `math.*` 命名空间；`input.int/input.source/input.bool`；`const string` 常量与 `group` 分组；`color.new()` 取代 `transp=` |
+| v6 | 69 | 全部脚本已迁移到 v6：`indicator()`；`ta.*` / `math.*` 命名空间；`input.int/input.source/input.bool`；`const string` 常量与 `group` 分组；`color.new()` 取代 `transp=` |
 
 实现风格的差异（单色线 / 方向双色线 / 全家桶）见上文 1.1–1.3，与 Pine 版本无关。
 
@@ -86,7 +90,7 @@ v6 系列的配色是另一套：上行 `#09b71e`（绿）、下行 `#e91e63`（
 
 ## 二、按算法族分类（总表）
 
-70 个脚本按"系数如何确定"分成 7 族。想看某个脚本的详解，按文件名字母序在本章之后找到对应小节即可（每族内部按文件名排序）。
+69 个脚本按"系数如何确定"分成 7 族。想看某个脚本的详解，按文件名字母序在本章之后找到对应小节即可（每族内部按文件名排序）。
 
 | # | 文件 | 图表名（简称） | 版本 | 默认参数 | 输出 |
 | --- | --- | --- | --- | --- | --- |
@@ -110,7 +114,6 @@ v6 系列的配色是另一套：上行 `#09b71e`（绿）、下行 `#e91e63`（
 | **2** | `spencer_15_point_moving_average.pine` | Spencer 15-Point MA (SPMA 15) | 6 | 仅 `Source` | 双色 |
 | **2** | `spencer_21_point_moving_average.pine` | Spencer 21-Point MA (SPMA 21) | 6 | 仅 `Source` | 双色 |
 | **2** | `triangular_moving_average.pine` | Triangular MA (TMA) | 6 | `Length=20` | 双色 |
-| **3** | `distance_coefficient_filter.pine` | Ehlers Distance Coefficient Filter (EDCF) | 6 | `Length=14`、`src=hl2` | 单色 `#6d1e7f` |
 | **3** | `distance_weighted_moving_average.pine` | Distance Weighted MA (DWMA) | 6 | `Length=14` | 双色 |
 | **3** | `ehlers_distance_coefficient_filter.pine` | Ehlers Distance Coefficient Filter (EDCF) | 6 | `Length=14`、`src=hl2` | 单色 `#6d1e7f` |
 | **3** | `hampel_filter.pine` | Hampel Filter (HF) | 6 | `Length=14`、`Scaling=3` | 单色 `#6d1e7f` |
@@ -747,7 +750,7 @@ ma = Σ src[i]·w[i] / Σ w[i]
 
 **备注**：这两个脚本的差异很值得对照看——同一个"距离加权"的想法，一个抗离群、一个放大离群；而且 v6 版顺手修掉了 v3 版的除零缺陷。
 
-### `distance_coefficient_filter.pine` — Ehlers Distance Coefficient Filter (EDCF)
+### `ehlers_distance_coefficient_filter.pine` — Ehlers Distance Coefficient Filter (EDCF)
 
 **做什么**：Ehlers 的"距离系数"滤波：用**距离平方和**做权重，输出窗口内的加权中心。
 
@@ -769,17 +772,7 @@ dcf = coefSum != 0 ? srcSum / coefSum : 0
 
 **备注**：又一处 O(L²)；`coefSum=0`（窗口全平）时被硬编码为 0，图上会突然掉到 0——**这是一个明显的边界 bug**，不是价格信号。
 
-### `ehlers_distance_coefficient_filter.pine` — Ehlers Distance Coefficient Filter (EDCF)
-
-**做什么**：与上一条**完全同一个脚本**，图表名、简称（`EDCF`）、算法、参数默认值都一致。
-
-**原理**：见上。
-
-**输出**：单色 `#6d1e7f` 线。
-
-**参数**：`Length=14`、`Source=hl2`。
-
-**备注**：两个文件 `diff` 之后唯一的差别是版权注释里的一个 `the`（`under the terms of the GPL-3.0` vs `under the terms of GPL-3.0`）。属于历史遗留的重复文件，**任选一个用即可**；`distance_coefficient_filter.pine` 看起来是较新的命名。
+历史上另有一个重复文件 `distance_coefficient_filter.pine`，与本脚本 `diff` 只差版权注释里的一个 `the`；该重复文件已删除，本文件是该指标的唯一实现。
 
 ### `recursive_median_filter.pine` — Recursive Median Filter (RMF)
 
@@ -815,7 +808,7 @@ rmf      = alpha · median(src, medianLength) + (1-alpha) · rmf[1]
 
 ## 第 4 族 · 递归滤波与滞后补偿（20 个）
 
-这一族是**全部 70 个脚本的技术核心**。它们都是 IIR 结构（有反馈、无限记忆），共同议题只有一个：**怎样在不把噪声放大的前提下减少滞后**。
+这一族是**全部 69 个脚本的技术核心**。它们都是 IIR 结构（有反馈、无限记忆），共同议题只有一个：**怎样在不把噪声放大的前提下减少滞后**。
 
 `EMA` 的滞后来自它只有一阶；这一族的做法可以归成四类：
 
@@ -1733,7 +1726,7 @@ plot(psar, style=cross, color=blue)
 
 | 文件 | 与谁重复 | 差异 |
 | --- | --- | --- |
-| `distance_coefficient_filter.pine` | `ehlers_distance_coefficient_filter.pine` | 完全相同（仅版权注释差一个 `the`） |
+| ~~`distance_coefficient_filter.pine`~~ | `ehlers_distance_coefficient_filter.pine` | 曾经完全相同（仅版权注释差一个 `the`）；重复文件已于 v6 整理时删除 |
 | `linear_weighted_moving_average.pine` | `weighted_moving_average.pine` | 数学等价；前者手写循环、颜色不同、早期值因 `nz(...,0)` 偏低 |
 | `recursive_median_oscillator.pine` | `recursive_median_filter.pine` | 同一算法的 v3 旧实现；无 `Highlight`；文件名误叫 oscillator |
 | `middle_high_low_moving_average.pine` | —— | `Source` 输入存在但**未被使用** |
@@ -1764,11 +1757,11 @@ plot(psar, style=cross, color=blue)
 - **`alpha_decreasing_exponential_moving_average.pine`**：`alpha = 2/(bar_index+1)`，`bar_index` 由图表左边界决定 → 多加载/少加载历史、换周期，输出的曲线形状都会变。**不要用它做跨品种/跨周期的对比。**
 - **所有 Ehlers 系脚本默认 `src = hl2`**（`ehlers_leading_indicator`、`ehlers_mesa_adaptive_moving_averages`、`ehlers_optimum_elliptic_filter`、`ehlers_modified_optimum_elliptic_filter`、`distance_coefficient_filter`、`ehlers_distance_coefficient_filter`）；其余脚本默认 `close`。混着叠加时注意输入不一致。
 - **`middle_high_low_moving_average` 与 `fractal_adaptive_moving_average`** 用 `highest()/lowest()` 的默认 `high/low`，而不是 `close`。
-- 全部 70 个脚本都是 `overlay=true` 的价格量纲输出（PSAR 也是价格）——**除了没有任何一个是振荡器**（包括那个叫 "oscillator" 的文件）。
+- 全部 69 个脚本都是 `overlay=true` 的价格量纲输出（PSAR 也是价格）——**除了没有任何一个是振荡器**（包括那个叫 "oscillator" 的文件）。
 
 ### 4.3 版本迁移注意
 
-本目录 70 个脚本已全部迁移到 v6，可直接复制使用。迁移时统一做了这些替换：`study()` → `indicator()`、`type=integer` → `input.int()`、`highest()` 单参数 → `ta.highest()`、裸颜色名 `green`/`red` → `color.green`/`color.red`、`transp=` → `color.new()`。
+本目录 69 个脚本已全部迁移到 v6，可直接复制使用。迁移时统一做了这些替换：`study()` → `indicator()`、`type=integer` → `input.int()`、`highest()` 单参数 → `ta.highest()`、裸颜色名 `green`/`red` → `color.green`/`color.red`、`transp=` → `color.new()`。
 
 ---
 
@@ -1784,7 +1777,7 @@ plot(psar, style=cross, color=blue)
 | 想看"滤波器设计" | `ehlers_super_smoother_filter`、`butterworth_filter`、`gaussian_filter`、`ehlers_optimum_elliptic_filter` | 参数是截止周期，可按周期分析调 |
 | 自己设计权重核 | `finite_impulse_response_filter` | 7 个系数全开放 |
 | 要成交量 | `elastic_volume_weighted_moving_average` | 唯一带成交量的脚本 |
-| 要挂告警 | 7 个 v6 脚本 + `adaptive_laguerre_filter` + `corrected_moving_average` | 只有这 9 个有 `alertcondition` |
+| 要挂告警 | 7 个 v6 脚本 + `adaptive_laguerre_filter` + `corrected_moving_average` + `exponential_*` + `hull_*` + `kaufman_*` + `simple_*` | 只有这 12 个有 `alertcondition` |
 | 要"信号"而不只是线 | `corrected_moving_average`（SMA/CMA 交叉）、`ehlers_mesa_adaptive_moving_averages`（MAMA/FAMA 交叉）、v6 家族的变色告警 | 其余脚本只能自己目视判断 |
 
 ### 阅读顺序建议

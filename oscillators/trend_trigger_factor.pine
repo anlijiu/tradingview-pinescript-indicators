@@ -1,13 +1,13 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Trend Trigger Factor script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Trend Trigger Factor", shorttitle="TTF")
+indicator("Trend Trigger Factor", shorttitle = "TTF")
 
-length = input.int(15, title="Lookback Length")
-upperLevel = input.int(100, title="Upper Trigger Level", minval=1)
-lowerLevel = input.int(-100, title="Lower Trigger Level", maxval=-1)
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
-src = input.source(close, title="Source")
+length = input.int(15, title = "Lookback Length")
+upperLevel = input.int(100, title = "Upper Trigger Level", minval = 1)
+lowerLevel = input.int(-100, title = "Lower Trigger Level", maxval = -1)
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
+src = input.source(close, title = "Source")
 
 hh = ta.highest(length)
 ll = ta.lowest(length)
@@ -18,20 +18,20 @@ sellPower = nz(hh[length]) - ll
 ttf = 200 * (buyPower - sellPower) / (buyPower + sellPower)
 
 ttfColor = ttf > upperLevel ? #0ebb23 : ttf < lowerLevel ? #ff0000 : #f4b77d
-plot(ttf, title="TTF", linewidth=2, color=ttfColor)
+plot(ttf, title = "TTF", linewidth = 2, color = ttfColor)
 
 transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(200, title="Max Level", linestyle=hline.style_dotted, color=transparent)
-upperLevelPlot = hline(upperLevel, title="Upper Trigger Level", linestyle=hline.style_dotted)
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
-lowerLevelPlot = hline(lowerLevel, title="Lower Trigger Level", linestyle=hline.style_dotted)
-minLevelPlot = hline(-200, title="Min Level", linestyle=hline.style_dotted, color=transparent)
+maxLevelPlot = hline(200, title = "Max Level", linestyle = hline.style_dotted, color = transparent)
+upperLevelPlot = hline(upperLevel, title = "Upper Trigger Level", linestyle = hline.style_dotted)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)
+lowerLevelPlot = hline(lowerLevel, title = "Lower Trigger Level", linestyle = hline.style_dotted)
+minLevelPlot = hline(-200, title = "Min Level", linestyle = hline.style_dotted, color = transparent)
 
-fill(upperLevelPlot, lowerLevelPlot, color=color.new(color.purple, 95))
+fill(upperLevelPlot, lowerLevelPlot, color = color.new(color.purple, 95))
 
 upperFillColor = ttf > upperLevel and highlightBreakouts ? color.green : transparent
 lowerFillColor = ttf < lowerLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, upperLevelPlot, color=color.new(upperFillColor, 90))
-fill(minLevelPlot, lowerLevelPlot, color=color.new(lowerFillColor, 90))
+fill(maxLevelPlot, upperLevelPlot, color = color.new(upperFillColor, 90))
+fill(minLevelPlot, lowerLevelPlot, color = color.new(lowerFillColor, 90))

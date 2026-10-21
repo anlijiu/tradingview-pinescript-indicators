@@ -3,14 +3,14 @@
 // Coppock Curve script may be freely distributed under the terms of GPL-3.0 license.
 indicator("Coppock Curve")
 
-length = input.int(10, title="Smoothing Length")
-longRocLength = input.int(14, title="Long ROC Length")
-shortRocLength = input.int(11, title="Short ROC Length")
-src = input.source(close, title="Source")
+length = input.int(10, title = "Smoothing Length")
+longRocLength = input.int(14, title = "Long ROC Length")
+shortRocLength = input.int(11, title = "Short ROC Length")
+src = input.source(close, title = "Source")
 
 coppock = ta.wma(ta.roc(src, longRocLength) + ta.roc(src, shortRocLength), length)
 
 coppockColor = coppock > 0 ? #0ebb23 : color.red
 
-plot(coppock, title="Coppock", linewidth=2, color=coppockColor)
-hline(0, title="Zero Level", linestyle=hline.style_dotted)
+plot(coppock, title = "Coppock", linewidth = 2, color = coppockColor)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted)

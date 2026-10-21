@@ -1,31 +1,31 @@
 //@version=6
 // Copyright (c) 2021-present, Alex Orekhov (everget)
 // Stochastic script may be freely distributed under the terms of GPL-3.0 license.
-const string INDICATOR_SHORT_TITLE = 'Stoch'
-indicator('Stochastic', shorttitle = INDICATOR_SHORT_TITLE, precision = 2)
+const string INDICATOR_SHORT_TITLE = "Stoch"
+indicator("Stochastic", shorttitle = INDICATOR_SHORT_TITLE, precision = 2)
 
-const string calcGroup = 'Calculation'
-periodK = input.int(14, minval = 1, title = 'K', group = calcGroup)
-periodD = input.int(3, minval = 1, title = 'D', group = calcGroup)
-smoothK = input.int(3, minval = 1, title = 'Smooth', group = calcGroup)
-src = input.source(close, title = 'Source', group = calcGroup)
+const string calcGroup = "Calculation"
+periodK = input.int(14, minval = 1, title = "K", group = calcGroup)
+periodD = input.int(3, minval = 1, title = "D", group = calcGroup)
+smoothK = input.int(3, minval = 1, title = "Smooth", group = calcGroup)
+src = input.source(close, title = "Source", group = calcGroup)
 
-const string levelsGroup = 'Levels'
-obLevel = input.int(80, title = 'Overbought Level', group = levelsGroup)
-osLevel = input.int(20, title = 'Oversold Level', group = levelsGroup)
-maxLevel = input.int(100, title = 'Max Level', group = levelsGroup)
-minLevel = input.int(0, title = 'Min Level', group = levelsGroup)
+const string levelsGroup = "Levels"
+obLevel = input.int(80, title = "Overbought Level", group = levelsGroup)
+osLevel = input.int(20, title = "Oversold Level", group = levelsGroup)
+maxLevel = input.int(100, title = "Max Level", group = levelsGroup)
+minLevel = input.int(0, title = "Min Level", group = levelsGroup)
 
-const string visualGroup = 'Visuals'
-showHistogram = input.bool(false, title = 'Show Histogram ?', group = visualGroup)
-const string highlightBreakoutsTooltip = 'Fills the area between the overbought/oversold levels and the pane borders when %K breaks out of them'
-highlightBreakouts = input.bool(true, title = 'Highlight Overbought/Oversold Breakouts ?', tooltip = highlightBreakoutsTooltip, group = visualGroup)
-const string highlightCrossoversTooltip = 'Plots a mark whenever %K crosses %D'
-highlightCrossovers = input.bool(true, title = 'Highlight K/D Crossovers ?', tooltip = highlightCrossoversTooltip, group = visualGroup)
-const string highlightMiddleTooltip = 'Colors the background according to the side of the middle line %K is on'
-highlightMiddleCrossovers = input.bool(true, title = 'Highlight Middle Line Crossovers ?', tooltip = highlightMiddleTooltip, group = visualGroup)
-const string applyRibbonFillingTooltip = 'Colors the ribbon between %K and %D according to their relative position'
-applyRibbonFilling = input.bool(true, title = 'Apply Ribbon Filling ?', tooltip = applyRibbonFillingTooltip, group = visualGroup)
+const string visualGroup = "Visuals"
+showHistogram = input.bool(false, title = "Show Histogram ?", group = visualGroup)
+const string highlightBreakoutsTooltip = "Fills the area between the overbought/oversold levels and the pane borders when %K breaks out of them"
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?", tooltip = highlightBreakoutsTooltip, group = visualGroup)
+const string highlightCrossoversTooltip = "Plots a mark whenever %K crosses %D"
+highlightCrossovers = input.bool(true, title = "Highlight K/D Crossovers ?", tooltip = highlightCrossoversTooltip, group = visualGroup)
+const string highlightMiddleTooltip = "Colors the background according to the side of the middle line %K is on"
+highlightMiddleCrossovers = input.bool(true, title = "Highlight Middle Line Crossovers ?", tooltip = highlightMiddleTooltip, group = visualGroup)
+const string applyRibbonFillingTooltip = "Colors the ribbon between %K and %D according to their relative position"
+applyRibbonFilling = input.bool(true, title = "Apply Ribbon Filling ?", tooltip = applyRibbonFillingTooltip, group = visualGroup)
 
 //---
 
@@ -61,42 +61,60 @@ dColor = applyRibbonFilling ? trendColor : dColorConst
 
 histColor = hist >= 0 ? (hist[1] < hist ? histRisingBullishColor : histFallingBullishColor) : (hist[1] < hist ? histRisingBearishColor : histFallingBearishColor)
 
-kPlot = plot(k, title = '%K', color = kColor)
-dPlot = plot(d, title = '%D', color = dColor)
+kPlot = plot(k, title = "%K", color = kColor)
+dPlot = plot(d, title = "%D", color = dColor)
 
-plot(showHistogram ? hist : na, title = 'Histogram', style = plot.style_columns, color = histColor)
+plot(showHistogram ? hist : na, title = "Histogram", style = plot.style_columns, color = histColor)
 
-maxLevelPlot = hline(maxLevel, title = 'Max Level', linestyle = hline.style_dotted, color = noneColor)
-obLevelPlot = hline(obLevel, title = 'Overbought Level', linestyle = hline.style_dotted, color = obLevelColor)
-hline(50, title = 'Middle Level', linestyle = hline.style_dotted, color = middleLevelColor)
-osLevelPlot = hline(osLevel, title = 'Oversold Level', linestyle = hline.style_dotted, color = osLevelColor)
-minLevelPlot = hline(minLevel, title = 'Min Level', linestyle = hline.style_dotted, color = noneColor)
+maxLevelPlot = hline(maxLevel, title = "Max Level", linestyle = hline.style_dotted, color = noneColor)
+obLevelPlot = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted, color = obLevelColor)
+hline(50, title = "Middle Level", linestyle = hline.style_dotted, color = middleLevelColor)
+osLevelPlot = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted, color = osLevelColor)
+minLevelPlot = hline(minLevel, title = "Min Level", linestyle = hline.style_dotted, color = noneColor)
 
-fill(obLevelPlot, osLevelPlot, title = 'Middle Zone', color = middleZoneFillColor)
+fill(obLevelPlot, osLevelPlot, title = "Middle Zone", color = middleZoneFillColor)
 
 obFillColor = k > obLevel and highlightBreakouts ? color.green : na
 osFillColor = k < osLevel and highlightBreakouts ? color.red : na
 
-fill(maxLevelPlot, obLevelPlot, title = 'Upper Band Breakout', color = color.new(obFillColor, 85))
-fill(minLevelPlot, osLevelPlot, title = 'Lower Band Breakout', color = color.new(osFillColor, 85))
+fill(maxLevelPlot, obLevelPlot, title = "Upper Band Breakout", color = color.new(obFillColor, 85))
+fill(minLevelPlot, osLevelPlot, title = "Lower Band Breakout", color = color.new(osFillColor, 85))
 
 fillColor = applyRibbonFilling ? trendColor : na
-fill(kPlot, dPlot, title = 'Ribbon', color = color.new(fillColor, 70))
+fill(kPlot, dPlot, title = "Ribbon", color = color.new(fillColor, 70))
 
 middleCrossBgColor = highlightMiddleCrossovers ? (k > 50 ? color.green : color.red) : na
-bgcolor(color.new(middleCrossBgColor, 90), title = 'Middle Line Side')
+bgcolor(color.new(middleCrossBgColor, 90), title = "Middle Line Side")
 
 crossoverSignal = ta.crossover(k, d)
 crossunderSignal = ta.crossunder(k, d)
 
-plotshape(highlightCrossovers and crossoverSignal ? k : na, title = 'K/D Crossover', location = location.absolute, style = shape.circle, size = size.tiny, color = color.green)
-plotshape(highlightCrossovers and crossunderSignal ? k : na, title = 'K/D Crossunder', location = location.absolute, style = shape.circle, size = size.tiny, color = color.red)
+plotshape(highlightCrossovers and crossoverSignal ? k : na,
+    title = "K/D Crossover",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.green)
+plotshape(highlightCrossovers and crossunderSignal ? k : na,
+    title = "K/D Crossunder",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.red)
 
 //---
 
-alertcondition(crossoverSignal, title = 'K/D Crossover', message = '%K crossed over %D\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(crossunderSignal, title = 'K/D Crossunder', message = '%K crossed under %D\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossover(k, obLevel), title = 'Overbought Breakout', message = '%K broke above the overbought level\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossunder(k, osLevel), title = 'Oversold Breakout', message = '%K broke below the oversold level\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossover(k, 50), title = 'Middle Line Crossover', message = '%K crossed above the middle line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossunder(k, 50), title = 'Middle Line Crossunder', message = '%K crossed below the middle line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(crossoverSignal, title = "K/D Crossover", message = "%K crossed over %D\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(crossunderSignal, title = "K/D Crossunder", message = "%K crossed under %D\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossover(k, obLevel),
+    title = "Overbought Breakout",
+    message = "%K broke above the overbought level\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossunder(k, osLevel),
+    title = "Oversold Breakout",
+    message = "%K broke below the oversold level\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossover(k, 50),
+    title = "Middle Line Crossover",
+    message = "%K crossed above the middle line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossunder(k, 50),
+    title = "Middle Line Crossunder",
+    message = "%K crossed below the middle line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")

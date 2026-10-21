@@ -1,9 +1,9 @@
 //@version=6
 // Copyright (c) 2017-present, Alex Orekhov (everget)
 // Accumulative Swing Index script may be freely distributed under the terms of GPL-3.0 license.
-indicator("Accumulative Swing Index", shorttitle="ASI")
+indicator("Accumulative Swing Index", shorttitle = "ASI")
 
-limit = input.float(10000, title="Limit Move Value")
+limit = input.float(10000, title = "Limit Move Value")
 
 // Swing Index
 getSI(limit) =>
@@ -21,4 +21,4 @@ asi = ta.cum(getSI(limit))
 
 asiColor = asi >= asi[1] ? #0ebb23 : color.red
 
-plot(asi, title="ASI", color=asiColor)
+plot(asi, title = "ASI", color = asiColor)

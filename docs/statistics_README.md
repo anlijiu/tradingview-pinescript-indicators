@@ -1,6 +1,6 @@
 # statistics —— Pine Script 统计 / 分布 / 基本面聚合脚本
 
-本目录收录 17 个用 Pine Script 写的**统计类**指标（7 个 `//@version=3`、9 个 `//@version=4`、1 个 `//@version=6`）。
+本目录收录 17 个用 Pine Script 写的**统计类**指标（全部 `//@version=6`）。
 它们不是交易信号，也不是技术指标，而是把「历史数据里发生过什么」量化出来：
 
 - 现在离历史最高点有多远 / 多久没创新高；
@@ -10,7 +10,7 @@
 - 把**财报（DPS / EPS）、美债收益率、历届总统任期涨幅**等外部数据聚合成柱状对比图；
 - 以及对一段行情做「体检」的 **Candles History** 汇总器。
 
-> 所有脚本都只有 `study()` / `indicator()`，**没有 `strategy()`、不下单、不产生买卖信号**（少数脚本带 `alertcondition`，但那是「统计值穿越阈值」的提醒，不是交易指令）。
+> 所有脚本都只有 `indicator()`，**没有 `strategy()`、不下单、不产生买卖信号**（少数脚本带 `alertcondition`，但那是「统计值穿越阈值」的提醒，不是交易指令）。
 > 所有统计都基于**当前图表加载到的历史**：默认状态下 TradingView 只加载有限根 K 线，`cum()` 类累计值会随「图表历史长度 / 付费套餐的历史上限」变化，换周期、换品种、换区间，结果就不同 —— 这是读本目录所有脚本的前提。
 
 ---
@@ -64,7 +64,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 17 | `candles_history.pine` | 6 | 否 | 行情「体检」：28 项指标任选其一 | 副图一条红线，**读最后一个值** | — |
 
-细节备注：`bullish_bearish_candle_series_distribution.pine`（58 `plot` + 6 `plotshape` = 64）与 `close_to_close_percent_change_distribution.pine`（50 `plot` + 13 `plotshape` = 63）的绘图对象数量已经顶到 / 逼近 Pine 的绘图数量上限（64），想自己扩桶、扩段长的话先确认还能不能编译通过。
+细节备注：`bullish_bearish_candle_series_distribution.pine`（58 `plot` + 6 `plotshape` = 64）与 `close_to_close_percent_change_distribution.pine`（50 `plot` + 13 `plotshape` = 63）的绘图对象数量已经顶到 / 逼近 Pine 的绘图数量上限（64，硬上限，超一个就编译失败）。**这两个脚本不能再加任何 `plot`/`plotshape`**；自己扩桶、扩段长前先确认还能编译通过。
 
 ---
 
@@ -94,7 +94,7 @@ plot(value, offset=(-3 * space), style=plot.style_histogram, linewidth=width, sh
 
 `plotshape(..., location=location.absolute, text=" 10 ")` 再在同样的 offset 位置钉一个标签，就得到刻度文字。
 
-这套做法在 v3 时代几乎是画直方图的唯一手段；v4 起也可以用 `line.new` / `box.new` / `table.new` 做得更灵活（本目录的 `gaps_percent_size_distribution.pine` 就是 v4 的 `line.new` 版本，见套路 C）。
+这套做法在 v3 时代几乎是画直方图的唯一手段；现在也可以用 `line.new` / `box.new` / `table.new` 做得更灵活（本目录的 `gaps_percent_size_distribution.pine` 走的就是 `line.new` 路线，见套路 C）。
 
 ### 套路 C：`line.new()` / `label.new()` 手工绘图
 
@@ -159,6 +159,8 @@ hrathLevel := hrATH > hrATH[1] ? close : nz(hrathLevel[1], close)
 ```
 
 这是一个「**阶梯线**」：只在算力刷新高的那些 bar 上更新数值，其余时间保持不动。`alertcondition(hrATH != hrATH[1], ...)` 在算力刷新高时发提醒。
+
+**数据源**：算力品种由 `Symbol` 输入项（`input.symbol`，默认 `QUANDL:BCHAIN/HRATE`）指定，可换成其他算力/链上数据序列。
 
 **输出**：**主图**（`overlay=true`）一条 2px 黑色阶梯线，代表「最近一次算力创新高时的 BTC 价格」。打开 `Highlight Price Movements ?` 后，收盘价高于该水平显示绿色、低于显示红色、持平显示紫色。
 
@@ -255,7 +257,7 @@ if count == 0                   // 只在「段刚被打断」的这根 bar 上�
 - 记账口径是 `len = count[1] + 1`，即**把「打断这段的那根 K 线」也算进段长**。所以列标签 `N` 对应的实际连续根数是 `N − 1`；自己对照 TradingView 的「连阳统计」时会有 1 根的偏差；
 - 只统计「已经结束」的段：**数据最后一根仍在延续的段不会被记账**（所以要判断「当前这段已经 7 连阳了」，得看图上实时值或另写脚本）；
 - 连续多根反向 K 线时，`count == 0` 会反复成立，但每次 `len` 都算成 1（无对应桶），不会污染统计；
-- 58 个 `plot` + 6 个 `plotshape` = **64 个绘图对象，正好是 Pine 的绘图数量上限**。这也解释了作者为什么把段长停在 59：再加一根 `plot` 就编译不过了。
+- 58 个 `plot` + 6 个 `plotshape` = **64 个绘图对象，正好是 Pine 的绘图数量硬上限**（再加一根 `plot` 就编译失败）。这也解释了作者为什么把段长停在 59。
 
 ---
 
@@ -430,7 +432,7 @@ pearsonCorr = correlation(data1, data2, length)
 - 默认 `sym1 = FX:AUDUSD`、`sym2 = FOREXCOM:XAUUSD`、`length = 20`；比较同一品种时 `kendallCorr` 直接返回 1；
 - **它比较的是价格水平，不是收益率**：两条带趋势的序列即使毫无因果关系也会得到很高的秩相关（伪相关）。要做严谨的比较，把 `src` 换成 `roc(close,1)`、`change(close,1)` 之类的收益率；
 - 嵌套循环是 O(n²)，`length` 拉到几百会明显拖慢图表；
-- v3 里 `security(sym, period, src)` 的第三参没写 `lookahead`，属于「不预知未来」的默认行为，但仍然会在高周期品种和当前品种数据对齐时产生轻微错位。
+- 脚本用的是 `request.security(sym, timeframe.period, src)`（默认 `barmerge.lookahead_off`），不预知未来，但在高周期品种和当前品种数据对齐时仍会有轻微错位。
 
 ---
 
@@ -447,8 +449,8 @@ pearsonCorr = correlation(data1, data2, length)
 ```pine
 _id(type) => "ESD_FACTSET:" + syminfo.prefix + ";" + syminfo.ticker + ";" + type
 id = _id("DIVIDENDS")                                            // 例：ESD_FACTSET:NASDAQ;AAPL;DIVIDENDS
-esd      = security(id, "D", close, true, lookahead=true)        // 实际值
-estimate = security(id, "D", open,  true, lookahead=true)        // 分析师预期值
+esd      = request.security(id, "D", close, barmerge.gaps_on)     // 实际值
+estimate = request.security(id, "D", open,  barmerge.gaps_on)     // 分析师预期值
 
 _count(src, yearTarget) =>
     var float counter = na
@@ -468,7 +470,7 @@ _count(src, yearTarget) =>
 **备注**（这两个脚本的坑最多）：
 - **只对个股有效**：`ESD_FACTSET` 是财报数据，forex / crypto / 指数上取不到值，脚本会一片空白；
 - **需要足够长的图表历史**：脚本要求图表能覆盖到 1990 年之后的数据，否则那些年的柱子是 `na`（`_count` 的 `var float counter` 初值是 `na`，如果图表第一根就落在目标年中间，累加会一直是 `na`）；
-- **`lookahead=true`**：`security()` 第 5 参打开了 `barmerge.lookahead_on`。这在纯展示时是为了让「财报事件」和 K 线对齐，但**如果拿它做回测就是未来函数**，务必注意；
+- **已移除 `lookahead_on`**：早先的 v3/v4 版本用 `lookahead=true` 让「财报事件」和 K 线对齐，那等于引入未来数据；迁移到 v6 时改成默认的 `barmerge.lookahead_off`，因此历史 bar 上的数值会比旧版晚一根出现，也**不会再有前视偏差**；
 - **`estimate`（预期值）算出来了但没有画**：文件里只 `plot` 了 `esd` 系列；被注释掉的生成器代码里有半透明蓝色的 `estimate` 柱，取消注释即可恢复「实际 vs 预期」的双柱；
 - 年份范围写死 1990–2030，**2030 年之后脚本需要手动加年份分支**；
 - 脚本没有 `overlay`，是副图；`space` 默认 8 根 K 线间距，在小周期图上 21 根柱子会挤在一起，调大 `Space Between Columns`。
@@ -480,7 +482,9 @@ _count(src, yearTarget) =>
 **原理**：
 
 ```pine
-_get(sym) => nz(security(sym, timeframe.period, close, barmerge.gaps_off, barmerge.lookahead_on))
+_get(sym) =>
+    out = nz(request.security(sym, timeframe.period, close, barmerge.gaps_off))
+    out
 
 US30Y = _get("TVC:US30Y")
 ...
@@ -501,7 +505,7 @@ plotshape(not modeLines ? min(US30Y, 0) : na, offset=(0 * space), text=" 30Y ", 
 
 **备注**：
 - 与图表本身的品种无关 —— 在任何图表上加载，画出来的都是美债收益率；
-- `barmerge.lookahead_on` 在这里用于让稀疏的宏观数据和 K 线对齐，属于常见的展示用法，但同样不适合直接拿来回测；
+- 已改用默认的 `barmerge.lookahead_off`（旧版曾用 `lookahead_on` 对齐稀疏宏观数据）：现在不会读到未来值，可安全用于回测；代价是数据在 bar 上的出现时间会比旧版略晚；
 - 想加期限（比如 20Y、5Y TIPS）照抄一组三行 `plot/plot/plotshape` 并把 offset 往下顺延即可 —— 注意 `space` 与 `columnWidth` 的配合，柱子太宽会互相压住。
 
 #### 16. `ticker_performance_by_us_president.pine` —— 历届总统任期涨幅
@@ -573,7 +577,7 @@ plot(out, title="Metric", color=red)
 - 「Longest Bullish/Bearish Serie」的记账同样是 `bullMax := bullCount[1] + 1`，**把打断连续段的那根也算了进去**，与 #6 的段长口径同源，会比实际多 1 根；而且**数据末尾仍在延续的段不计入**；
 - 「Average」用的是 `cum(range)/(n+1)`（全历史简单平均），不是滚动均线；
 - `precision=1` 是全局精度，选「Available Candles」这类整数指标时会显示成 `1234.0`；
-- 想一次看到全部指标，可以复制这个脚本、把每个指标各自 `plot` 成一条线（注意 v3 的绘图数量上限），或者用 `label`/`table` 改写成信息面板（v4+ 支持 `table`）。README 无法替你完成这一步 —— 这个脚本的定位始终是「一次看一个」。
+- 想一次看到全部指标，可以复制这个脚本、把每个指标各自 `plot` 成一条线（注意 Pine 的绘图数量上限：一个脚本最多 64 个绘图对象），或者用 `label`/`table` 改写成信息面板（v4+ 支持 `table`）。README 无法替你完成这一步 —— 这个脚本的定位始终是「一次看一个」。
 
 ---
 
@@ -597,9 +601,9 @@ plot(out, title="Metric", color=red)
 | `z_score` | 内置 `stdev` = 总体（n）、手写 = 样本（n−1） | 两者相差 `sqrt(n/(n−1))` |
 | `linear_regression_all_data` | 回归用全历史，画线只画最近 5000 根 | 线看起来比统计结论「短」 |
 | `kurtosis_indicator` | 不含任何四阶矩计算 | 名不副实，是动量加速度 |
-| `dividends_per_share_dps_yearly` / `earnings_..._eps_...` | `lookahead=true` | 展示可接受，回测不可用（未来函数） |
+| `dividends_per_share_dps_yearly` / `earnings_..._eps_...` | 旧版用 `lookahead=true`（已移除） | 现为默认 `lookahead_off`，无前视偏差 |
 | 同上 | `ESD_FACTSET` 数据源 + 1990–2030 硬编码年份 | 只适用个股、需订阅、2030 年后失效 |
-| `bitcoin_ath_hash_rate_level` | `QUANDL:BCHAIN/HRATE` | 数据集可能已下线 |
+| `bitcoin_ath_hash_rate_level` | 默认 `QUANDL:BCHAIN/HRATE`（已做成 `Symbol` 输入） | 数据集可能已下线，可自行换品种 |
 | `kendall_rank_correlation_coefficient` | 比较的是价格水平不是收益率 | 易产生伪相关 |
 | `ticker_performance_by_us_president` | 需要图表历史覆盖任期；终点涨幅、非年化 | 早期总统柱为 `na`，任期长短不可比 |
 
@@ -617,7 +621,7 @@ plot(out, title="Metric", color=red)
 3. **`var` 在函数内同样保持跨 bar 状态**，且**每个调用点各自独立**。`_count()`、`_perf()`、`_ytd()` 都靠这一点实现「每个年份/每位总统一个独立累加器」。
 4. **`offset` + `show_last=1` 是 v3 时代画柱状图的主要办法**（见「套路 B」，v4 起可改用 `line.new`）。理解这一点，所有直方图脚本的「横轴」都不再神秘：那不是真实时间轴，而是把当前 bar 的左侧空白当画布。
 5. **`valuewhen(cond, src, 0)` 是「取最后一次满足条件时的值」**，本目录用它取年初开盘价、起点开盘价、第一根的时间分量。`0` 是出现次数参数（0 = 最近一次）。
-6. **`security()` 在这里有三种完全不同的用法**：取其他品种的价格（Kendall）、取宏观/财报数据（DPS/EPS、Treasury、Hash Rate）、用「同一价格在不同周期上是否一致」做图表类型判断（见 `../research/`）。其中 DPS/EPS 与美债收益率用 `lookahead=true` 做对齐，展示可以、回测危险。
+6. **`security()` 在这里有三种完全不同的用法**：取其他品种的价格（Kendall）、取宏观/财报数据（DPS/EPS、Treasury、Hash Rate）、用「同一价格在不同周期上是否一致」做图表类型判断（见 `../research/`）。DPS/EPS 与美债收益率旧版曾用 `lookahead=true` 对齐，现统一为默认 `lookahead_off`，可安全用于回测。
 7. **版本迁移注意**：
    - v3 → v4：`n` → `bar_index`、`transp=` → `color.new()`；`iff()` → `?:`；`input(type=integer)` → `input.int()`；
    - v4 → v5/v6：`study()` → `indicator()`、`security()` → `request.security()`、`change()`/`cum()` → `ta.change()`/`ta.cum()`、`abs`/`pow`/`sqrt` → `math.abs`/`math.pow`/`math.sqrt`（本目录的 v6 脚本已经这样写）。

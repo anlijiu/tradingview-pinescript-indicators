@@ -1,9 +1,9 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // All-Time High Days script may be freely distributed under the terms of GPL-3.0 license.
-indicator("All-Time High Days", shorttitle="ATH Days", precision=0)
+indicator("All-Time High Days", shorttitle = "ATH Days", precision = 0)
 
-highlightATH = input.bool(false, title="Highlight ATH ?")
+highlightATH = input.bool(false, title = "Highlight ATH ?")
 
 ath = high
 ath := na(ath[1]) ? ath : (high > ath[1] ? high : ath[1])
@@ -12,6 +12,6 @@ cond = high == ath
 transparent = color.new(color.white, 100)
 
 bars = ta.barssince(cond)
-plot(bars, title="ATH Days", color=#674ea7)
+plot(bars, title = "ATH Days", color = #674ea7)
 
 bgcolor(cond and highlightATH ? color.orange : transparent)

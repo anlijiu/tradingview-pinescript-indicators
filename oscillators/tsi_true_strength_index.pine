@@ -1,22 +1,22 @@
 //@version=6
 // Copyright (c) 2021-present, Alex Orekhov (everget)
 // True Strength Index (TSI) script may be freely distributed under the terms of GPL-3.0 license.
-indicator("True Strength Index", shorttitle="TSI")
+indicator("True Strength Index", shorttitle = "TSI")
 
-longLength = input.int(25, title="Long Length")
-shortLength = input.int(13, title="Short Length")
-signalLength = input.int(13, title="Signal Length", minval=1)
-src = input.source(close, title="Source")
+longLength = input.int(25, title = "Long Length")
+shortLength = input.int(13, title = "Short Length")
+signalLength = input.int(13, title = "Signal Length", minval = 1)
+src = input.source(close, title = "Source")
 
-obLevel = input.int(40, title="Overbought Level")
-osLevel = input.int(-40, title="Oversold Level")
-maxLevel = input.int(75, title="Max Level")
-minLevel = input.int(-75, title="Min Level")
-showHistogram = input.bool(false, title="Show Histogram ?")
-highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
-highlightCrossovers = input.bool(true, title="Highlight TSI/Signal Crossovers ?")
-highlightZeroCrossovers = input.bool(true, title="Highlight Zero Line Crossovers ?")
-applyRibbonFilling = input.bool(true, title="Apply Ribbon Filling ?")
+obLevel = input.int(40, title = "Overbought Level")
+osLevel = input.int(-40, title = "Oversold Level")
+maxLevel = input.int(75, title = "Max Level")
+minLevel = input.int(-75, title = "Min Level")
+showHistogram = input.bool(false, title = "Show Histogram ?")
+highlightBreakouts = input.bool(true, title = "Highlight Overbought/Oversold Breakouts ?")
+highlightCrossovers = input.bool(true, title = "Highlight TSI/Signal Crossovers ?")
+highlightZeroCrossovers = input.bool(true, title = "Highlight Zero Line Crossovers ?")
+applyRibbonFilling = input.bool(true, title = "Apply Ribbon Filling ?")
 
 mom = ta.change(src)
 numerator = ta.ema(ta.ema(mom, longLength), shortLength)
@@ -28,36 +28,46 @@ trendColor = tsi > signal ? #0ebb23 : color.red
 tsiColor = applyRibbonFilling ? trendColor : #ff3e7d
 signalColor = applyRibbonFilling ? trendColor : #3c78d8
 
-tsiPlot = plot(tsi, title="TSI", color=tsiColor)
-signalPlot = plot(signal, title="Signal", color=signalColor)
+tsiPlot = plot(tsi, title = "TSI", color = tsiColor)
+signalPlot = plot(signal, title = "Signal", color = signalColor)
 
 hist = tsi - signal
 histColor = hist >= 0 ? hist[1] < hist ? #26A69A : #B2DFDB : hist[1] < hist ? #FFCDD2 : #EF5350
-plot(showHistogram ? hist : na, title="Histogram", style=plot.style_columns, color=histColor)
+plot(showHistogram ? hist : na, title = "Histogram", style = plot.style_columns, color = histColor)
 
 var color noneColor = color.new(color.white, 100)
 
-maxLevelPlot = hline(maxLevel, title="Max Level", linestyle=hline.style_dotted, color=noneColor)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted, color=#00796b)
-hline(0, title="Zero Level", linestyle=hline.style_dotted, color=#989898)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted, color=#f57f17)
-minLevelPlot = hline(minLevel, title="Min Level", linestyle=hline.style_dotted, color=noneColor)
-fill(obLevelPlot, osLevelPlot, title="Middle Zone", color=color.new(color.purple, 95))
+maxLevelPlot = hline(maxLevel, title = "Max Level", linestyle = hline.style_dotted, color = noneColor)
+obLevelPlot = hline(obLevel, title = "Overbought Level", linestyle = hline.style_dotted, color = #00796b)
+hline(0, title = "Zero Level", linestyle = hline.style_dotted, color = #989898)
+osLevelPlot = hline(osLevel, title = "Oversold Level", linestyle = hline.style_dotted, color = #f57f17)
+minLevelPlot = hline(minLevel, title = "Min Level", linestyle = hline.style_dotted, color = noneColor)
+fill(obLevelPlot, osLevelPlot, title = "Middle Zone", color = color.new(color.purple, 95))
 
 obFillColor = tsi > obLevel and highlightBreakouts ? color.green : noneColor
 osFillColor = tsi < osLevel and highlightBreakouts ? color.red : noneColor
 
-fill(maxLevelPlot, obLevelPlot, title="Overbought Level Breakout", color=color.new(obFillColor, 85))
-fill(minLevelPlot, osLevelPlot, title="Oversold Level Breakout", color=color.new(osFillColor, 85))
+fill(maxLevelPlot, obLevelPlot, title = "Overbought Level Breakout", color = color.new(obFillColor, 85))
+fill(minLevelPlot, osLevelPlot, title = "Oversold Level Breakout", color = color.new(osFillColor, 85))
 
 fillColor = applyRibbonFilling ? trendColor : noneColor
-fill(tsiPlot, signalPlot, title="Ribbon", color=color.new(fillColor, 70))
+fill(tsiPlot, signalPlot, title = "Ribbon", color = color.new(fillColor, 70))
 
 zeroCrossBgColor = highlightZeroCrossovers ? (tsi > 0 ? color.green : color.red) : noneColor
-bgcolor(color.new(zeroCrossBgColor, 90), title="Zero Line Crossover Background")
+bgcolor(color.new(zeroCrossBgColor, 90), title = "Zero Line Crossover Background")
 
 crossoverSignal = ta.crossover(tsi, signal)
 crossunderSignal = ta.crossunder(tsi, signal)
 
-plotshape(highlightCrossovers and crossoverSignal ? tsi : na, title="TSI/Signal Crossover", location=location.absolute, style=shape.circle, size=size.tiny, color=color.green)
-plotshape(highlightCrossovers and crossunderSignal ? tsi : na, title="TSI/Signal Crossunder", location=location.absolute, style=shape.circle, size=size.tiny, color=color.red)
+plotshape(highlightCrossovers and crossoverSignal ? tsi : na,
+    title = "TSI/Signal Crossover",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.green)
+plotshape(highlightCrossovers and crossunderSignal ? tsi : na,
+    title = "TSI/Signal Crossunder",
+    location = location.absolute,
+    style = shape.circle,
+    size = size.tiny,
+    color = color.red)

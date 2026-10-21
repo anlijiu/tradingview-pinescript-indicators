@@ -1,9 +1,9 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Wilder Modified Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Wilder Modified Moving Average", shorttitle="WMMA", overlay=true)
+indicator("Wilder Modified Moving Average", shorttitle = "WMMA", overlay = true)
 
-length = input.int(14, title="Length", minval=1)
-src = input.source(close, title="Source")
+length = input.int(14, title = "Length", minval = 1)
+src = input.source(close, title = "Source")
 
-plot(ta.rma(src, length), title="WMMA", linewidth=2, color=#6d1e7f)
+plot(ta.rma(src, length), title = "WMMA", linewidth = 2, color = #6d1e7f)

@@ -1,7 +1,7 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // UTC Clock script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("UTC Clock", overlay=true)
+indicator("UTC Clock", overlay = true)
 
 secondsRaw = math.floor(timenow / 1000)
 minutesRaw = math.floor(secondsRaw / 60)
@@ -17,12 +17,12 @@ f_format(_val) =>
 labelText = f_format(hours) + ":" + f_format(minutes) + ":" + f_format(seconds)
 
 var label l = label.new(
-     x=bar_index,
-     y=na,
-     text="",
-     textcolor=color.black,
-     style=label.style_none,
-     size=size.huge
+     x = bar_index,
+     y = na,
+     text = "",
+     textcolor = color.black,
+     style = label.style_none,
+     size = size.huge
      )
 
 label.set_text(l, labelText)

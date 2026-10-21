@@ -1,7 +1,7 @@
 //@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Kagi Chart Identifier script may be freely distributed under the terms of the GPL-3.0 license.
-indicator("Kagi Chart Identifier", overlay=true)
+indicator("Kagi Chart Identifier", overlay = true)
 
 var ocCount = -1
 if open[1] == close or close[1] == open
@@ -27,13 +27,13 @@ labelColor = #1e90ff
 whiteColor = color.white
 
 var label kagiLabel = label.new(
-     x=bar_index,
-     y=na,
-     text="",
-     color=labelColor,
-     textcolor=whiteColor,
-     style=label.style_label_down,
-     size=size.normal
+     x = bar_index,
+     y = na,
+     text = "",
+     color = labelColor,
+     textcolor = whiteColor,
+     style = label.style_label_down,
+     size = size.normal
      )
 
 label.set_text(kagiLabel, labelText + stats)

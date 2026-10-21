@@ -1,26 +1,26 @@
 //@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Accumulation/Distribution Line script may be freely distributed under the terms of GPL-3.0 license.
-const string INDICATOR_SHORT_TITLE = 'Accum/Dist'
-indicator('Accumulation/Distribution Line', shorttitle = INDICATOR_SHORT_TITLE, precision = 0)
+const string INDICATOR_SHORT_TITLE = "Accum/Dist"
+indicator("Accumulation/Distribution Line", shorttitle = INDICATOR_SHORT_TITLE, precision = 0)
 
-const string calcGroup = 'Calculation'
-signalType = input.string('SMA', title = 'Signal Smoothing Type', options = ['EMA', 'SMA'], group = calcGroup)
-signalLength = input.int(21, minval = 1, title = 'Signal Smoothing Length', group = calcGroup)
+const string calcGroup = "Calculation"
+signalType = input.string("SMA", title = "Signal Smoothing Type", options = ["EMA", "SMA"], group = calcGroup)
+signalLength = input.int(21, minval = 1, title = "Signal Smoothing Length", group = calcGroup)
 
-const string visualGroup = 'Visuals'
-showSignal = input.bool(true, title = 'Show Signal ?', group = visualGroup)
-const string highlightCrossoversTooltip = 'Plots a mark whenever ' + INDICATOR_SHORT_TITLE + ' crosses its signal line'
-highlightCrossovers = input.bool(false, title = 'Highlight Crossovers ?', tooltip = highlightCrossoversTooltip, group = visualGroup)
-const string applyFillingTooltip = 'Colors the ribbon between ' + INDICATOR_SHORT_TITLE + ' and its signal line according to their relative position'
-applyFilling = input.bool(true, title = 'Apply Ribbon Filling ?', tooltip = applyFillingTooltip, group = visualGroup)
+const string visualGroup = "Visuals"
+showSignal = input.bool(true, title = "Show Signal ?", group = visualGroup)
+const string highlightCrossoversTooltip = "Plots a mark whenever " + INDICATOR_SHORT_TITLE + " crosses its signal line"
+highlightCrossovers = input.bool(false, title = "Highlight Crossovers ?", tooltip = highlightCrossoversTooltip, group = visualGroup)
+const string applyFillingTooltip = "Colors the ribbon between " + INDICATOR_SHORT_TITLE + " and its signal line according to their relative position"
+applyFilling = input.bool(true, title = "Apply Ribbon Filling ?", tooltip = applyFillingTooltip, group = visualGroup)
 
 //---
 
 // The A/D line is a built-in series in v6; read it once per bar instead of on every reference
 ad = ta.accdist
 
-signal = signalType == 'EMA' ? ta.ema(ad, signalLength) : ta.sma(ad, signalLength)
+signal = signalType == "EMA" ? ta.ema(ad, signalLength) : ta.sma(ad, signalLength)
 
 //---
 
@@ -40,20 +40,28 @@ signalColor = applyFilling ? trendColor : signalColorConst
 //---
 
 adPlot = plot(ad, title = INDICATOR_SHORT_TITLE, linewidth = 2, color = adColor)
-signalPlot = plot(showSignal ? signal : na, title = 'Signal', color = signalColor)
+signalPlot = plot(showSignal ? signal : na, title = "Signal", color = signalColor)
 
 fillColor = applyFilling ? trendColor : noneColor
-fill(adPlot, signalPlot, title = 'Ribbon', color = color.new(fillColor, 70))
+fill(adPlot, signalPlot, title = "Ribbon", color = color.new(fillColor, 70))
 
 crossoverSignal = ta.crossover(ad, signal) and highlightCrossovers
 crossunderSignal = ta.crossunder(ad, signal) and highlightCrossovers
 
-plotshape(crossoverSignal ? ad : na, title = 'Crossover', location = location.absolute, style = shape.circle, size = size.tiny, color = color.green)
-plotshape(crossunderSignal ? ad : na, title = 'Crossunder', location = location.absolute, style = shape.circle, size = size.tiny, color = color.red)
+plotshape(crossoverSignal ? ad : na, title = "Crossover", location = location.absolute, style = shape.circle, size = size.tiny, color = color.green)
+plotshape(crossunderSignal ? ad : na, title = "Crossunder", location = location.absolute, style = shape.circle, size = size.tiny, color = color.red)
 
 //---
 
-alertcondition(ta.crossover(ad, signal), title = 'Crossover', message = INDICATOR_SHORT_TITLE + ' - Crossed over its signal line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossunder(ad, signal), title = 'Crossunder', message = INDICATOR_SHORT_TITLE + ' - Crossed under its signal line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossover(ad, 0), title = 'Zero Line Crossover', message = INDICATOR_SHORT_TITLE + ' - Crossed above the zero line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
-alertcondition(ta.crossunder(ad, 0), title = 'Zero Line Crossunder', message = INDICATOR_SHORT_TITLE + ' - Crossed below the zero line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossover(ad, signal),
+    title = "Crossover",
+    message = INDICATOR_SHORT_TITLE + " - Crossed over its signal line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossunder(ad, signal),
+    title = "Crossunder",
+    message = INDICATOR_SHORT_TITLE + " - Crossed under its signal line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossover(ad, 0),
+    title = "Zero Line Crossover",
+    message = INDICATOR_SHORT_TITLE + " - Crossed above the zero line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
+alertcondition(ta.crossunder(ad, 0),
+    title = "Zero Line Crossunder",
+    message = INDICATOR_SHORT_TITLE + " - Crossed below the zero line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}")
