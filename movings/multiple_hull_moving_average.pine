@@ -1,19 +1,19 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Multiple Hull Moving Average script may be freely distributed under the terms of GPL-3.0 license.
-study("Multiple Hull Moving Average", shorttitle="HMA", overlay=true)
+indicator("Multiple Hull Moving Average", shorttitle="HMA", overlay=true)
 
-len1 = input(title="1st Length", type=integer, defval=20)
-src1 = input(title="1st Source", type=source, defval=close)
-hma1 = wma(2 * wma(src1, len1 / 2) - wma(src1, len1), round(sqrt(len1)))
-plot(hma1, title="1", linewidth=2, color=#85200c, transp=0)
+len1 = input.int(20, title="1st Length")
+src1 = input.source(close, title="1st Source")
+hma1 = ta.wma(2 * ta.wma(src1, len1 / 2) - ta.wma(src1, len1), math.round(math.sqrt(len1)))
+plot(hma1, title="1", linewidth=2, color=#85200c)
 
-len2 = input(title="2nd Length", type=integer, defval=50)
-src2 = input(title="2nd Source", type=source, defval=close)
-hma2 = wma(2 * wma(src2, len2 / 2) - wma(src2, len2), round(sqrt(len2)))
-plot(hma2, title="2", linewidth=2, color=#1155cc, transp=0)
+len2 = input.int(50, title="2nd Length")
+src2 = input.source(close, title="2nd Source")
+hma2 = ta.wma(2 * ta.wma(src2, len2 / 2) - ta.wma(src2, len2), math.round(math.sqrt(len2)))
+plot(hma2, title="2", linewidth=2, color=#1155cc)
 
-len3 = input(title="3rd Length", type=integer, defval=100)
-src3 = input(title="3rd Source", type=source, defval=close)
-hma3 = wma(2 * wma(src3, len3 / 2) - wma(src3, len3), round(sqrt(len3)))
-plot(hma3, title="3", linewidth=2, color=#f1c232, transp=0)
+len3 = input.int(100, title="3rd Length")
+src3 = input.source(close, title="3rd Source")
+hma3 = ta.wma(2 * ta.wma(src3, len3 / 2) - ta.wma(src3, len3), math.round(math.sqrt(len3)))
+plot(hma3, title="3", linewidth=2, color=#f1c232)

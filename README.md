@@ -10,3 +10,7 @@ A collection of various technical indicators implemented in Pine Script for the 
 [Get $15 off your TradingView subscription!](https://www.tradingview.com/pricing/?share_your_love=everget) (*for new users only*)
 
 [Join Bybit and get up to $6,045 in bonuses!](https://bybit.com/invite?ref=56ZLQ0Z)
+
+pip install pinemcp
+pip install --force-reinstall fastmcp
+确保agent config 里面加了这个mcp

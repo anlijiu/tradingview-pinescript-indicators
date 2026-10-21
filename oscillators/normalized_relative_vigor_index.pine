@@ -1,16 +1,16 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Normalized Relative Vigor Index script may be freely distributed under the terms of the GPL-3.0 license.
-study("Normalized Relative Vigor Index", shorttitle="NRVGI")
+indicator("Normalized Relative Vigor Index", shorttitle="NRVGI")
 
-length = input(title="Length", type=integer, defval=10, minval=1)
-applyFilling = input(title="Apply Filling ?", type=bool, defval=false)
+length = input.int(10, title="Length", minval=1)
+applyFilling = input.bool(false, title="Apply Filling ?")
 
-rvgi = sum(swma(close - open), length) / sum(swma(high - low), length)
-signal = swma(rvgi)
+rvgi = math.sum(ta.swma(close - open), length) / math.sum(ta.swma(high - low), length)
+signal = ta.swma(rvgi)
 
-rvgiPlot = plot(100 * rvgi, title="NRVGI", color=green, transp=0)
-signalPlot = plot(100 * signal, title="Signal", color=red, transp=0)
+rvgiPlot = plot(100 * rvgi, title="NRVGI", color=color.green)
+signalPlot = plot(100 * signal, title="Signal", color=color.red)
 
-fillColor = applyFilling ? (rvgi > signal ? #0ebb23 : #cc0000) : color(white, 100)
-fill(rvgiPlot, signalPlot, color=fillColor, transp=0)
+fillColor = applyFilling ? (rvgi > signal ? #0ebb23 : #cc0000) : color.new(color.white, 100)
+fill(rvgiPlot, signalPlot, color=fillColor)

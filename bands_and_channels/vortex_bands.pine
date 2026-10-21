@@ -1,41 +1,73 @@
-//@version=4
+//@version=6
 // Copyright (c) 2020-present, Alex Orekhov (everget)
 // Vortex Bands script may be freely distributed under the terms of the GPL-3.0 license.
-study("Vortex Bands", shorttitle="VB", overlay=true)
+const string INDICATOR_SHORT_TITLE = 'VB'
+indicator('Vortex Bands', shorttitle = INDICATOR_SHORT_TITLE, overlay = true, behind_chart = false)
 
-length = input(title="Length", type=input.integer, defval=20)
-mult = input(title="Multiplier", type=input.float, step=0.1, defval=2)
-src = input(title="Source", type=input.source, defval=hlc3)
-barColoringType = input(title="Bar Coloring", defval="None", options=["None", "Upper > Lower", "Close Above/Below Basis", "Close Inside Cloud", "Wicks Inside Cloud"])
+const string calcGroup = 'Calculation'
+length = input.int(20, minval = 1, title = 'Length', group = calcGroup)
+mult = input.float(2, step = 0.1, title = 'Multiplier', group = calcGroup)
+src = input.source(hlc3, title = 'Source', group = calcGroup)
 
-_ema(src, alpha) =>
+const string visualGroup = 'Visuals'
+const string barColoringTypeTooltip = 'Colors price bars according to the selected ' + INDICATOR_SHORT_TITLE + ' condition'
+barColoringType = input.string(
+     'None'
+     , title = 'Bar Coloring'
+     , options = ['None', 'Upper > Lower', 'Close Above/Below Basis', 'Close Inside Cloud', 'Wicks Inside Cloud']
+     , tooltip = barColoringTypeTooltip
+     , group = visualGroup
+     )
+
+//---
+
+_ema(float src, float alpha) =>
     out = src
     out := alpha * out + (1 - alpha) * nz(out[1], out)
     out
 
-_mnma(src, length) =>
+// McNicholl Moving Average
+_mnma(float src, int length) =>
     alpha = 2 / (length + 1)
     ema1 = _ema(src, alpha)
     ema2 = _ema(ema1, alpha)
     out = ((2 - alpha) * ema1 - ema2) / (1 - alpha)
     out
 
+//---
+
 basis = _mnma(src, length)
-dev = mult * _mnma(src - basis, length)
+deviation = mult * _mnma(src - basis, length)
 
-upper = basis + dev
-lower = basis - dev
+upper = basis + deviation
+lower = basis - deviation
 
-plot(basis, title="Basis", color=color.maroon, transp=0)
-upperBandPlot = plot(upper, title="Upper", linewidth=2, color=color.blue)
-lowerBandPlot = plot(lower, title="Lower", linewidth=2, color=color.orange)
-fill(upperBandPlot, lowerBandPlot, title="Background", color=color.new(#ffd966, 90))
+//---
 
-barColor =
-     barColoringType == "Upper > Lower" ? (upper > lower ? color.lime : color.red) :
-     barColoringType == "Close Above/Below Basis" ? (close > basis ? color.lime : color.red) :
-     barColoringType == "Close Inside Cloud" ? (min(upper, lower) < close and close < max(upper, lower) ? color.lime : color.red) :
-     barColoringType == "Wicks Inside Cloud" ? (min(upper, lower) < low and high < max(upper, lower) ? color.lime : color.red) :
-     na
+const color basisColor = color.maroon
+const color upperBandColor = #1565c0
+const color lowerBandColor = #ef6c00
+const color cloudFillColor = color.new(#ffd966, 90)
 
-barcolor(barColor, title="Bar Color")
+const color positiveColor = color.lime
+const color negativeColor = color.red
+
+//---
+
+plot(basis, title = 'Basis', color = basisColor)
+upperBandPlot = plot(upper, title = 'Upper', linewidth = 2, color = upperBandColor)
+lowerBandPlot = plot(lower, title = 'Lower', linewidth = 2, color = lowerBandColor)
+
+fill(upperBandPlot, lowerBandPlot, title = 'Background', color = cloudFillColor)
+
+cloudTop = math.max(upper, lower)
+cloudBottom = math.min(upper, lower)
+
+barColor = barColoringType == 'Upper > Lower' ? (upper > lower ? positiveColor : negativeColor) : barColoringType == 'Close Above/Below Basis' ? (close > basis ? positiveColor : negativeColor) : barColoringType == 'Close Inside Cloud' ? (cloudBottom < close and close < cloudTop ? positiveColor : negativeColor) : barColoringType == 'Wicks Inside Cloud' ? (cloudBottom < low and high < cloudTop ? positiveColor : negativeColor) : na
+
+barcolor(barColor, title = 'Bar Color')
+
+//---
+
+alertcondition(ta.crossover(close, upper), title = 'Close Above Upper Band', message = INDICATOR_SHORT_TITLE + ' - Close crossed above the upper band\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossunder(close, lower), title = 'Close Below Lower Band', message = INDICATOR_SHORT_TITLE + ' - Close crossed below the lower band\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')

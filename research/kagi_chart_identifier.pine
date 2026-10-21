@@ -1,7 +1,7 @@
-//@version=4
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Kagi Chart Identifier script may be freely distributed under the terms of the GPL-3.0 license.
-study("Kagi Chart Identifier", overlay=true)
+indicator("Kagi Chart Identifier", overlay=true)
 
 var ocCount = -1
 if open[1] == close or close[1] == open
@@ -19,10 +19,10 @@ isKagi = hCount == bar_index and lCount == bar_index and ocCount == bar_index - 
 
 labelText = isKagi ? "This is Kagi Chart" : "This is not Kagi Chart"
 stats = "\n------------------------------" +
-         "\nBar Index: " + tostring(int(bar_index)) +
-         "\nO==C Candles: " + tostring(ocCount) +
-         "\nOC==H Candles: " + tostring(hCount) +
-         "\nOC==L Candles: " + tostring(lCount)
+         "\nBar Index: " + str.tostring(int(bar_index)) +
+         "\nO==C Candles: " + str.tostring(ocCount) +
+         "\nOC==H Candles: " + str.tostring(hCount) +
+         "\nOC==L Candles: " + str.tostring(lCount)
 labelColor = #1e90ff
 whiteColor = color.white
 
@@ -32,9 +32,9 @@ var label kagiLabel = label.new(
      text="",
      color=labelColor,
      textcolor=whiteColor,
-     style=label.style_labeldown,
+     style=label.style_label_down,
      size=size.normal
      )
 
 label.set_text(kagiLabel, labelText + stats)
-label.set_xy(kagiLabel, bar_index, highest(close, 10))
+label.set_xy(kagiLabel, bar_index, ta.highest(close, 10))

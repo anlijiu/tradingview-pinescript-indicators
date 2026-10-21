@@ -1,27 +1,51 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Z-Score script may be freely distributed under the terms of the GPL-3.0 license.
-study("Z-Score", shorttitle="ZSC")
+const string INDICATOR_SHORT_TITLE = 'ZSC'
+indicator('Z-Score', shorttitle = INDICATOR_SHORT_TITLE)
 
-length = input(title="Length", type=integer, minval=1, defval=14)
-stdevInput = input(title="Standard Deviation", defval="Sample", options=["Population", "Sample"])
-src = input(title="Source", type=source, defval=close)
+const string calcGroup = 'Calculation'
+length = input.int(14, minval = 1, title = 'Length', group = calcGroup)
+src = input.source(close, title = 'Source', group = calcGroup)
+stdevInput = input.string('Sample', title = 'Standard Deviation', options = ['Population', 'Sample'], group = calcGroup)
 
-sampleStdev(src, length) =>
-	dev = src - sma(src, length)
-	variance = sum(dev * dev, length) / (length - 1)
-	sqrt(variance)
+//---
 
-selectedStdev = stdevInput == "Sample"
-	 ? sampleStdev(src, length)
-	 : stdev(src, length)
+// Sample standard deviation (Bessel-corrected); the built-in ta.stdev() is population-based
+_sampleStdev(float src, int length) =>
+    deviation = src - ta.sma(src, length)
+    variance = math.sum(deviation * deviation, length) / (length - 1)
+    math.sqrt(variance)
 
-zsc = (src - sma(src, length)) / selectedStdev
+//---
 
-zscColor = zsc > 2.0 ? #0ebb23 : zsc < -2.0 ? #ff0000 : #8e7cc3
+mean = ta.sma(src, length)
 
-plot(zsc, title="Z-Score", linewidth=2, color=zscColor, transp=0, style=line)
+selectedStdev = stdevInput == 'Sample' ? _sampleStdev(src, length) : ta.stdev(src, length)
 
-hline(title="Upper Band", price=2.0, linestyle=dotted, color=#e69138)
-hline(0, title="Zero Level", linestyle=dotted, color=#989898)
-hline(title="Lower Band", price=-2.0, linestyle=dotted, color=#e69138)
+zsc = (src - mean) / selectedStdev
+
+//---
+
+const color positiveColor = #0ebb23
+const color negativeColor = #ff0000
+const color neutralColor = #8e7cc3
+const color bandColor = #e69138
+const color middleLevelColor = #989898
+
+zscColor = zsc > 2.0 ? positiveColor : zsc < -2.0 ? negativeColor : neutralColor
+
+//---
+
+plot(zsc, title = INDICATOR_SHORT_TITLE, linewidth = 2, color = zscColor, style = plot.style_line)
+
+hline(title = 'Upper Band', price = 2.0, linestyle = hline.style_dotted, color = bandColor)
+hline(0, title = 'Zero Level', linestyle = hline.style_dotted, color = middleLevelColor)
+hline(title = 'Lower Band', price = -2.0, linestyle = hline.style_dotted, color = bandColor)
+
+//---
+
+alertcondition(ta.crossover(zsc, 2.0), title = 'Upper Band Breakout', message = INDICATOR_SHORT_TITLE + ' - Broke above the upper band\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossunder(zsc, -2.0), title = 'Lower Band Breakout', message = INDICATOR_SHORT_TITLE + ' - Broke below the lower band\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossover(zsc, 0), title = 'Zero Line Crossover', message = INDICATOR_SHORT_TITLE + ' - Crossed above the zero line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossunder(zsc, 0), title = 'Zero Line Crossunder', message = INDICATOR_SHORT_TITLE + ' - Crossed below the zero line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')

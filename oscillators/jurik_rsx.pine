@@ -1,13 +1,13 @@
-//@version=3
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Jurik RSX script may be freely distributed under the terms of GPL-3.0 license.
-study("Jurik RSX", shorttitle="RSX")
+indicator("Jurik RSX", shorttitle="RSX")
 
-length = input(title="Length", type=integer, defval=14)
-src = input(title="Source", type=source, defval=hlc3)
-obLevel = input(title="OB Level", type=integer, defval=70)
-osLevel = input(title="OS Level", type=integer, defval=30)
-highlightBreakouts = input(title="Highlight Overbought/Oversold Breakouts ?", type=bool, defval=true)
+length = input.int(14, title="Length")
+src = input.source(hlc3, title="Source")
+obLevel = input.int(70, title="OB Level")
+osLevel = input.int(30, title="OS Level")
+highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
 
 f8 = 100 * src
 f10 = nz(f8[1])
@@ -38,7 +38,7 @@ f50 := f18 * f48 + f20 * nz(f50[1])
 v14 = f48 * 1.5 - f50 * 0.5
 
 f58 = 0.0
-f58 := f20 * nz(f58[1]) + f18 * abs(v8)
+f58 := f20 * nz(f58[1]) + f18 * math.abs(v8)
 
 f60 = 0.0
 f60 := f18 * f58 + f20 * nz(f60[1])
@@ -72,20 +72,20 @@ v4_ = f88 < f90 and v20 > 0 ? (v14 / v20 + 1) * 50 : 50
 rsx = v4_ > 100 ? 100 : v4_ < 0 ? 0 : v4_
 
 rsxColor = rsx > obLevel ? #0ebb23 : rsx < osLevel ? #ff0000 : #f4b77d
-plot(rsx, title="RSX", linewidth=2, color=rsxColor, transp=0)
+plot(rsx, title="RSX", linewidth=2, color=rsxColor)
 
-transparent = color(white, 100)
+transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(100, title="Max Level", linestyle=dotted, color=transparent)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=dotted)
-hline(50, title="Middle Level", linestyle=dotted)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=dotted, color=transparent)
+maxLevelPlot = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
+obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=hline.style_dotted)
+hline(50, title="Middle Level", linestyle=hline.style_dotted)
+osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=hline.style_dotted)
+minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
 
-fill(obLevelPlot, osLevelPlot, color=purple, transp=95)
+fill(obLevelPlot, osLevelPlot, color=color.new(color.purple, 95))
 
-obFillColor = rsx > obLevel and highlightBreakouts ? green : transparent
-osFillColor = rsx < osLevel and highlightBreakouts ? red : transparent
+obFillColor = rsx > obLevel and highlightBreakouts ? color.green : transparent
+osFillColor = rsx < osLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, obLevelPlot, color=obFillColor, transp=90)
-fill(minLevelPlot, osLevelPlot, color=osFillColor, transp=90)
+fill(maxLevelPlot, obLevelPlot, color=color.new(obFillColor, 90))
+fill(minLevelPlot, osLevelPlot, color=color.new(osFillColor, 90))

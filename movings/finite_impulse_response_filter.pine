@@ -1,17 +1,17 @@
-//@version=4
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Finite Impulse Response (FIR) Filter script may be freely distributed under the terms of the GPL-3.0 license.
-study("Finite Impulse Response (FIR) Filter", shorttitle="FIRF", overlay=true)
+indicator("Finite Impulse Response (FIR) Filter", shorttitle="FIRF", overlay=true)
 
-coef1 = input(title="1st Coefficient", type=input.float, step=0.1, defval=1)
-coef2 = input(title="2nd Coefficient", type=input.float, step=0.1, defval=3.5)
-coef3 = input(title="3rd Coefficient", type=input.float, step=0.1, defval=4.5)
-coef4 = input(title="4th Coefficient", type=input.float, step=0.1, defval=3)
-coef5 = input(title="5th Coefficient", type=input.float, step=0.1, defval=0.5)
-coef6 = input(title="6th Coefficient", type=input.float, step=0.1, defval=-0.5)
-coef7 = input(title="7th Coefficient", type=input.float, step=0.1, defval=-1.5)
-src = input(title="Source", type=input.source, defval=close)
-highlight = input(title="Highlight ?", type=input.bool, defval=true)
+coef1 = input.float(1, title="1st Coefficient", step=0.1)
+coef2 = input.float(3.5, title="2nd Coefficient", step=0.1)
+coef3 = input.float(4.5, title="3rd Coefficient", step=0.1)
+coef4 = input.float(3, title="4th Coefficient", step=0.1)
+coef5 = input.float(0.5, title="5th Coefficient", step=0.1)
+coef6 = input.float(-0.5, title="6th Coefficient", step=0.1)
+coef7 = input.float(-1.5, title="7th Coefficient", step=0.1)
+src = input.source(close, title="Source")
+highlight = input.bool(true, title="Highlight ?")
 
 src1 = nz(src[1], src)
 src2 = nz(src[2], src1)
@@ -33,4 +33,4 @@ firf = (
 	 ) / coefSum
 
 firfColor = highlight ? firf > firf[1] ? color.green : color.red : #6d1e7f
-plot(firf, title="FIRF", linewidth=2, color=firfColor, transp=0)
+plot(firf, title="FIRF", linewidth=2, color=firfColor)

@@ -1,10 +1,10 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Linear Weighted Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-study("Linear Weighted Moving Average", shorttitle="LWMA", overlay=true)
+indicator("Linear Weighted Moving Average", shorttitle="LWMA", overlay=true)
 
-length = input(title="Length", type=integer, minval=1, defval=14)
-src = input(title="Source", type=source, defval=close)
+length = input.int(14, title="Length", minval=1)
+src = input.source(close, title="Source")
 
 lwma(src, length) =>
 	weightSum = 0.0
@@ -17,4 +17,4 @@ lwma(src, length) =>
 
 	sum / weightSum
 
-plot(lwma(src, length), title="LWMA", linewidth=2, color=#e69138, transp=0)
+plot(lwma(src, length), title="LWMA", linewidth=2, color=#e69138)

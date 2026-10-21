@@ -1,21 +1,17 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Tick Line Momentum Oscillator script may be freely distributed under the terms of the GPL-3.0 license.
-study("Tick Line Momentum Oscillator", shorttitle="TLMO")
+indicator("Tick Line Momentum Oscillator", shorttitle="TLMO")
 
-cumoMALength = input(title="Cumo MA Length", type=integer, minval=1, defval=10)
-cumoMAInput = input(title="Cumo MA", defval="EMA", options=["EMA", "SMA", "VWMA", "WMA"])
-rocLength = input(title="ROC Length", type=integer, minval=1, defval=5)
-smoothingLength = input(title="Smoothing Length", type=integer, minval=1, defval=5)
-smoothingMAInput = input(title="Smoothing MA", defval="EMA", options=["EMA", "SMA", "VWMA", "WMA"])
-obosLevel = input(title="Overbought / Oversold Level", type=integer, minval=1, defval=5)
-src = input(title="Source", type=source, defval=close)
+cumoMALength = input.int(10, title="Cumo MA Length", minval=1)
+cumoMAInput = input.string("EMA", title="Cumo MA", options=["EMA", "SMA", "VWMA", "WMA"])
+rocLength = input.int(5, title="ROC Length", minval=1)
+smoothingLength = input.int(5, title="Smoothing Length", minval=1)
+smoothingMAInput = input.string("EMA", title="Smoothing MA", options=["EMA", "SMA", "VWMA", "WMA"])
+obosLevel = input.int(5, title="Overbought / Oversold Level", minval=1)
+src = input.source(close, title="Source")
 
-cumoMA = iff(cumoMAInput == "EMA", ema(src, cumoMALength),
-	 iff(cumoMAInput == "SMA", sma(src, cumoMALength),
-	 iff(cumoMAInput == "VWMA", vwma(src, cumoMALength),
-	 iff(cumoMAInput == "WMA", wma(src, cumoMALength),
-	 na))))
+cumoMA = (cumoMAInput == "EMA" ? ta.ema(src, cumoMALength) : (cumoMAInput == "SMA" ? ta.sma(src, cumoMALength) : (cumoMAInput == "VWMA" ? ta.vwma(src, cumoMALength) : (cumoMAInput == "WMA" ? ta.wma(src, cumoMALength) : na))))
 
 cumoExpression = src > nz(cumoMA[1])
 	 ? 1
@@ -23,15 +19,11 @@ cumoExpression = src > nz(cumoMA[1])
 	 	 ? -1
 	 	 : 0
 
-tlmo = iff(smoothingMAInput == "EMA", ema(roc(cum(cumoExpression), rocLength), smoothingLength),
-	 iff(smoothingMAInput == "SMA", sma(roc(cum(cumoExpression), rocLength), smoothingLength),
-	 iff(smoothingMAInput == "VWMA", vwma(roc(cum(cumoExpression), rocLength), smoothingLength),
-	 iff(smoothingMAInput == "WMA", wma(roc(cum(cumoExpression), rocLength), smoothingLength),
-	 na))))
+tlmo = (smoothingMAInput == "EMA" ? ta.ema(ta.roc(ta.cum(cumoExpression), rocLength), smoothingLength) : (smoothingMAInput == "SMA" ? ta.sma(ta.roc(ta.cum(cumoExpression), rocLength), smoothingLength) : (smoothingMAInput == "VWMA" ? ta.vwma(ta.roc(ta.cum(cumoExpression), rocLength), smoothingLength) : (smoothingMAInput == "WMA" ? ta.wma(ta.roc(ta.cum(cumoExpression), rocLength), smoothingLength) : na))))
 
 tlmoColor = tlmo > obosLevel ? #0ebb23 : tlmo < -obosLevel ? #ff0000 : #674ea7
-plot(tlmo, title="TLMO", linewidth=2, color=tlmoColor, transp=0)
+plot(tlmo, title="TLMO", linewidth=2, color=tlmoColor)
 
-hline(obosLevel, title="Overbought", linestyle=dotted, color=#0ebb23)
-hline(0, title="Zero Level", linestyle=solid, color=#f6b26b)
-hline(-1 * obosLevel, title="Oversold", linestyle=dotted, color=#ff0000)
+hline(obosLevel, title="Overbought", linestyle=hline.style_dotted, color=#0ebb23)
+hline(0, title="Zero Level", linestyle=hline.style_solid, color=#f6b26b)
+hline(-1 * obosLevel, title="Oversold", linestyle=hline.style_dotted, color=#ff0000)

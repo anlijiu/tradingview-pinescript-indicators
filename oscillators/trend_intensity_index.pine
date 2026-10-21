@@ -1,16 +1,16 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Trend Intensity Index script may be freely distributed under the terms of the GPL-3.0 license.
-study("Trend Intensity Index", shorttitle="TII")
+indicator("Trend Intensity Index", shorttitle="TII")
 
-majorLength = input(title="Major Length", type=integer, defval=60)
-minorLength = input(title="Minor Length", type=integer, defval=30)
-upperLevel = input(title="Upper Level", type=integer, defval=80)
-lowerLevel = input(title="Lower Level", type=integer, defval=20)
-highlightBreakouts = input(title="Highlight Overbought/Oversold Breakouts ?", type=bool, defval=true)
-src = input(title="Source", type=source, defval=close)
+majorLength = input.int(60, title="Major Length")
+minorLength = input.int(30, title="Minor Length")
+upperLevel = input.int(80, title="Upper Level")
+lowerLevel = input.int(20, title="Lower Level")
+highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
+src = input.source(close, title="Source")
 
-sma = sma(src, majorLength)
+sma = ta.sma(src, majorLength)
 
 positiveSum = 0.0
 negativeSum = 0.0
@@ -24,21 +24,21 @@ for i = 0 to minorLength - 1
 tii = 100 * positiveSum / (positiveSum + negativeSum)
 
 tiiColor = tii > upperLevel ? #0ebb23 : tii < lowerLevel ? #ff0000 : #f4b77d
-plot(tii, title="TII", linewidth=2, color=tiiColor, transp=0)
+plot(tii, title="TII", linewidth=2, color=tiiColor)
 
-transparent = color(white, 100)
+transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(100, title="Max Level", linestyle=dotted, color=transparent)
-upperLevelPlot = hline(upperLevel, title="Upper Level", linestyle=dotted)
-hline(50, title="Middle Level", linestyle=dotted)
-lowerLevelPlot = hline(lowerLevel, title="Lower Level", linestyle=dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=dotted, color=transparent)
+maxLevelPlot = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
+upperLevelPlot = hline(upperLevel, title="Upper Level", linestyle=hline.style_dotted)
+hline(50, title="Middle Level", linestyle=hline.style_dotted)
+lowerLevelPlot = hline(lowerLevel, title="Lower Level", linestyle=hline.style_dotted)
+minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
 
-fill(upperLevelPlot, lowerLevelPlot, color=purple, transp=95)
+fill(upperLevelPlot, lowerLevelPlot, color=color.new(color.purple, 95))
 
-upperFillColor = tii > upperLevel and highlightBreakouts ? green : transparent
-lowerFillColor = tii < lowerLevel and highlightBreakouts ? red : transparent
+upperFillColor = tii > upperLevel and highlightBreakouts ? color.green : transparent
+lowerFillColor = tii < lowerLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, upperLevelPlot, color=upperFillColor, transp=90)
-fill(minLevelPlot, lowerLevelPlot, color=lowerFillColor, transp=90)
+fill(maxLevelPlot, upperLevelPlot, color=color.new(upperFillColor, 90))
+fill(minLevelPlot, lowerLevelPlot, color=color.new(lowerFillColor, 90))
 

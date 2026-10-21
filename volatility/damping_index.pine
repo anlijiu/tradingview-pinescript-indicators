@@ -1,19 +1,19 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Damping Index script may be freely distributed under the terms of GPL-3.0 license.
-study("Damping Index", shorttitle="DI")
+indicator("Damping Index", shorttitle="DI")
 
-smaLength = input(title="SMA Length", type=integer, defval=5)
-threshold = input(title="Threshold", type=float, step=0.1, defval=1.5)
+smaLength = input.int(5, title="SMA Length")
+threshold = input.float(1.5, title="Threshold", step=0.1)
 
-sma = sma(high - low, smaLength)
+sma = ta.sma(high - low, smaLength)
 
 di = sma[1] / sma[6]
 
 diColor = di >= threshold ? #ff9800 : #3c78d8
-plot(di, color=diColor, transp=0)
+plot(di, color=diColor)
 
-hline(threshold, title="Threshold", linestyle=dotted)
+hline(threshold, title="Threshold", linestyle=hline.style_dotted)
 
-breakoutFillColor = di >= threshold ? #ff9800 : color(white, 100)
-bgcolor(breakoutFillColor, transp=90)
+breakoutFillColor = di >= threshold ? #ff9800 : color.new(color.white, 100)
+bgcolor(color.new(breakoutFillColor, 90))

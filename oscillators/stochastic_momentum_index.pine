@@ -1,34 +1,34 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Stochastic Momentum Index script may be freely distributed under the terms of the GPL-3.0 license.
-study("Stochastic Momentum Index", shorttitle="SMI")
+indicator("Stochastic Momentum Index", shorttitle="SMI")
 
-q = input(title="Length (Stochastic Lookback)", type=integer, minval=1, defval=13)
-r = input(title="First Smoothing Length", type=integer, minval=1, defval=25)
-s = input(title="Second Smoothing Length", type=integer, minval=1, defval=2)
-signalLength = input(title="Signal Length", type=integer, minval=1, defval=12)
-overboughtLevel = input(title="Overbought Level", type=integer, defval=40)
-oversoldLevel = input(title="Oversold Level", type=integer, defval=-40)
-applyFilling = input(title="Apply Filling ?", type=bool, defval=false)
-src = input(title="Source", type=source, defval=close)
+q = input.int(13, title="Length (Stochastic Lookback)", minval=1)
+r = input.int(25, title="First Smoothing Length", minval=1)
+s = input.int(2, title="Second Smoothing Length", minval=1)
+signalLength = input.int(12, title="Signal Length", minval=1)
+overboughtLevel = input.int(40, title="Overbought Level")
+oversoldLevel = input.int(-40, title="Oversold Level")
+applyFilling = input.bool(false, title="Apply Filling ?")
+src = input.source(close, title="Source")
 
-hhq = highest(high, q)
-llq = lowest(low, q)
+hhq = ta.highest(high, q)
+llq = ta.lowest(low, q)
 
-numerator = ema(ema(src - 0.5 * (hhq + llq), r), s)
+numerator = ta.ema(ta.ema(src - 0.5 * (hhq + llq), r), s)
 
-denominator = 0.5 * ema(ema(hhq - llq, r), s)
+denominator = 0.5 * ta.ema(ta.ema(hhq - llq, r), s)
 
 smi = 100 * numerator / denominator
 
-signal = ema(smi, signalLength)
+signal = ta.ema(smi, signalLength)
 
-smiPlot = plot(smi, title="SMI", color=#ff3e7d, transp=0)
-signalPlot = plot(signal, title="Signal", color=#3c78d8, transp=0)
+smiPlot = plot(smi, title="SMI", color=#ff3e7d)
+signalPlot = plot(signal, title="Signal", color=#3c78d8)
 
-overbought = hline(title="Overbought Level", price=overboughtLevel, linestyle=dotted, color=#e69138)
-hline(title="Zero Level", price=0, linestyle=dashed, color=#989898)
-oversold = hline(title="Oversold Level", price=oversoldLevel, linestyle=dotted, color=#e69138)
+overbought = hline(title="Overbought Level", price=overboughtLevel, linestyle=hline.style_dotted, color=#e69138)
+hline(title="Zero Level", price=0, linestyle=hline.style_dashed, color=#989898)
+oversold = hline(title="Oversold Level", price=oversoldLevel, linestyle=hline.style_dotted, color=#e69138)
 
-fillColor = applyFilling ? (smi > signal ? #0ebb23 : #cc0000) : color(white, 100)
-fill(smiPlot, signalPlot, color=fillColor, transp=0)
+fillColor = applyFilling ? (smi > signal ? #0ebb23 : #cc0000) : color.new(color.white, 100)
+fill(smiPlot, signalPlot, color=fillColor)

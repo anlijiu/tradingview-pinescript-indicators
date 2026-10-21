@@ -1,9 +1,24 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Simple Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-study("Simple Moving Average", shorttitle="SMA", overlay=true)
+const string MA_SHORT_TITLE = 'SMA'
+indicator('Simple Moving Average', shorttitle = MA_SHORT_TITLE, overlay = true, behind_chart = false)
 
-length = input(title="Length", type=integer, minval=1, defval=14)
-src = input(title="Source", type=source, defval=close)
+const string calcGroup = 'Calculation'
+length = input.int(14, minval = 1, title = 'Length', group = calcGroup)
+src = input.source(close, title = 'Source', group = calcGroup)
 
-plot(sma(src, length), title="SMA", linewidth=2, color=#6d1e7f, transp=0)
+const color maColor = #6d1e7f
+
+//---
+
+ma = ta.sma(src, length)
+
+//---
+
+plot(ma, title = MA_SHORT_TITLE, linewidth = 2, color = maColor)
+
+//---
+
+alertcondition(ta.crossover(src, ma), title = 'Price Crossed Over ' + MA_SHORT_TITLE, message = 'Price crossed over ' + MA_SHORT_TITLE + '\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossunder(src, ma), title = 'Price Crossed Under ' + MA_SHORT_TITLE, message = 'Price crossed under ' + MA_SHORT_TITLE + '\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')

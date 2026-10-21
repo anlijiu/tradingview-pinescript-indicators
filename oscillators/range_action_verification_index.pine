@@ -1,29 +1,21 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Range Action Verification Index (RAVI) script may be freely distributed under the terms of the GPL-3.0 license.
-study("Range Action Verification Index (RAVI)", shorttitle="RAVI")
+indicator("Range Action Verification Index (RAVI)", shorttitle="RAVI")
 
-fastLength = input(title="Fast MA Length", type=integer, minval=1, defval=7)
-fastMAInput = input(title="Fast MA", defval="SMA", options=["EMA", "SMA", "VWMA", "WMA"])
-slowLength = input(title="Slow MA Length", type=integer, minval=1, defval=65)
-slowMAInput = input(title="Slow MA", defval="SMA", options=["EMA", "SMA", "VWMA", "WMA"])
-comparisonLookback = input(title="Comparison Lookback", type=integer, minval=1, defval=1)
-src = input(title="Source", type=source, defval=close)
+fastLength = input.int(7, title="Fast MA Length", minval=1)
+fastMAInput = input.string("SMA", title="Fast MA", options=["EMA", "SMA", "VWMA", "WMA"])
+slowLength = input.int(65, title="Slow MA Length", minval=1)
+slowMAInput = input.string("SMA", title="Slow MA", options=["EMA", "SMA", "VWMA", "WMA"])
+comparisonLookback = input.int(1, title="Comparison Lookback", minval=1)
+src = input.source(close, title="Source")
 
-fastMA = iff(fastMAInput == "EMA", ema(src, fastLength),
-	 iff(fastMAInput == "SMA", sma(src, fastLength),
-	 iff(fastMAInput == "VWMA", vwma(src, fastLength),
-	 iff(fastMAInput == "WMA", wma(src, fastLength),
-	 na))))
+fastMA = (fastMAInput == "EMA" ? ta.ema(src, fastLength) : (fastMAInput == "SMA" ? ta.sma(src, fastLength) : (fastMAInput == "VWMA" ? ta.vwma(src, fastLength) : (fastMAInput == "WMA" ? ta.wma(src, fastLength) : na))))
 
-slowMA = iff(slowMAInput == "EMA", ema(src, slowLength),
-	 iff(slowMAInput == "SMA", sma(src, slowLength),
-	 iff(slowMAInput == "VWMA", vwma(src, slowLength),
-	 iff(slowMAInput == "WMA", wma(src, slowLength),
-	 na))))
+slowMA = (slowMAInput == "EMA" ? ta.ema(src, slowLength) : (slowMAInput == "SMA" ? ta.sma(src, slowLength) : (slowMAInput == "VWMA" ? ta.vwma(src, slowLength) : (slowMAInput == "WMA" ? ta.wma(src, slowLength) : na))))
 
-ravi = abs(100 * (fastMA - slowMA) / slowMA)
+ravi = math.abs(100 * (fastMA - slowMA) / slowMA)
 
-raviColor = ravi > nz(ravi[comparisonLookback]) ? green : red
+raviColor = ravi > nz(ravi[comparisonLookback]) ? color.green : color.red
 
-plot(ravi, title="RAVI", linewidth=2, color=raviColor, transp=0)
+plot(ravi, title="RAVI", linewidth=2, color=raviColor)

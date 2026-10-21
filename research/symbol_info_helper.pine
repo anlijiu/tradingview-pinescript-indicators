@@ -1,17 +1,17 @@
-//@version=4
+//@version=6
 // Copyright (c) 2020-present, Alex Orekhov (everget)
 // Symbol Info Helper script may be freely distributed under the terms of the GPL-3.0 license.
-study("Symbol Info Helper", overlay=true)
+indicator("Symbol Info Helper", overlay=true)
 
 labelText =
      "Symbol Name: " + syminfo.tickerid +
      "\nSymbol Description: " + syminfo.description +
      "\nSymbol Type: " + syminfo.type +
-     "\nPoint Value: " + tostring(syminfo.pointvalue) +
+     "\nPoint Value: " + str.tostring(syminfo.pointvalue) +
      "\nExchange: " + syminfo.prefix +
      "\nListed Exchange: " + "-" +
      "\nCurrency: " + syminfo.currency +
-     "\nTick Size: " + tostring(syminfo.mintick) +
+     "\nTick Size: " + str.tostring(syminfo.mintick) +
      "\nSector: " + "-" +
      "\nIndustry: " + "-" +
      "\nTimezone: " + syminfo.timezone +

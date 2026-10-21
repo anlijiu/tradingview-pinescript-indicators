@@ -1,10 +1,10 @@
-//@version=4
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Spencer 15-Point Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-study("Spencer 15-Point Moving Average", shorttitle="SPMA 15", overlay=true)
+indicator("Spencer 15-Point Moving Average", shorttitle="SPMA 15", overlay=true)
 
-src = input(title="Source", type=input.source, defval=close)
-highlight = input(title="Highlight ?", type=input.bool, defval=true)
+src = input.source(close, title="Source")
+highlight = input.bool(true, title="Highlight ?")
 
 _weight(i) =>
 	weight = 0.0
@@ -52,4 +52,4 @@ for i = 0 to 14
 spma15 = sum / weightSum
 
 spma15Color = highlight ? spma15 > spma15[1] ? color.green : color.red : #6d1e7f
-plot(spma15, title="SPMA 15", linewidth=2, color=spma15Color, transp=0)
+plot(spma15, title="SPMA 15", linewidth=2, color=spma15Color)

@@ -1,10 +1,10 @@
-//@version=4
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Spencer 21-Point Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-study("Spencer 21-Point Moving Average", shorttitle="SPMA 21", overlay=true)
+indicator("Spencer 21-Point Moving Average", shorttitle="SPMA 21", overlay=true)
 
-src = input(title="Source", type=input.source, defval=close)
-highlight = input(title="Highlight ?", type=input.bool, defval=true)
+src = input.source(close, title="Source")
+highlight = input.bool(true, title="Highlight ?")
 
 _weight(i) =>
 	weight = 0.0
@@ -64,4 +64,4 @@ for i = 0 to 20
 spma21 = sum / weightSum
 
 spma21Color = highlight ? spma21 > spma21[1] ? color.green : color.red : #6d1e7f
-plot(spma21, title="SPMA 21", linewidth=2, color=spma21Color, transp=0)
+plot(spma21, title="SPMA 21", linewidth=2, color=spma21Color)

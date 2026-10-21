@@ -1,25 +1,25 @@
-//@version=4
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Litecoin Halving UTC Countdown script may be freely distributed under the terms of the GPL-3.0 license.
-study("Litecoin Halving UTC Countdown", overlay=true)
+indicator("Litecoin Halving UTC Countdown", overlay=true)
 
-halvingDay = input(title="Halving Day", minval=1, maxval=31, defval=5)
-halvingHour = input(title="Halving Hour", minval=1, maxval=24, defval=11)
-halvingMinute = input(title="Halving Minute", minval=1, maxval=60, defval=55)
+halvingDay = input.int(5, title="Halving Day", minval=1, maxval=31)
+halvingHour = input.int(11, title="Halving Hour", minval=1, maxval=24)
+halvingMinute = input.int(55, title="Halving Minute", minval=1, maxval=60)
 
 halvingStamp = timestamp('GMT', 2019, 8, halvingDay, halvingHour, halvingMinute)
 
-secondsRaw = floor((halvingStamp - timenow) / 1000)
-minutesRaw = floor(secondsRaw / 60)
-hoursRaw = floor(minutesRaw / 60)
+secondsRaw = math.floor((halvingStamp - timenow) / 1000)
+minutesRaw = math.floor(secondsRaw / 60)
+hoursRaw = math.floor(minutesRaw / 60)
 
 seconds = secondsRaw % 60
 minutes = minutesRaw % 60
 hours = hoursRaw % 24
-days = floor(hoursRaw / 24)
+days = math.floor(hoursRaw / 24)
 
 f_format(_val) =>
-    (0 < _val and _val < 10 ? "0" : "") + tostring(_val, "##") + (_val == 0 ? "0" : "")
+    (0 < _val and _val < 10 ? "0" : "") + str.tostring(_val, "##") + (_val == 0 ? "0" : "")
 
 labelText = f_format(days) + "d  " + f_format(hours) + ":" + f_format(minutes) + ":" + f_format(seconds)
 
@@ -33,4 +33,4 @@ var label l = label.new(
      )
 
 label.set_text(l, labelText)
-label.set_xy(l, bar_index, highest(100))
+label.set_xy(l, bar_index, ta.highest(100))

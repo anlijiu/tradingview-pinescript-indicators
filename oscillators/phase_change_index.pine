@@ -1,30 +1,30 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Phase Change Index script may be freely distributed under the terms of GPL-3.0 license.
-study("Phase Change Index", shorttitle="PCI")
+indicator("Phase Change Index", shorttitle="PCI")
 
-length = input(title="Length", type=integer, minval=1, defval=35)
-upperLevel = input(title="Upper Level", type=integer, defval=80)
-lowerLevel = input(title="Lower Level", type=integer, defval=20)
-highlightBreakouts = input(title="Highlight Overbought/Oversold Breakouts ?", type=bool, defval=true)
-applySmoothing = input(title="Apply Smoothing ?", type=bool, defval=false)
-smoothingType = input(title="Smoothing Type", defval="SMA", options=["EMA", "SMA", "VWMA", "WMA"])
-smoothingLength = input(title="Smoothing Length", type=integer, minval=1, defval=3)
-src = input(title="Source", type=source, defval=close)
+length = input.int(35, title="Length", minval=1)
+upperLevel = input.int(80, title="Upper Level")
+lowerLevel = input.int(20, title="Lower Level")
+highlightBreakouts = input.bool(true, title="Highlight Overbought/Oversold Breakouts ?")
+applySmoothing = input.bool(false, title="Apply Smoothing ?")
+smoothingType = input.string("SMA", title="Smoothing Type", options=["EMA", "SMA", "VWMA", "WMA"])
+smoothingLength = input.int(3, title="Smoothing Length", minval=1)
+src = input.source(close, title="Source")
 
 getMA(src, length) =>
 	ma = 0.0
 	if smoothingType == "EMA"
-		ma := ema(src, length)
+		ma := ta.ema(src, length)
 	if smoothingType == "SMA"
-		ma := sma(src, length)
+		ma := ta.sma(src, length)
 	if smoothingType == "VWMA"
-		ma := vwma(src, length)
+		ma := ta.vwma(src, length)
 	if smoothingType == "WMA"
-		ma := wma(src, length)
+		ma := ta.wma(src, length)
 	ma
 
-mom = change(src, length)
+mom = ta.change(src, length)
 
 positiveSum = 0.0
 negativeSum = 0.0
@@ -43,20 +43,20 @@ pci = sum != 0 ? 100 * positiveSum / sum : 0
 pci := applySmoothing ? getMA(pci, smoothingLength) : pci
 
 pciColor = pci > upperLevel ? #0ebb23 : pci < lowerLevel ? #ff0000 : #f4b77d
-plot(pci, title="PCI", linewidth=2, color=pciColor, transp=0)
+plot(pci, title="PCI", linewidth=2, color=pciColor)
 
-transparent = color(white, 100)
+transparent = color.new(color.white, 100)
 
-maxLevelPlot = hline(100, title="Max Level", linestyle=dotted, color=transparent)
-upperLevelPlot = hline(upperLevel, title="Upper Level", linestyle=dotted)
-hline(50, title="Middle Level", linestyle=dotted)
-lowerLevelPlot = hline(lowerLevel, title="Lower Level", linestyle=dotted)
-minLevelPlot = hline(0, title="Min Level", linestyle=dotted, color=transparent)
+maxLevelPlot = hline(100, title="Max Level", linestyle=hline.style_dotted, color=transparent)
+upperLevelPlot = hline(upperLevel, title="Upper Level", linestyle=hline.style_dotted)
+hline(50, title="Middle Level", linestyle=hline.style_dotted)
+lowerLevelPlot = hline(lowerLevel, title="Lower Level", linestyle=hline.style_dotted)
+minLevelPlot = hline(0, title="Min Level", linestyle=hline.style_dotted, color=transparent)
 
-fill(upperLevelPlot, lowerLevelPlot, color=purple, transp=95)
+fill(upperLevelPlot, lowerLevelPlot, color=color.new(color.purple, 95))
 
-upperFillColor = pci > upperLevel and highlightBreakouts ? green : transparent
-lowerFillColor = pci < lowerLevel and highlightBreakouts ? red : transparent
+upperFillColor = pci > upperLevel and highlightBreakouts ? color.green : transparent
+lowerFillColor = pci < lowerLevel and highlightBreakouts ? color.red : transparent
 
-fill(maxLevelPlot, upperLevelPlot, color=upperFillColor, transp=90)
-fill(minLevelPlot, lowerLevelPlot, color=lowerFillColor, transp=90)
+fill(maxLevelPlot, upperLevelPlot, color=color.new(upperFillColor, 90))
+fill(minLevelPlot, lowerLevelPlot, color=color.new(lowerFillColor, 90))

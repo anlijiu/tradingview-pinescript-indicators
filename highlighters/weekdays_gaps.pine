@@ -1,7 +1,7 @@
-//@version=4
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Weekdays Gaps script may be freely distributed under the terms of the GPL-3.0 license.
-study("Weekdays Gaps", overlay=true)
+indicator("Weekdays Gaps", overlay=true)
 
 td = dayofweek(time)
 yd = dayofweek(time[1])

@@ -1,108 +1,115 @@
-//@version=3
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
-// Commodity Channel Index (CCI) script may be freely distributed under the terms of the GPL-3.0 license.
-study("Commodity Channel Index", shorttitle="CCI")
+// Commodity Channel Index (CCI) script may be freely distributed under the terms of GPL-3.0 license.
+const string INDICATOR_SHORT_TITLE = 'CCI'
+indicator('Commodity Channel Index', shorttitle = INDICATOR_SHORT_TITLE)
 
-length = input(title="Length", type=integer, defval=20)
-obLevel = input(title="Overbought Level", type=integer, defval=100)
-osLevel = input(title="Oversold Level", type=integer, defval=-100)
-maxLevel = input(title="Max Level", type=integer, defval=300)
-minLevel = input(title="Min Level", type=integer, defval=-300)
-highlightBreakouts = input(title="Highlight Breakouts ?", type=bool, defval=true)
-srcInput = input(title="Source", defval="hlc3",
-	 options=["open",
-				 "high",
-				 "low",
-				 "close",
-				 "oo2",
-				 "oh2",
-				 "ol2",
-				 "oc2",
-				 "hh2",
-				 "hl2",
-				 "hc2",
-				 "ll2",
-				 "lc2",
-				 "cc2",
-				 "hlc3",
-				 "ohlc4",
-				 "wc",
-				 "volume",
-				 "acc/dist",
-				 "on balance volume",
-				 "price volume trend"])
+const string calcGroup = 'Calculation'
+length = input.int(20, minval = 1, title = 'Length', group = calcGroup)
+srcInput = input.string(
+     'hlc3'
+     , title = 'Source'
+     , options = ['open', 'high', 'low', 'close', 'oo2', 'oh2', 'ol2', 'oc2', 'hh2', 'hl2', 'hc2', 'll2', 'lc2', 'cc2', 'hlc3', 'ohlc4', 'wc', 'volume', 'acc/dist', 'on balance volume', 'price volume trend']
+     , group = calcGroup
+     )
 
-getBaseSource(input) =>
-	src = 0.0
-	if input == "open"
-		src := open
-	if input == "high"
-		src := high
-	if input == "low"
-		src := low
-	if input == "close"
-		src := close
-	if input == "oo2"
-		src := (open + nz(open[1])) / 2
-	if input == "oh2"
-		src := (open + high) / 2
-	if input == "ol2"
-		src := (open + low) / 2
-	if input == "oc2"
-		src := (open + close) / 2
-	if input == "hh2"
-		src := (high + nz(high[1])) / 2
-	if input == "hl2" // Median Price
-		src := hl2
-	if input == "hc2"
-		src := (high + close) / 2
-	if input == "ll2"
-		src := (low + nz(low[1])) / 2
-	if input == "lc2"
-		src := (low + close) / 2
-	if input == "cc2"
-		src := (close + nz(close[1])) / 2
-	if input == "hlc3" // Typical Price
-		src := hlc3
-	if input == "ohlc4"
-		src := ohlc4
-	if input == "wc" // Weighted Close
-		src := (2 * close + high + low) / 4
-	if input == "volume"
-		src := volume
-	if input == "acc/dist"
-		src := accdist
-	if input == "on balance volume"
-		src := cum(sign(change(close)) * volume)
-	if input == "price volume trend"
-		src := cum(roc(src, 1) * volume)
-	src
+const string levelsGroup = 'Levels'
+obLevel = input.int(100, title = 'Overbought Level', group = levelsGroup)
+osLevel = input.int(-100, title = 'Oversold Level', group = levelsGroup)
+maxLevel = input.int(300, title = 'Max Level', group = levelsGroup)
+minLevel = input.int(-300, title = 'Min Level', group = levelsGroup)
 
-src = getBaseSource(srcInput)
+const string visualGroup = 'Visuals'
+const string highlightBreakoutsTooltip = 'Fills the area between the overbought/oversold levels and the pane borders when ' + INDICATOR_SHORT_TITLE + ' breaks out of them'
+highlightBreakouts = input.bool(true, title = 'Highlight Breakouts ?', tooltip = highlightBreakoutsTooltip, group = visualGroup)
 
-cci = (src - sma(src, length)) / (0.015 * dev(src, length))
+//---
 
-cciColor = cci > obLevel ? #0ebb23 : cci < osLevel ? #ff0000 : #f4b77d
-plot(cci, title="CCI", linewidth=2, color=cciColor, transp=0)
+// Resolves the selected source name into a series; kept as a plain if-chain to preserve the original evaluation order
+_getBaseSource(string sourceType) =>
+    float out = 0.0
+    if sourceType == 'open'
+        out := open
+    if sourceType == 'high'
+        out := high
+    if sourceType == 'low'
+        out := low
+    if sourceType == 'close'
+        out := close
+    if sourceType == 'oo2'
+        out := (open + nz(open[1])) / 2
+    if sourceType == 'oh2'
+        out := (open + high) / 2
+    if sourceType == 'ol2'
+        out := (open + low) / 2
+    if sourceType == 'oc2'
+        out := (open + close) / 2
+    if sourceType == 'hh2'
+        out := (high + nz(high[1])) / 2
+    if sourceType == 'hl2' // Median Price
+        out := hl2
+    if sourceType == 'hc2'
+        out := (high + close) / 2
+    if sourceType == 'll2'
+        out := (low + nz(low[1])) / 2
+    if sourceType == 'lc2'
+        out := (low + close) / 2
+    if sourceType == 'cc2'
+        out := (close + nz(close[1])) / 2
+    if sourceType == 'hlc3' // Typical Price
+        out := hlc3
+    if sourceType == 'ohlc4'
+        out := ohlc4
+    if sourceType == 'wc' // Weighted Close
+        out := (2 * close + high + low) / 4
+    if sourceType == 'volume'
+        out := volume
+    if sourceType == 'acc/dist'
+        out := ta.accdist
+    if sourceType == 'on balance volume'
+        out := ta.cum(math.sign(ta.change(close)) * volume)
+    if sourceType == 'price volume trend'
+        out := ta.cum(ta.roc(out, 1) * volume)
+    out
 
-transparent = color(white, 100)
+src = _getBaseSource(srcInput)
 
-maxLevelPlot = hline(maxLevel, title="Max Level", linestyle=dotted, color=transparent)
-obLevelPlot = hline(obLevel, title="Overbought Level", linestyle=dotted)
-hline(0, title="Zero Level", linestyle=dotted)
-osLevelPlot = hline(osLevel, title="Oversold Level", linestyle=dotted)
-minLevelPlot = hline(minLevel, title="Min Level", linestyle=dotted, color=transparent)
+cci = (src - ta.sma(src, length)) / (0.015 * ta.dev(src, length))
 
-fill(obLevelPlot, osLevelPlot, color=purple, transp=95)
+//---
 
-obFillColor = cci > obLevel and highlightBreakouts ? green : transparent
-osFillColor = cci < osLevel and highlightBreakouts ? red : transparent
+const color overboughtColor = #0ebb23
+const color oversoldColor = #ff0000
+const color middleColor = #f4b77d
+const color noneColor = color.new(color.white, 100)
+const color middleZoneFillColor = color.new(color.purple, 95)
 
-fill(maxLevelPlot, obLevelPlot, color=obFillColor, transp=90)
-fill(minLevelPlot, osLevelPlot, color=osFillColor, transp=90)
+cciColor = cci > obLevel ? overboughtColor : cci < osLevel ? oversoldColor : middleColor
 
-co = crossover(cci, obLevel)
-cu = crossunder(cci, osLevel)
+//---
 
-alertcondition(co, title="Alert on CCI Overbought", message="CCI Overbought!")
-alertcondition(cu, title="Alert on CCI Oversold", message="CCI Oversold!")
+plot(cci, title = INDICATOR_SHORT_TITLE, linewidth = 2, color = cciColor)
+
+maxLevelPlot = hline(maxLevel, title = 'Max Level', linestyle = hline.style_dotted, color = noneColor)
+obLevelPlot = hline(obLevel, title = 'Overbought Level', linestyle = hline.style_dotted)
+hline(0, title = 'Zero Level', linestyle = hline.style_dotted)
+osLevelPlot = hline(osLevel, title = 'Oversold Level', linestyle = hline.style_dotted)
+minLevelPlot = hline(minLevel, title = 'Min Level', linestyle = hline.style_dotted, color = noneColor)
+
+fill(obLevelPlot, osLevelPlot, title = 'Middle Zone', color = middleZoneFillColor)
+
+obFillColor = cci > obLevel and highlightBreakouts ? color.green : noneColor
+osFillColor = cci < osLevel and highlightBreakouts ? color.red : noneColor
+
+fill(maxLevelPlot, obLevelPlot, title = 'Upper Band Breakout', color = color.new(obFillColor, 90))
+fill(minLevelPlot, osLevelPlot, title = 'Lower Band Breakout', color = color.new(osFillColor, 90))
+
+//---
+
+co = ta.crossover(cci, obLevel)
+cu = ta.crossunder(cci, osLevel)
+
+alertcondition(co, title = 'Overbought Breakout', message = INDICATOR_SHORT_TITLE + ' broke above the overbought level\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(cu, title = 'Oversold Breakout', message = INDICATOR_SHORT_TITLE + ' broke below the oversold level\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossover(cci, 0), title = 'Zero Line Crossover', message = INDICATOR_SHORT_TITLE + ' crossed above the zero line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossunder(cci, 0), title = 'Zero Line Crossunder', message = INDICATOR_SHORT_TITLE + ' crossed below the zero line\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')

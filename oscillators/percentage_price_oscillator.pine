@@ -1,23 +1,23 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Percentage Price Oscillator script may be freely distributed under the terms of the GPL-3.0 license.
-study("Percentage Price Oscillator", shorttitle="PPO")
+indicator("Percentage Price Oscillator", shorttitle="PPO")
 
-fastLength = input(title="Fast Length", type=integer, minval=1, defval=12)
-slowLength = input(title="Slow Length", type=integer, minval=1, defval=26)
-signalLength = input(title="Signal Length", type=integer, minval=1, defval=9)
-applyFilling = input(title="Apply Filling ?", type=bool, defval=false)
-src = input(title="Source", type=source, defval=close)
+fastLength = input.int(12, title="Fast Length", minval=1)
+slowLength = input.int(26, title="Slow Length", minval=1)
+signalLength = input.int(9, title="Signal Length", minval=1)
+applyFilling = input.bool(false, title="Apply Filling ?")
+src = input.source(close, title="Source")
 
-ppo = 100 * (ema(src, fastLength) - ema(src, slowLength)) / ema(src, slowLength)
+ppo = 100 * (ta.ema(src, fastLength) - ta.ema(src, slowLength)) / ta.ema(src, slowLength)
 
-signal = ema(ppo, signalLength)
+signal = ta.ema(ppo, signalLength)
 
 hist = ppo - signal
 
-plot(hist, title="Histogram", style=histogram, transp=0, color=#ff006e)
-ppoPlot = plot(ppo, title="PPO", transp=0, color=#0094ff)
-signalPlot = plot(signal, title="Signal", transp=0, color=#ff6a00)
+plot(hist, title="Histogram", style=plot.style_histogram, color=#ff006e)
+ppoPlot = plot(ppo, title="PPO", color=#0094ff)
+signalPlot = plot(signal, title="Signal", color=#ff6a00)
 
-fillColor = applyFilling ? (ppo > signal ? #0ebb23 : #cc0000) : color(white, 100)
-fill(ppoPlot, signalPlot, color=fillColor, transp=0)
+fillColor = applyFilling ? (ppo > signal ? #0ebb23 : #cc0000) : color.new(color.white, 100)
+fill(ppoPlot, signalPlot, color=fillColor)

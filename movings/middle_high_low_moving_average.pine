@@ -1,16 +1,16 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Middle-High-Low Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-study("Middle-High-Low Moving Average", shorttitle="MHLMA", overlay=true)
+indicator("Middle-High-Low Moving Average", shorttitle="MHLMA", overlay=true)
 
-length = input(title="Length", type=integer, minval=1, defval=14)
-mhlRange = input(title="High-Low Range", type=integer, defval=10)
-maType = input(title="MA Type", defval="EMA", options=["EMA", "SMA"])
-highlightMovements = input(title="Highlight Movements ?", type=bool, defval=true)
+length = input.int(14, title="Length", minval=1)
+mhlRange = input.int(10, title="High-Low Range")
+maType = input.string("EMA", title="MA Type", options=["EMA", "SMA"])
+highlightMovements = input.bool(true, title="Highlight Movements ?")
 
-mhl = avg(highest(mhlRange), lowest(mhlRange))
-mhlma = maType == "EMA" ? ema(mhl, length) : sma(mhl, length)
+mhl = math.avg(ta.highest(mhlRange), ta.lowest(mhlRange))
+mhlma = maType == "EMA" ? ta.ema(mhl, length) : ta.sma(mhl, length)
 
-mhlmaColor = highlightMovements ? (mhlma > mhlma[1] ? green : red) : #6d1e7f
+mhlmaColor = highlightMovements ? (mhlma > mhlma[1] ? color.green : color.red) : #6d1e7f
 
-plot(mhlma, title="MHLMA", linewidth=2, color=mhlmaColor, transp=0)
+plot(mhlma, title="MHLMA", linewidth=2, color=mhlmaColor)

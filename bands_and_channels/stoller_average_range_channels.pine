@@ -1,23 +1,43 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Stoller Average Range Channels (STARC) Bands script may be freely distributed under the terms of the GPL-3.0 license.
-study("Stoller Average Range Channels (STARC) Bands", shorttitle="STARC", overlay=true)
+const string INDICATOR_SHORT_TITLE = 'STARC'
+indicator('Stoller Average Range Channels (STARC) Bands', shorttitle = INDICATOR_SHORT_TITLE, overlay = true, behind_chart = false)
 
-length = input(title="Length", type=integer, minval=1, defval=6)
-maInput = input(title="MA", defval="SMA", options=["EMA", "SMA", "VWMA", "WMA"])
-atrLength = input(title="ATR Length", type=integer, minval=1, defval=15)
-mult = input(title="Multiplier", type=float, step=0.1, defval=1.33)
-src = input(title="Source", type=source, defval=close)
+const string calcGroup = 'Calculation'
+length = input.int(6, minval = 1, title = 'Length', group = calcGroup)
+atrLength = input.int(15, minval = 1, title = 'ATR Length', group = calcGroup)
+mult = input.float(1.33, step = 0.1, title = 'Multiplier', group = calcGroup)
+src = input.source(close, title = 'Source', group = calcGroup)
+maInput = input.string('SMA', title = 'MA', options = ['EMA', 'SMA', 'VWMA', 'WMA'], group = calcGroup)
 
-basis = iff(maInput == "EMA", ema(src, length),
-	 iff(maInput == "SMA", sma(src, length),
-	 iff(maInput == "VWMA", vwma(src, length),
-	 iff(maInput == "WMA", wma(src, length),
-	 na))))
+//---
 
-upperBand = basis + atr(length) * mult
-lowerBand = basis - atr(length) * mult
+_getMA(float src, int length, string maType) =>
+    maType == 'EMA' ? ta.ema(src, length) : maType == 'SMA' ? ta.sma(src, length) : maType == 'VWMA' ? ta.vwma(src, length) : maType == 'WMA' ? ta.wma(src, length) : na
 
-plot(upperBand, title="Upper", linewidth=2, color=blue, transp=0)
-plot(basis, title="Basis", linewidth=2, color=#6d1e7f, transp=0)
-plot(lowerBand, title="Lower", linewidth=2, color=red, transp=0)
+basis = _getMA(src, length, maInput)
+
+atr = ta.atr(atrLength)
+
+upperBand = basis + atr * mult
+lowerBand = basis - atr * mult
+
+//---
+
+const color upperBandColor = #1565c0
+const color basisColor = #6d1e7f
+const color lowerBandColor = #c62828
+
+//---
+
+upperBandPlot = plot(upperBand, title = 'Upper', linewidth = 2, color = upperBandColor)
+plot(basis, title = 'Basis', linewidth = 2, color = basisColor)
+lowerBandPlot = plot(lowerBand, title = 'Lower', linewidth = 2, color = lowerBandColor)
+
+fill(upperBandPlot, lowerBandPlot, title = 'Background', color = color.new(basisColor, 92))
+
+//---
+
+alertcondition(ta.crossover(close, upperBand), title = 'Close Above Upper Band', message = INDICATOR_SHORT_TITLE + ' - Close crossed above the upper band\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossunder(close, lowerBand), title = 'Close Below Lower Band', message = INDICATOR_SHORT_TITLE + ' - Close crossed below the lower band\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')

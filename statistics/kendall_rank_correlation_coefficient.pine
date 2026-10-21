@@ -1,15 +1,15 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Kendall Rank Correlation Coefficient script may be freely distributed under the terms of GPL-3.0 license.
-study("Kendall Rank Correlation Coefficient", shorttitle="Kendall Correlation")
+indicator("Kendall Rank Correlation Coefficient", shorttitle="Kendall Correlation")
 
-length = input(title="Length", type=integer, defval=20)
-sym1 = input(title="1st Symbol", type=symbol, defval="FX:AUDUSD")
-sym2 = input(title="2nd Symbol", type=symbol, defval="FOREXCOM:XAUUSD")
-src = input(title="Source", type=source, defval=close)
+length = input.int(20, title="Length")
+sym1 = input.symbol("FX:AUDUSD", title="1st Symbol")
+sym2 = input.symbol("FOREXCOM:XAUUSD", title="2nd Symbol")
+src = input.source(close, title="Source")
 
-data1 = security(sym1, period, src)
-data2 = security(sym2, period, src)
+data1 = request.security(sym1, timeframe.period, src)
+data2 = request.security(sym2, timeframe.period, src)
 
 getKendall(data1, data2, length) =>
     totalPairs = length * (length - 1) / 2
@@ -17,12 +17,12 @@ getKendall(data1, data2, length) =>
 
     for i = 0 to length - 1
         for j = 0 to i
-            numerator := numerator + sign(data1[i] - data1[j]) * sign(data2[i] - data2[j])
+            numerator := numerator + math.sign(data1[i] - data1[j]) * math.sign(data2[i] - data2[j])
 
     numerator / totalPairs
 
 kendallCorr = sym1 == sym2 ? 1 : getKendall(data1, data2, length)
-pearsonCorr = correlation(data1, data2, length)
+pearsonCorr = ta.correlation(data1, data2, length)
 
-plot(kendallCorr, title="Kendall", color=orange, transp=0)
-plot(pearsonCorr, title="Pearson", color=purple, transp=0)
+plot(kendallCorr, title="Kendall", color=color.orange)
+plot(pearsonCorr, title="Pearson", color=color.purple)

@@ -1,11 +1,11 @@
-//@version=3
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
-study("Leap Years", overlay=true)
+indicator("Leap Years", overlay=true)
 
-transparency = input(title="Transparency", type=integer, defval=88, minval=0, maxval=100)
-showLabels = input(title="Show Labels ? ", type=bool, defval=true)
+transparency = input.int(88, title="Transparency", minval=0, maxval=100)
+showLabels = input.bool(true, title="Show Labels ? ")
 
-transparent = color(white, 100)
+transparent = color.new(color.white, 100)
 labelColor = #1e90ff
 bgColor = #ffa726
 
@@ -28,5 +28,5 @@ else
 
 lyText = " Leap \nYear "
 lyStart = year != year[1] and isLeap
-plotshape(showLabels and lyStart, title=lyText, text=lyText, color=labelColor, textcolor=white, style=shape.labelup, location=location.belowbar, size=size.small, transp=0)
-bgcolor(title="Leap Year", color=isLeap ? bgColor : transparent, transp=transparency)
+plotshape(showLabels and lyStart, title=lyText, text=lyText, color=labelColor, textcolor=color.white, style=shape.labelup, location=location.belowbar, size=size.small)
+bgcolor(title="Leap Year", color=color.new(isLeap ? bgColor : transparent, transparency))

@@ -1,13 +1,13 @@
-//@version=3
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Percentrank Bug script may be freely distributed under the terms of the GPL-3.0 license.
-study("Percentrank Bug")
+indicator("Percentrank Bug")
 
 src = volume
-length = input(14)
+length = input.int(14)
 
-pr = percentrank(src, length)
-plot(pr, title="Built-in", color=red)
+pr = ta.percentrank(src, length)
+plot(pr, title="Built-in", color=color.red)
 
 _percentrank(src, length) =>
     count = 0
@@ -17,4 +17,4 @@ _percentrank(src, length) =>
 
 pr2 = _percentrank(src, length)
 
-plot(pr2, title="Shim", color=green)
+plot(pr2, title="Shim", color=color.green)

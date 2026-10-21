@@ -1,10 +1,10 @@
-//@version=4
+//@version=6
 // Copyright (c) 2021-present, Alex Orekhov (everget)
 // Session Input Parser script may be freely distributed under the terms of GPL-3.0 license.
-study("Session Input Parser", overlay=true)
+indicator("Session Input Parser", overlay=true)
 
-sessionSimple = input(title="Simple Session", type=input.session, defval="0800-1530")
-sessionWithWeekdays = input(title="Session With Weekdays", type=input.session, defval="0800-1530:1234567")
+sessionSimple = input.session("0800-1530", title="Simple Session")
+sessionWithWeekdays = input.session("0800-1530:1234567", title="Session With Weekdays")
 
 _str_includes(str, char) =>
     tmp = str.replace_all(str, char, "")
@@ -12,7 +12,7 @@ _str_includes(str, char) =>
     out
 
 _toint(str) =>
-    out = int(tonumber(str))
+    out = int(str.tonumber(str))
     out
 
 _parseSession(session) =>
@@ -52,18 +52,18 @@ _parseSession(session) =>
 
 labelText =
      "Simple: " + sessionSimple + "\n"
-     + "\nStart Hour: " + tostring(hStart1, "#")
-     + "\nStart Minute: " + tostring(mStart1, "#")
-     + "\nEnd Hour: " + tostring(hEnd1, "#")
-     + "\nEnd Minute: " + tostring(mEnd1, "#")
-     + "\nWeekdays: " + tostring(weekdays1)
+     + "\nStart Hour: " + str.tostring(hStart1, "#")
+     + "\nStart Minute: " + str.tostring(mStart1, "#")
+     + "\nEnd Hour: " + str.tostring(hEnd1, "#")
+     + "\nEnd Minute: " + str.tostring(mEnd1, "#")
+     + "\nWeekdays: " + str.tostring(weekdays1)
      + "\n---------------------------------------------"
      + "\nWith weekdays: " + sessionWithWeekdays + "\n"
-     + "\nStart Hour: " + tostring(hStart2, "#")
-     + "\nStart Minute: " + tostring(mStart2, "#")
-     + "\nEnd Hour: " + tostring(hEnd2, "#")
-     + "\nEnd Minute: " + tostring(mEnd2, "#")
-     + "\nWeekdays: " + tostring(weekdays2)
+     + "\nStart Hour: " + str.tostring(hStart2, "#")
+     + "\nStart Minute: " + str.tostring(mStart2, "#")
+     + "\nEnd Hour: " + str.tostring(hEnd2, "#")
+     + "\nEnd Minute: " + str.tostring(mEnd2, "#")
+     + "\nWeekdays: " + str.tostring(weekdays2)
 
 var label l = label.new(
      x=bar_index,

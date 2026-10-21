@@ -1,12 +1,32 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Hull Moving Average script may be freely distributed under the terms of the GPL-3.0 license.
-study("Hull Moving Average", shorttitle="HMA", overlay=true)
+const string MA_SHORT_TITLE = 'HMA'
+indicator('Hull Moving Average', shorttitle = MA_SHORT_TITLE, overlay = true, behind_chart = false)
 
-length = input(title="Length", type=integer, defval=14, minval=1)
-src = input(title="Source", type=source, defval=close)
+const string calcGroup = 'Calculation'
+length = input.int(14, minval = 1, title = 'Length', group = calcGroup)
+src = input.source(close, title = 'Source', group = calcGroup)
 
-hma(src, length) =>
-	wma(2 * wma(src, length / 2) - wma(src, length), round(sqrt(length)))
+const color maColor = #6d1e7f
 
-plot(hma(src, length), title="HMA", linewidth=2, color=#6d1e7f, transp=0)
+//---
+
+// The square-root smoothing length depends only on `length`, so compute it once instead of on every bar
+var int sqrtLength = math.round(math.sqrt(length))
+
+_hma(float src, int length, int sqrtLength) =>
+    ta.wma(2 * ta.wma(src, math.floor(length / 2)) - ta.wma(src, length), sqrtLength)
+
+//---
+
+ma = _hma(src, length, sqrtLength)
+
+//---
+
+plot(ma, title = MA_SHORT_TITLE, linewidth = 2, color = maColor)
+
+//---
+
+alertcondition(ta.crossover(src, ma), title = 'Price Crossed Over ' + MA_SHORT_TITLE, message = 'Price crossed over ' + MA_SHORT_TITLE + '\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')
+alertcondition(ta.crossunder(src, ma), title = 'Price Crossed Under ' + MA_SHORT_TITLE, message = 'Price crossed under ' + MA_SHORT_TITLE + '\nSymbol: {{exchange}}:{{ticker}}\nPrice: {{close}}')

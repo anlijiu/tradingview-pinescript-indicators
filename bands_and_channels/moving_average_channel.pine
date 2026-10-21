@@ -1,21 +1,21 @@
-//@version=4
+//@version=6
 // Copyright (c) 2017-present, Alex Orekhov (everget)
 // Moving Average Channel script may be freely distributed under the terms of the GPL-3.0 license.
-study("Moving Average Channel", shorttitle="MAC", overlay=true)
+indicator("Moving Average Channel", shorttitle="MAC", overlay=true)
 
-upperSrc = input(title="Upper Source", type=input.source, defval=high)
-upperLength = input(title="Upper Length", type=input.integer, defval=20)
-upperOffset = input(title="Upper Offset", type=input.integer, defval=0)
+upperSrc = input.source(high, title="Upper Source")
+upperLength = input.int(20, title="Upper Length")
+upperOffset = input.int(0, title="Upper Offset")
 
-upper = sma(upperSrc, upperLength)
-upperPlot = plot(upper, title="Upper", color=#3c78d8, offset=upperOffset, transp=0)
+upper = ta.sma(upperSrc, upperLength)
+upperPlot = plot(upper, title="Upper", color=#3c78d8, offset=upperOffset)
 
-lowerSrc = input(title="Lower Source", type=input.source, defval=low)
-lowerLength = input(title="Lower Length", type=input.integer, defval=20)
-lowerOffset = input(title="Lower Offset", type=input.integer, defval=0)
+lowerSrc = input.source(low, title="Lower Source")
+lowerLength = input.int(20, title="Lower Length")
+lowerOffset = input.int(0, title="Lower Offset")
 
-lower = sma(lowerSrc, lowerLength)
-lowerPlot = plot(lower, title="Lower", color=#f57c00, offset=lowerOffset, transp=0)
+lower = ta.sma(lowerSrc, lowerLength)
+lowerPlot = plot(lower, title="Lower", color=#f57c00, offset=lowerOffset)
 
 fill(upperPlot, lowerPlot, title="Background", color=color.new(#ffd966, 90))
 

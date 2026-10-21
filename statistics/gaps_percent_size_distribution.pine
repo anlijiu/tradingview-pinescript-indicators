@@ -1,28 +1,28 @@
-//@version=4
+//@version=6
 // Copyright (c) 2021-present, Alex Orekhov (everget)
 // Gaps % Size Distribution script may be freely distributed under the terms of GPL-3.0 license.
 var int MAX_OBJECTS_COUNT = 500
-study("Gaps % Size Distribution", max_lines_count=MAX_OBJECTS_COUNT, max_labels_count=MAX_OBJECTS_COUNT)
+indicator("Gaps % Size Distribution", max_lines_count=MAX_OBJECTS_COUNT, max_labels_count=MAX_OBJECTS_COUNT)
 
-var bool reboot = input(title="Reboot (Click in case of any error)", defval=false)
-// var bool useDate = input(title="", defval=false, inline=dateInline)
+var bool reboot = input.bool(false, title="Reboot (Click in case of any error)")
+// var bool useDate = input.bool(false, title="", inline=dateInline)
 // int startDate = input(title="Start Aggregation from", type=input.time, defval=timestamp("01 Jan 2019 00:00"), inline=dateInline)
-var float binningStep = input(title="Binning Step", type=input.float, minval=0.0001, defval=0.25, step=0.005)
-var int maxColumns = input(title="Columns Number (Max: 500)", minval=2, maxval=500, defval=300)
-var int columnWidth = input(title="Columns Width", defval=12)
-var bool showLabels = input(title="Show Labels", defval=true)
-var int nthLabel = input(title="Show Each Nth Label", minval=1, defval=5)
+var float binningStep = input.float(0.25, title="Binning Step", minval=0.0001, step=0.005)
+var int maxColumns = input.int(300, title="Columns Number (Max: 500)", minval=2, maxval=500)
+var int columnWidth = input.int(12, title="Columns Width")
+var bool showLabels = input.bool(true, title="Show Labels")
+var int nthLabel = input.int(5, title="Show Each Nth Label", minval=1)
 
 //------------------------------------------------------------------------------
 
 // var int firstTime = time
-// startCondition = useDate ? time(timeframe.period) >= min(firstTime, startDate) : true
+// startCondition = useDate ? time(timeframe.period) >= math.min(firstTime, startDate) : true
 
 var color columnColor = #ffb74d
 var color labelColor = #1e90ff
 var color labelTextColor = color.white
 
-var int sizeLimit = floor(maxColumns / 2)
+var int sizeLimit = math.floor(maxColumns / 2)
 var int[] posValues = array.new_int(sizeLimit, 0)
 var label[] posLabels = array.new_label(sizeLimit, na)
 
@@ -36,24 +36,24 @@ _roc(current, basis) =>
 	out
 
 _str(value, decimals) =>
-	out = tostring(value, "#")
+	out = str.tostring(value, "#")
 	out :=
-		 decimals == 1 ? tostring(value, "#.#") :
-		 decimals == 2 ? tostring(value, "#.##") :
-		 decimals == 3 ? tostring(value, "#.###") :
-		 decimals == 4 ? tostring(value, "#.####") :
-		 decimals == 5 ? tostring(value, "#.#####") :
-		 decimals == 6 ? tostring(value, "#.######") :
-		 decimals == 7 ? tostring(value, "#.#######") :
-		 decimals == 8 ? tostring(value, "#.########") :
-		 decimals == 9 ? tostring(value, "#.#########") :
-		 decimals == 10 ? tostring(value, "#.##########") :
-		 decimals == 11 ? tostring(value, "#.###########") :
-		 decimals == 12 ? tostring(value, "#.############") :
-		 decimals == 13 ? tostring(value, "#.#############") :
-		 decimals == 14 ? tostring(value, "#.##############") :
-		 decimals == 15 ? tostring(value, "#.###############") :
-		 decimals == 16 ? tostring(value, "#.################") :
+		 decimals == 1 ? str.tostring(value, "#.#") :
+		 decimals == 2 ? str.tostring(value, "#.##") :
+		 decimals == 3 ? str.tostring(value, "#.###") :
+		 decimals == 4 ? str.tostring(value, "#.####") :
+		 decimals == 5 ? str.tostring(value, "#.#####") :
+		 decimals == 6 ? str.tostring(value, "#.######") :
+		 decimals == 7 ? str.tostring(value, "#.#######") :
+		 decimals == 8 ? str.tostring(value, "#.########") :
+		 decimals == 9 ? str.tostring(value, "#.#########") :
+		 decimals == 10 ? str.tostring(value, "#.##########") :
+		 decimals == 11 ? str.tostring(value, "#.###########") :
+		 decimals == 12 ? str.tostring(value, "#.############") :
+		 decimals == 13 ? str.tostring(value, "#.#############") :
+		 decimals == 14 ? str.tostring(value, "#.##############") :
+		 decimals == 15 ? str.tostring(value, "#.###############") :
+		 decimals == 16 ? str.tostring(value, "#.################") :
 		 out
 	out
 
@@ -131,11 +131,11 @@ if barstate.islast
 		if showLabels
 			posLabel = array.get(posLabels, i)
 			posText = _labelText(i * binningStep, (i + 1) * binningStep)
-			posTooltip = tostring(posValue, "#")
+			posTooltip = str.tostring(posValue, "#")
 		
 			negLabel = array.get(negLabels, i)
 			negText = _labelText(-i * binningStep, -(i + 1) * binningStep)
-			negTooltip = tostring(negValue, "#")
+			negTooltip = str.tostring(negValue, "#")
 
 			if i % nthLabel == 0
 				if na(negLabel)

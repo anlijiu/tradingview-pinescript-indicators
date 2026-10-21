@@ -1,11 +1,11 @@
-//@version=4
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Recursive Moving Trend Average script may be freely distributed under the terms of the GPL-3.0 license.
-study("Recursive Moving Trend Average", shorttitle="RMTA", overlay=true)
+indicator("Recursive Moving Trend Average", shorttitle="RMTA", overlay=true)
 
-length = input(title="Length", type=input.integer, defval=14, minval=1)
-src = input(title="Source", type=input.source, defval=close)
-highlight = input(title="Highlight ?", type=input.bool, defval=true)
+length = input.int(14, title="Length", minval=1)
+src = input.source(close, title="Source")
+highlight = input.bool(true, title="Highlight ?")
 
 alpha = 2 / (length + 1)
 
@@ -16,4 +16,4 @@ rmta = 0.0
 rmta := (1 - alpha) * nz(rmta[1], src) + alpha * (src + b - nz(b[1]))
 
 rmtaColor = highlight ? rmta > rmta[1] ? color.green : color.red : #6d1e7f
-plot(rmta, title="RMTA", linewidth=2, color=rmtaColor, transp=0)
+plot(rmta, title="RMTA", linewidth=2, color=rmtaColor)

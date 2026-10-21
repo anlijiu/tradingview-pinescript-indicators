@@ -1,11 +1,11 @@
-//@version=4
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // Chart Type Identifier script may be freely distributed under the terms of the GPL-3.0 license.
-study("Chart Type Identifier", overlay=true)
+indicator("Chart Type Identifier", overlay=true)
 
-max = max(open, close)
-min = min(open, close)
-body = abs(close - open)
+max = math.max(open, close)
+min = math.min(open, close)
+body = math.abs(close - open)
 
 var int horizCount = -1
 if open[1] == close or close[1] == open
@@ -30,7 +30,7 @@ _isHA() =>
 isHA = _isHA()
 
 _isRenko() =>
-    bodySum = cum(body)
+    bodySum = ta.cum(body)
     avg = bodySum / (bar_index + 1)
     out = avg == body and gapsCount == -1
     out
@@ -57,11 +57,11 @@ _isLineBreak() =>
 
 isLineBreak = not isPnF and _isLineBreak()
 
-monthData = security(syminfo.tickerid, "M", close)
-weekData = security(syminfo.tickerid, "W", close)
-dayData = security(syminfo.tickerid, "D", close)
-hourData = security(syminfo.tickerid, "60", close)
-minuteData = security(syminfo.tickerid, "1", close)
+monthData = request.security(syminfo.tickerid, "M", close)
+weekData = request.security(syminfo.tickerid, "W", close)
+dayData = request.security(syminfo.tickerid, "D", close)
+hourData = request.security(syminfo.tickerid, "60", close)
+minuteData = request.security(syminfo.tickerid, "1", close)
 
 _isRangeBars() =>
     out =
@@ -103,7 +103,7 @@ var label l = label.new(
      text="",
      color=labelColor,
      textcolor=whiteColor,
-     style=label.style_labeldown,
+     style=label.style_label_down,
      size=size.normal
      )
 
@@ -114,14 +114,14 @@ _highest(length) =>
         out := out < prev ? prev : out
     out
 
-lookback = min(bar_index + 2, 50)
+lookback = math.min(bar_index + 2, 50)
 yPos = _highest(lookback)
 
 // debug =
-//      "\nBar Index: " + tostring(int(bar_index)) +
-//      "\nGaps: " + tostring(gapsCount) +
-//      "\nHoriz: " + tostring(horizCount) +
-//      "\nNo Wicks: " + tostring(noWicksCount)
+//      "\nBar Index: " + str.tostring(int(bar_index)) +
+//      "\nGaps: " + str.tostring(gapsCount) +
+//      "\nHoriz: " + str.tostring(horizCount) +
+//      "\nNo Wicks: " + str.tostring(noWicksCount)
 
 label.set_text(l, labelText) // + debug
 label.set_xy(l, bar_index, yPos)

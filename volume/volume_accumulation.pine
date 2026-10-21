@@ -4,10 +4,10 @@ indicator('Volume Accumulation', format = format.volume)
 
 accumulationType = input.string('Daily', title = 'Type', options = ['Minutely', 'Hourly', 'Session', 'Daily', 'Monthly', 'Quarterly', 'Yearly'])
 sessionInput = input.session('0900-1530', title = 'Session (only for \'Session\' type)')
-includeWeekends = input(true, title = 'Include Weekends')
+includeWeekends = input.bool(true, title = 'Include Weekends')
 var session = sessionInput + (includeWeekends ? ':1234567' : '')
 
-applyBarColors = input(true, title = 'Apply Bar Colors')
+applyBarColors = input.bool(true, title = 'Apply Bar Colors')
 
 //---
 

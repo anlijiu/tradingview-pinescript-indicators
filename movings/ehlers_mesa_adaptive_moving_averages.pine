@@ -1,11 +1,11 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Ehlers MESA Adaptive Moving Averages (MAMA & FAMA) script may be freely distributed under the terms of the GPL-3.0 license.
-study("Ehlers MESA Adaptive Moving Averages (MAMA & FAMA)", shorttitle="MESA", overlay=true)
+indicator("Ehlers MESA Adaptive Moving Averages (MAMA & FAMA)", shorttitle="MESA", overlay=true)
 
-fastLimit = input(title="Fast Limit", type=float, defval=0.5)
-slowLimit = input(title="Slow Limit", type=float, defval=0.05)
-src = input(title="Source", type=source, defval=hl2)
+fastLimit = input.float(0.5, title="Fast Limit")
+slowLimit = input.float(0.05, title="Slow Limit")
+src = input.source(hl2, title="Source")
 
 computeMESAComponent(src, mesaPeriodMult) =>
 	(0.962 * src + 0.5769 * nz(src[2]) - 0.5769 * nz(src[4]) - 0.0962 * nz(src[6])) * mesaPeriodMult
@@ -47,7 +47,7 @@ computeAlpha(src, fastLimit, slowLimit) =>
 	Im := 0.2 * Im + 0.8 * nz(Im[1])
 
 	if Re != 0 and Im != 0
-		mesaPeriod := 360 / atan(Im / Re)
+		mesaPeriod := 360 / math.atan(Im / Re)
 
 	if mesaPeriod > 1.5 * nz(mesaPeriod[1])
 		mesaPeriod := 1.5 * nz(mesaPeriod[1])
@@ -69,7 +69,7 @@ computeAlpha(src, fastLimit, slowLimit) =>
 	phase = 0.0
 
 	if I1 != 0
-		phase := atan(Q1 / I1)
+		phase := math.atan(Q1 / I1)
 
 	deltaPhase = nz(phase[1]) - phase
 
@@ -96,5 +96,5 @@ fama(src, fastLimit, slowLimit) =>
 	fama = 0.0
 	fama := (alpha / 2) * mama + (1 - alpha / 2) * nz(fama[1])
 
-plot(mama(src, fastLimit, slowLimit), title="MAMA", linewidth=2, color=#674ea7, transp=0)
-plot(fama(src, fastLimit, slowLimit), title="FAMA", linewidth=2, color=#f6b26b, transp=0)
+plot(mama(src, fastLimit, slowLimit), title="MAMA", linewidth=2, color=#674ea7)
+plot(fama(src, fastLimit, slowLimit), title="FAMA", linewidth=2, color=#f6b26b)

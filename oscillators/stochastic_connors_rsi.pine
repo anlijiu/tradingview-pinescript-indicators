@@ -1,16 +1,16 @@
-//@version=3
+//@version=6
 // Copyright (c) 2017-present, Alex Orekhov (everget)
 // Stochastic Connors RSI indicator script may be freely distributed under the terms of GPL-3.0 license.
-study(title="Stochastic Connors RSI", shorttitle="Stoch CRSI")
+indicator(title="Stochastic Connors RSI", shorttitle="Stoch CRSI")
 
-stochLength = input(title="Stochastic Length", type=integer, defval=3, minval=1)
-smoothK = input(title="K", type=integer, defval=3, minval=1, maxval=10000)
-smoothD = input(title="D", type=integer, defval=3, minval=1, maxval=10000)
+stochLength = input.int(3, title="Stochastic Length", minval=1)
+smoothK = input.int(3, title="K", minval=1, maxval=10000)
+smoothD = input.int(3, title="D", minval=1, maxval=10000)
 
-rsiLength = input(title="RSI Length", type=integer, defval=3, minval=1)
-updownLength = input(title="Updown RSI Length", type=integer, defval=2, minval=1)
-rocLength = input(title="ROC Length", type=integer, defval=100, minval=1)
-src = input(title="RSI Source", type=source, defval=close)
+rsiLength = input.int(3, title="RSI Length", minval=1)
+updownLength = input.int(2, title="Updown RSI Length", minval=1)
+rocLength = input.int(100, title="ROC Length", minval=1)
+src = input.source(close, title="RSI Source")
 
 updown = 0
 updown_calc(s, ud) =>
@@ -25,26 +25,26 @@ updown_calc(s, ud) =>
 
 updown := updown_calc(src, updown)
 
-updownrsi = rsi(updown, updownLength)
+updownrsi = ta.rsi(updown, updownLength)
 
-rsi = rsi(src, rsiLength)
+rsi = ta.rsi(src, rsiLength)
 
-percentrank = percentrank(roc(src, 1), rocLength)
+percentrank = ta.percentrank(ta.roc(src, 1), rocLength)
 
-crsi = avg(rsi, updownrsi, percentrank)
+crsi = math.avg(rsi, updownrsi, percentrank)
 
-stochcalc = stoch(crsi, crsi, crsi, stochLength)
+stochcalc = ta.stoch(crsi, crsi, crsi, stochLength)
 
-band1 = hline(80, color=gray, linestyle=dashed)
-band2 = hline(20, color=gray, linestyle=dashed)
+band1 = hline(80, color=color.gray, linestyle=hline.style_dashed)
+band2 = hline(20, color=color.gray, linestyle=hline.style_dashed)
 fill(band1, band2, color=#f9cb9c0f)
 
-band3 = hline(70, color=gray, linestyle=dashed)
-band4 = hline(30, color=gray, linestyle=dashed)
+band3 = hline(70, color=color.gray, linestyle=hline.style_dashed)
+band4 = hline(30, color=color.gray, linestyle=hline.style_dashed)
 fill(band3, band4, color=#de9ba6)
 
-smaK = sma(stochcalc, smoothK)
-smaD = sma(smaK, smoothD)
+smaK = ta.sma(stochcalc, smoothK)
+smaD = ta.sma(smaK, smoothD)
 
 plot(smaK, title="K", color=#0094ff)
 plot(smaD, title="D", color=#ff6a00)

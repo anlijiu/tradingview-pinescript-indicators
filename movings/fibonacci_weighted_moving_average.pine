@@ -7,21 +7,21 @@ indicator('Fibonacci Weighted Moving Average', shorttitle = MA_SHORT_TITLE, over
 length = input.int(14, minval = 1, title = 'Length')
 src = input.source(close, title = 'Source')
 
-var highlightDirectionTooltip = 'Colors the ' + MA_SHORT_TITLE + ' according to its direction:\n• Green = rising\n• Pink = falling'
+const string highlightDirectionTooltip = 'Colors the ' + MA_SHORT_TITLE + ' according to its direction:\n• Green = rising\n• Pink = falling'
 highlightDirection = input.bool(
      true
      , title = 'Highlight Direction'
      , tooltip = highlightDirectionTooltip
      )
 
-var applyBarColorsTooltip = 'Colors price bars according to the ' + MA_SHORT_TITLE + ' direction:\n• Bullish color = rising ' + MA_SHORT_TITLE + '\n• Bearish color = falling ' + MA_SHORT_TITLE
+const string applyBarColorsTooltip = 'Colors price bars according to the ' + MA_SHORT_TITLE + ' direction:\n• Bullish color = rising ' + MA_SHORT_TITLE + '\n• Bearish color = falling ' + MA_SHORT_TITLE
 applyBarColors = input.bool(
      true
      , title = 'Apply Bar Colors'
      , tooltip = applyBarColorsTooltip
      )
 
-var applyBgColorsTooltip = 'Colors the chart background according to the ' + MA_SHORT_TITLE + ' direction:\n• Bullish color = rising ' + MA_SHORT_TITLE + '\n• Bearish color = falling ' + MA_SHORT_TITLE
+const string applyBgColorsTooltip = 'Colors the chart background according to the ' + MA_SHORT_TITLE + ' direction:\n• Bullish color = rising ' + MA_SHORT_TITLE + '\n• Bearish color = falling ' + MA_SHORT_TITLE
 applyBgColors = input.bool(
      false
      , title = 'Apply Background Colors'

@@ -1,24 +1,24 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Ehlers Smoothed Adaptive Momentum script may be freely distributed under the terms of GPL-3.0 license.
-study("Ehlers Smoothed Adaptive Momentum", shorttitle="ESAM")
+indicator("Ehlers Smoothed Adaptive Momentum", shorttitle="ESAM")
 
-length = input(title="Cutoff", type=integer, defval=8)
-alpha = input(title="Alpha", type=float, minval=0, step=0.1, defval=0.7)
-poles = input(title="Super Smoother Filter Poles", type=integer, defval=3, options=[2, 3])
-src = input(title="Source", type=source, defval=close)
+length = input.int(8, title="Cutoff")
+alpha = input.float(0.7, title="Alpha", minval=0, step=0.1)
+poles = input.int(3, title="Super Smoother Filter Poles", options=[2, 3])
+src = input.source(close, title="Source")
 
 median(src, length) =>
-    percentile_nearest_rank(src, length, 50)
+    ta.percentile_nearest_rank(src, length, 50)
 
-PI = 2 * asin(1)
+PI = 2 * math.asin(1)
 
 get2PoleSSF(src, length) =>
-    arg = sqrt(2) * PI / length
-    a1 = exp(-arg)
-    b1 = 2 * a1 * cos(arg)
+    arg = math.sqrt(2) * PI / length
+    a1 = math.exp(-arg)
+    b1 = 2 * a1 * math.cos(arg)
     c2 = b1
-    c3 = -pow(a1, 2)
+    c3 = -math.pow(a1, 2)
     c1 = 1 - c2 - c3
     
     ssf = 0.0
@@ -26,13 +26,13 @@ get2PoleSSF(src, length) =>
 
 get3PoleSSF(src, length) =>
     arg = PI / length
-    a1 = exp(-arg)
-    b1 = 2 * a1 * cos(1.738 * arg)
-    c1 = pow(a1, 2)
+    a1 = math.exp(-arg)
+    b1 = 2 * a1 * math.cos(1.738 * arg)
+    c1 = math.pow(a1, 2)
 
     coef2 = b1 + c1
     coef3 = -(c1 + b1 * c1)
-    coef4 = pow(c1, 2)
+    coef4 = math.pow(c1, 2)
     coef1 = 1 - coef2 - coef3 - coef4
 
     ssf = 0.0
@@ -48,9 +48,9 @@ getESAM(src, length, alpha, poles) =>
     smooth = (src + 2 * nz(src[1]) + 2 * nz(src[2]) + nz(src[3])) / 6
 
     cycle = 0.0
-    cycle := pow(1 - alpha / 2, 2) * (smooth - 2 * nz(smooth[1]) + nz(smooth[2])) + 2 * (1 - alpha) * nz(cycle[1]) - pow(1 - alpha, 2) * nz(cycle[2])
+    cycle := math.pow(1 - alpha / 2, 2) * (smooth - 2 * nz(smooth[1]) + nz(smooth[2])) + 2 * (1 - alpha) * nz(cycle[1]) - math.pow(1 - alpha, 2) * nz(cycle[2])
 
-    if n < 7
+    if bar_index < 7
         cycle := (src - 2 * nz(src[1]) + nz(src[2])) / 4
     
     instPeriod = 0.0
@@ -89,7 +89,7 @@ getESAM(src, length, alpha, poles) =>
     lookback = 0.0
     lookback := 0.15 * instPeriod + 0.85 * nz(lookback[1])
     
-    mom = src - src[floor(lookback - 1)]
+    mom = src - src[math.floor(lookback - 1)]
     
     esam = poles == 3
          ? get3PoleSSF(mom, length)
@@ -97,7 +97,7 @@ getESAM(src, length, alpha, poles) =>
     esam
 
 esam = getESAM(src, length, alpha, poles)
-esamColor = esam > 0 ? #0ebb23 : red
+esamColor = esam > 0 ? #0ebb23 : color.red
 
-plot(esam, title="ESAM", linewidth=2, color=esamColor, transp=0)
-hline(0, title="Zero Level", linestyle=dotted)
+plot(esam, title="ESAM", linewidth=2, color=esamColor)
+hline(0, title="Zero Level", linestyle=hline.style_dotted)

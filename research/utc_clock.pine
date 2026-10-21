@@ -1,18 +1,18 @@
-//@version=4
+//@version=6
 // Copyright (c) 2019-present, Alex Orekhov (everget)
 // UTC Clock script may be freely distributed under the terms of the GPL-3.0 license.
-study("UTC Clock", overlay=true)
+indicator("UTC Clock", overlay=true)
 
-secondsRaw = floor(timenow / 1000)
-minutesRaw = floor(secondsRaw / 60)
-hoursRaw = floor(minutesRaw / 60)
+secondsRaw = math.floor(timenow / 1000)
+minutesRaw = math.floor(secondsRaw / 60)
+hoursRaw = math.floor(minutesRaw / 60)
 
 seconds = secondsRaw % 60
 minutes = minutesRaw % 60
 hours = hoursRaw % 24
 
 f_format(_val) =>
-    (0 < _val and _val < 10 ? "0" : "") + tostring(_val, "##") + (_val == 0 ? "0" : "")
+    (0 < _val and _val < 10 ? "0" : "") + str.tostring(_val, "##") + (_val == 0 ? "0" : "")
 
 labelText = f_format(hours) + ":" + f_format(minutes) + ":" + f_format(seconds)
 
@@ -26,4 +26,4 @@ var label l = label.new(
      )
 
 label.set_text(l, labelText)
-label.set_xy(l, bar_index, highest(high, 50))
+label.set_xy(l, bar_index, ta.highest(high, 50))

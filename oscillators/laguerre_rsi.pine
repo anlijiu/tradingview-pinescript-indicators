@@ -1,10 +1,10 @@
-//@version=3
+//@version=6
 // Copyright (c) 2018-present, Alex Orekhov (everget)
 // Laguerre RSI script may be freely distributed under the terms of the GPL-3.0 license.
-study("Laguerre RSI", shorttitle="LRSI")
+indicator("Laguerre RSI", shorttitle="LRSI")
 
-alpha = input(title="Alpha", type=float, minval=0, step=0.1, defval=0.7)
-src = input(title="Source", type=source, defval=close)
+alpha = input.float(0.7, title="Alpha", minval=0, step=0.1)
+src = input.source(close, title="Source")
 
 L0 = 0.0
 L1 = 0.0
@@ -22,9 +22,9 @@ CD = 0.0
 CU := (L0 >= L1 ? L0 - L1 : 0) + (L1 >= L2 ? L1 - L2 : 0) + (L2 >= L3 ? L2 - L3 : 0)
 CD := (L0 >= L1 ? 0 : L1 - L0) + (L1 >= L2 ? 0 : L2 - L1) + (L2 >= L3 ? 0 : L3 - L2)
 
-lrsi = iff(CU + CD != 0, CU / (CU + CD), 0)
+lrsi = (CU + CD != 0 ? CU / (CU + CD) : 0)
 
-overboughtLevel = hline(0.8, title="Overbought Level", linestyle=dashed, color=#686868)
-oversoldLevel = hline(0.2, title="Oversold Level", linestyle=dashed, color=#686868)
+overboughtLevel = hline(0.8, title="Overbought Level", linestyle=hline.style_dashed, color=#686868)
+oversoldLevel = hline(0.2, title="Oversold Level", linestyle=hline.style_dashed, color=#686868)
 
-plot(lrsi, title="LRSI", linewidth=2, color=#ff3e7d, transp=0)
+plot(lrsi, title="LRSI", linewidth=2, color=#ff3e7d)
